@@ -2,6 +2,11 @@ import cv2
 import numpy as np
 import json
 import tensorflow as tf
+from tensorflow import keras
+from keras.models import Sequential
+from keras.layers import Dense, Dropout, Flatten
+from keras.layers import Conv2D, MaxPooling2D
+from keras import backend as K
 
 baseAddrDescriptions = 'E:/\school/tensorflowprc/moleDataSet/Data/Descriptions/'
 baseAddrImages = 'E:/\school/tensorflowprc/moleDataSet/Data/Images/'
@@ -47,7 +52,9 @@ def createDataset(fileNames):
     def _parseFunction(fileName, label):
         image_string = tf.read_file(baseAddrImages + fileName)
         image_decoded = tf.image.decode_jpeg(image_string, channels=3)
-        return image_decoded, label
+        image_resized = tf.image.resize_images(image_decoded,[224,224])
+        image_resized /= 255.0
+        return image_resized, label
     dataset = tf.data.Dataset.from_tensor_slices((tf.constant(fileNames),tf.constant(labels)))
     dataset = dataset.map(_parseFunction)
     return dataset
@@ -55,12 +62,25 @@ def createDataset(fileNames):
 def main():
     fileNames = createFileNames(10)
     dataset = createDataset(fileNames)
-    #train = dataset.take(5)
-    iterator = dataset.make_one_shot_iterator()
-    images, labels = iterator.get_next()
 
-    with tf.Session() as sess:
-        print(sess.run(labels))
+    train = dataset.take(5)
+    trainIterator = train.make_one_shot_iterator()
+
+    print(dataset.output_types)
+    
+    model = keras.Sequential()
+    model.add(Conv2D(32,
+                     kernel_size=(3,3),
+                     activation='relu'),
+                     )
+
+    model.compile(optimizer='adam',
+        loss='sparse_categorical_crossentropy',
+        metrics=['accuracy'])
+
+    model.fit(x=trainIterator
+            ,epochs=5,
+            steps_per_epoch=30)
 
 if __name__ == '__main__':
     main()
