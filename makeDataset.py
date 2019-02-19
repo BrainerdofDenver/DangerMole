@@ -1,14 +1,25 @@
+'''
+This file takes the downloaded dataset and creates a numpy array with the image and its label
+and saves it. It takes a long time to do this so be ready to wait. Also doesn't actually work
+for all the data yet as some of it is labeled differently than others so it currently crashes
+when trying to run and hits that differntly labeled data.
+'''
+
 import numpy as np
 import matplotlib.pyplot as plt
 import os 
 import cv2
 import json
 
+#change directory to the data to work on your machine
 DATADIR = "E:/\school/tensorflowprc/moleDataSet/Data/Images/"
 DESCDIR = "E:/\school/tensorflowprc/moleDataSet/Data/Descriptions/"
+
 CATEGORIES = ['Benign','Malignant']
+#new image size after resizing
 IMG_SIZE = 224
-IMG_AMOUNT = 24000
+IMG_AMOUNT = 23900
+
 training_data = []
 
 def createTrainingData():
@@ -16,14 +27,12 @@ def createTrainingData():
         img_array = cv2.imread(os.path.join(DATADIR,image))
         new_array = cv2.resize(img_array, (IMG_SIZE, IMG_SIZE))
         training_data.append([new_array,getLabel(image)])
-        if len(training_data) >= IMG_AMOUNT:
-            break
+        #if len(training_data) >= IMG_AMOUNT:
+         #   break
 
+# This needs to change to work with all data descriptions
 def getLabel(fileName):
-        #address = baseAddrDescriptions + fileNames[i][:-5]
-        #print(address)
     data = openJsonFile(os.path.join(DESCDIR,fileName[:-5]))
-        #print(data['meta']['clinical']['benign_malignant'])
     if data['meta']['clinical']['benign_malignant'] == 'benign':
         return 0
     else:
@@ -36,10 +45,9 @@ def openJsonFile(fileName):
         return data
 
 createTrainingData()
-'''plt.imshow(training_data[0][0])
-plt.show()
-'''
+
 print(len(training_data))
+shuffle(training_data)
 X = []
 y = []
 for features, label in training_data:
