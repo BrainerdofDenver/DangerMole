@@ -19,7 +19,7 @@ DESCDIR = "E:/\school/tensorflowprc/moleDataSet/Data/Descriptions/"
 CATEGORIES = ['Benign','Malignant']
 #new image size after resizing
 IMG_SIZE = 224
-IMG_AMOUNT = 13785
+IMG_AMOUNT = 13750
 
 training_data = []
 
