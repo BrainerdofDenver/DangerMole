@@ -13,23 +13,31 @@ import json
 from random import shuffle
 
 #change directory to the data to work on your machine
-DATADIR = "E:/\school/tensorflowprc/moleDataSet/Data/Images/"
-DESCDIR = "E:/\school/tensorflowprc/moleDataSet/Data/Descriptions/"
+DATADIR = "/Users/alexparmentier/Downloads/ISIC-Archive-Downloader-master/Data/Images"
+DESCDIR = "/Users/alexparmentier/Downloads/ISIC-Archive-Downloader-master/Data/Descriptions"
 
 CATEGORIES = ['Benign','Malignant']
 #new image size after resizing
 IMG_SIZE = 224
-IMG_AMOUNT = 13785
+IMG_AMOUNT = 1000
 
 training_data = []
+#check if image is none and skip it if so
 
 def createTrainingData():
     for image in os.listdir(DATADIR):
         img_array = cv2.imread(os.path.join(DATADIR,image))
         new_array = cv2.resize(img_array, (IMG_SIZE, IMG_SIZE))
+        
+        if getLabel(image) == None:
+            continue
+        
+        # new_array = new_array/255
         training_data.append([new_array,getLabel(image)])
         if len(training_data) >= IMG_AMOUNT:
             break
+
+
 
 # This needs to change to work with all data descriptions
 def getLabel(fileName):
@@ -41,8 +49,8 @@ def getLabel(fileName):
                     return 0
                 else:
                     return 1
-            else:
-                raise ValueError("No benign bool given in data given at file: " + file)
+    else:
+        raise ValueError("No benign bool given in data given at file: " + file)
 
 def openJsonFile(fileName):
     with open(fileName) as f:
