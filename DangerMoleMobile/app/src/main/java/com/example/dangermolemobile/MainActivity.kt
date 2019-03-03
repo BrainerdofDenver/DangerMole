@@ -1,6 +1,8 @@
 package com.example.dangermolemobile
 
+import android.content.Intent
 import android.os.Bundle
+import android.provider.MediaStore
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu
@@ -20,6 +22,8 @@ class MainActivity : AppCompatActivity() {
 
 
         take_pic_button.setOnClickListener {
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            startActivityForResult(intent, 0)
         }
     }
 
