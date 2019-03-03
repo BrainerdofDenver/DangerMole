@@ -1,6 +1,8 @@
 package com.example.dangermolemobile
 
+import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.design.widget.Snackbar
@@ -9,11 +11,13 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
+import android.widget.Toast
 
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity() {
+    val cameraRequestCode = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,10 +25,22 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
 
+
         take_pic_button.setOnClickListener {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            startActivityForResult(intent, 0)
+            val camIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            if(camIntent.resolveActivity(packageManager) != null) {
+                startActivityForResult(camIntent, cameraRequestCode)
+            }
         }
+    }
+
+    //Copying tutorial for initial functionality: https://www.youtube.com/watch?v=ondCeqlAwEI
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        val bitmap = data?.extras?.get("data") as Bitmap
+        camView.setImageBitmap(bitmap)
     }
 
 
