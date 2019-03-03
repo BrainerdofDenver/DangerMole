@@ -18,20 +18,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        //The snackbar is the little popup at the bottom when the email button is clicked
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
 
         take_pic_button.setOnClickListener {
-            changeText()
         }
     }
 
-    fun changeText(){
-        textView.text = getString(R.string.update_str)
-    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
