@@ -4,9 +4,9 @@ import os
 import json
 from keras.utils import Sequence
 
-class Generator(Sequence):
+class My_Generator(Sequence):
 
-    def getLabel(file_name):
+    def getLabel(self,file_name):
         data = openJsonFile(file_name[:-5])
         if 'meta' in data:
             if 'clinical' in data['meta']:
@@ -18,12 +18,13 @@ class Generator(Sequence):
         else:
             raise ValueError("No benign bool given in data given at file: " + file)
 
-    def openJsonFile(file_name):
+    def openJsonFile(self,file_name):
         with open(file_name) as f:
             data = json.load(f)
-            #print(data)
             return data
-
+    def print_base(self):
+        for base in self.__class__.__bases__:
+            print (base.__name__)
 
 
     def __init__(self,image_filenames, desc_filenames, batch_size):
@@ -41,7 +42,5 @@ class Generator(Sequence):
         for file_name in batch_y_filenames:
             batch_y.append(getLabel(file_name))
 
-        return np.array([
-            (cv2.resize(cv2.imread(file_name), (224,224))/255.0)
-                for file_name in batch_x]), np.array(batch_y)
+        return np.array([cv2.resize(cv2.imread(file_name), (224,224))/255.0 for file_name in batch_x]), np.array(batch_y)
 

@@ -9,26 +9,30 @@ import matplotlib.pyplot as plt
 from random import shuffle
 from sklearn.metrics import roc_curve,roc_auc_score,classification_report
 from sklearn.model_selection import train_test_split
-from generator import Generator
+from generator import My_Generator
 import random
 import os
 import gc
 
 DATADIR = 'E:/school/tensorflowprc/moleDataSet/Data/Images'
+DATADESC = 'E:/school/tensorflowprc/moleDataSet/Data/Descriptions'
+
 # Amount of test data
 TEST_PERCENT = 0.2
 batch_size = 32
 
 X_file_names = os.listdir(DATADIR)
-y_file_names = os.listdir(os.path.join(os.path.dirname(DATADIR),'Descriptions'))
+y_file_names = os.listdir(DATADESC)
 
 X_train_file_names, X_val_file_names, y_train_file_names, y_val_file_names = train_test_split(X_file_names,y_file_names,test_size=0.2,random_state=2)
 
 num_training_samples = len(X_train_file_names)
 num_validation_samples= len(X_val_file_names)
-
-my_training_batch_generator = Generator(X_train_file_names, y_train_file_names, batch_size)
-my_validation_batch_generator = Generator(X_val_file_names, y_val_file_names, batch_size)
+print(num_training_samples)
+print(num_validation_samples)
+my_training_batch_generator = My_Generator(X_train_file_names, y_train_file_names, batch_size)
+my_validation_batch_generator = My_Generator(X_val_file_names, y_val_file_names, batch_size)
+my_training_batch_generator.print_base()
 
 model = Sequential()
 model.add(Conv2D(32,(3,3),activation='relu', input_shape = (224,224,3),data_format='channels_last'))
@@ -51,9 +55,6 @@ model.fit_generator(generator=my_training_batch_generator,
                     steps_per_epoch=(num_training_samples // batch_size),
                     epochs=5,
                     verbose=1,
-                    validation_data=my_validation_batch_generator,
-                    validation_steps=(num_validation_samples // batch_size),
-                    use_multiprocessing=True,
-                    workers=16,
+                    workers=0
                     )
 
