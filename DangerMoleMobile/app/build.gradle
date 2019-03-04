@@ -36,7 +36,7 @@ dependencies {
     testImplementation 'com.android.support.test:rules:1.0.2'
     testImplementation 'com.android.support.test:runner:1.0.2'
     testImplementation 'junit:junit:4.12'
-    testImplementation "org.robolectric:robolectric:4.0-alpha-1"
+    testImplementation "org.robolectric:robolectric:4.0-alpha-3"
     testImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
