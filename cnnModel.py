@@ -66,17 +66,17 @@ model.compile(loss='binary_crossentropy',
               optimizer='adam',
               metrics=['accuracy'])
 
-model.fit(X_train,y_train,batch_size = 64,epochs=5,shuffle=True,validation_split=0.1)
+model.fit(X_train,y_train,batch_size = 64,epochs=7,shuffle=True,validation_split=0.1)
 
 scores = model.evaluate(X_test,y_test)
 print("%s: %.2f%%" % (model.metrics_names[1], scores[1] * 100))
 
 # Saves model along with weights
 model_json = model.to_json()
-with open("model.json", "w") as json_file:
+with open("model2.json", "w") as json_file:
     json_file.write(model_json)
 
-model.save_weights("model.h5")
+model.save_weights("model2.h5")
 print("saved model")
 
 # Just doing my own little test to make sure im not crazy

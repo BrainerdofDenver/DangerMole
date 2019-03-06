@@ -15,8 +15,6 @@ class My_Generator(Sequence):
                         return 0
                     else:
                         return 1
-        else:
-            raise ValueError("No benign bool given in data given at file: " + file)
 
     def openJsonFile(self,file_name):
         with open(file_name) as f:
