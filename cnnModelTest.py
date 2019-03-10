@@ -15,16 +15,19 @@ import cv2
 from numpy import random
 import os
 import gc
+import pandas as pd
 
-DATADIR = 'E:/school/tensorflowprc/moleDataSet/Data/Images'
-DATADESC = 'E:/school/tensorflowprc/moleDataSet/Data/Descriptions'
-
+DATADIR = 'D:/TrainingData/Images'
+DATADESC = 'D:/TrainingData/Descriptions'
 # Amount of test data
 TEST_PERCENT = 0.2
-batch_size = 32
+batch_size = 128 
 
 X_file_names = np.array(os.listdir(DATADIR))
 y_file_names = np.array(os.listdir(DATADESC))
+
+steps = np.ceil(len(X_file_names) / batch_size)
+print(steps)
 
 def getLabel(file_name):
     #data = openJsonFile(file_name[:-5])
@@ -51,26 +54,26 @@ def generator(features, labels, batch_size):
     
     while True:
         for i in range(batch_size):
-            print(len(features))
-            print(random.choice(len(features),1))
             index = random.choice(len(features),1)
-            print('this is the index: %d' % index)
-            print('this is the value at the index: %s' % features[index])
-            # the imread is returning a null type #
-            img = cv2.imread(os.path.join(DATADIR,str(features[index])),1)
-            print(img.shape)
+            img = cv2.imread(os.path.join(DATADIR,str(features[index])[2:14]+'.jpeg'),1)
+            while img is None:
+                index = random.choice(len(features),1)
+                img = cv2.imread(os.path.join(DATADIR,str(features[index])[2:14]+'.jpeg'),1)
+
             img_resized = cv2.resize(img,(224,224))
             img_final = img_resized / 255.0
 
-            label = getLabel(os.path.join(DATADESC,str(labels[index])))
+            label = getLabel(os.path.join(DATADESC,str(labels[index])[2:14]))
             batch_features[i] = img_final
             batch_labels[i] = label
         yield batch_features, batch_labels
-print(getLabel(os.path.join(DATADESC,y_file_names[2])))
-img = cv2.resize(cv2.imread(os.path.join(DATADIR,str(X_file_names[0]))), (224,224))
+'''
+index = random.choice(len(X_file_names),1)
+print(str(y_file_names[index])[2:14])
+print(getLabel(os.path.join(DATADESC,str(y_file_names[index])[2:14])))
+img = cv2.resize(cv2.imread(os.path.join(DATADIR,str(X_file_names[index])[2:14]+'.jpeg')), (224,224))
 cv2.imshow('image',img)
 cv2.waitKey(0)
-'''
 X_train_file_names, X_val_file_names, y_train_file_names, y_val_file_names = train_test_split(X_file_names,y_file_names,test_size=0.2,random_state=2)
 
 num_training_samples = len(X_train_file_names)
@@ -99,6 +102,12 @@ model.compile(loss='binary_crossentropy',
               metrics=['accuracy'])
 
 model.fit_generator(generator(X_file_names, y_file_names,batch_size),
-                    steps_per_epoch=50,
-                    epochs=10)
+                    steps_per_epoch=steps,
+                    epochs=3)
+
+model_json = model.to_json()
+with open("model2.json", "w") as json_file:
+    json_file.write(model_json)
+
+model.save_weights("model2.h5")
 
