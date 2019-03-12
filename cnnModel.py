@@ -4,7 +4,6 @@ Base cnn model.
 import tensorflow as tf
 from tensorflow.keras.models import Sequential, model_from_json
 from tensorflow.keras.layers import Dense,Dropout,Activation,Flatten,Conv2D,MaxPooling2D
-from tensorflow.contrib import lite
 import numpy as np
 import matplotlib.pyplot as plt
 from random import shuffle
@@ -12,8 +11,7 @@ from sklearn.metrics import roc_curve,roc_auc_score,classification_report
 from sklearn.model_selection import train_test_split
 import random
 import gc
-from tensorflow.keras import backend as K
-from keras.models import load_model
+
 
 # Amount of test data
 TEST_PERCENT = 0.2
@@ -82,18 +80,7 @@ with open("model.json", "w") as json_file:
 model.save_weights("model.h5")
 print("saved model")
 
-#K.clear_session()
 
-#model = load_model('model.h5')
-
-#Keras file to tflite file
-tf.keras.models.save_model(model,"model.h5")
-
-converter = lite.TFLiteConverter.from_keras_model_file( "model.h5" ) 
-tflite_model = converter.convert()
-file = open( "keras_model.tflite" , "wb" ).write(tflite_model)
-
-'''
 # Just doing my own little test to make sure im not crazy
 predictions = model.predict(X_test)
 i = 0
