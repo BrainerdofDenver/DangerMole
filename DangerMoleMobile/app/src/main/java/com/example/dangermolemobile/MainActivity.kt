@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.provider.MediaStore
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
@@ -36,12 +35,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         //Camera Button Implementation
         take_pic_button.setOnClickListener {
-            val camIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            if (camIntent.resolveActivity(packageManager) != null) {
-                startActivityForResult(camIntent, CAM_REQUEST_CODE)
-            }
-        }
-    }
+            CameraListener().camIntentSender(CAM_REQUEST_CODE,this, this) } }
+
 
     //Code based on tutorial for initial functionality: https://www.youtube.com/watch?v=5wbeWN4hQt0
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
