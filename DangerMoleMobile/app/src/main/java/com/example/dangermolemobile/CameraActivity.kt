@@ -36,6 +36,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         take_pic_button.setOnClickListener {
             CameraListener().camIntentSender(CAM_REQUEST_CODE,this, this) }
 
+        //This needs to be removed, only implemented for testing
         val str = Environment.getExternalStorageDirectory().toString() + "/"+"testFile"
         camView.setOnClickListener {
             Toast.makeText(this, str, Toast.LENGTH_SHORT).show()
