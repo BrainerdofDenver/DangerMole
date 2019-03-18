@@ -13,8 +13,8 @@ import json
 from random import shuffle
 
 #change directory to the data to work on your machine
-DATADIR = "/Users/alexparmentier/Downloads/ISIC-Archive-Downloader-master/Data/Images"
-DESCDIR = "/Users/alexparmentier/Downloads/ISIC-Archive-Downloader-master/Data/Descriptions"
+DATADIR = "C:\\Users\khang\Desktop\ProjectMole\ISIC-Archive-Downloader\Data\Images"
+DESCDIR = "C:\\Users\khang\Desktop\ProjectMole\ISIC-Archive-Downloader\Data\Descriptions"
 
 CATEGORIES = ['Benign','Malignant']
 #new image size after resizing
