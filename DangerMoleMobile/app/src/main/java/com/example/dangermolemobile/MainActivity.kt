@@ -11,11 +11,13 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Button
 import android.widget.Toast
 
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import java.io.File
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     val CAM_REQUEST_CODE = 0
@@ -36,12 +38,25 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         //Camera Button Implementation
         take_pic_button.setOnClickListener {
-            val camIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            if (camIntent.resolveActivity(packageManager) != null) {
-                startActivityForResult(camIntent, CAM_REQUEST_CODE)
+            dispatchTakePictureIntent()
+        }
+
+//        take_pic_button.setOnClickListener {
+//            val camIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//            if (camIntent.resolveActivity(packageManager) != null) {
+//                startActivityForResult(camIntent, CAM_REQUEST_CODE)
+//            }
+//        }
+    }
+
+    private fun dispatchTakePictureIntent() {//from https://developer.android.com/training/camera/photobasics
+        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+            takePictureIntent.resolveActivity(packageManager)?.also {
+                startActivityForResult(takePictureIntent, CAM_REQUEST_CODE)
             }
         }
     }
+
 
     //Code based on tutorial for initial functionality: https://www.youtube.com/watch?v=5wbeWN4hQt0
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
