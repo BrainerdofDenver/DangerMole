@@ -15,6 +15,7 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import android.graphics.BitmapFactory
 
 class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     val CAM_REQUEST_CODE = 0
@@ -29,13 +30,13 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         )
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
-
         nav_view.setNavigationItemSelectedListener(this)
 
 
         //Camera Button Implementation
         take_pic_button.setOnClickListener {
-            CameraListener().camIntentSender(CAM_REQUEST_CODE,this, this) } }
+            CameraListener().camIntentSender(CAM_REQUEST_CODE,this, this) }
+    }
 
 
     //Code based on tutorial for initial functionality: https://www.youtube.com/watch?v=5wbeWN4hQt0
@@ -44,6 +45,10 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
 
         when (requestCode) {
             CAM_REQUEST_CODE -> {
+                val options = BitmapFactory.Options()
+
+                options.inScaled = false
+                //val source = BitmapFactory.decodeResource(getResources(), path, options)
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val bitmap: Bitmap = data.extras.get("data") as Bitmap
                     camView.setImageBitmap(bitmap)
