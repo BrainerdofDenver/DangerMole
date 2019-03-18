@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.os.Environment
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
@@ -11,7 +12,6 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
@@ -35,6 +35,11 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         //Camera Button Implementation
         take_pic_button.setOnClickListener {
             CameraListener().camIntentSender(CAM_REQUEST_CODE,this, this) }
+
+        val str = Environment.getExternalStorageDirectory().toString() + "/"+"testFile"
+        camView.setOnClickListener {
+            Toast.makeText(this, str, Toast.LENGTH_SHORT).show()
+        }
     }
 
 
@@ -53,8 +58,8 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
                 Toast.makeText(this, "Unrecognized request code", Toast.LENGTH_SHORT).show()
             }
         }
-
     }
+
     //Part of Navigation Drawer
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
@@ -102,9 +107,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
 
             }
         }
-
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
-
 }
