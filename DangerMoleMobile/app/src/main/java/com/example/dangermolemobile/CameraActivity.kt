@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.provider.MediaStore
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
@@ -16,8 +15,9 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import android.graphics.BitmapFactory
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     val CAM_REQUEST_CODE = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,18 +30,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         )
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
-
         nav_view.setNavigationItemSelectedListener(this)
 
 
         //Camera Button Implementation
         take_pic_button.setOnClickListener {
-            val camIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            if (camIntent.resolveActivity(packageManager) != null) {
-                startActivityForResult(camIntent, CAM_REQUEST_CODE)
-            }
-        }
+            CameraListener().camIntentSender(CAM_REQUEST_CODE,this, this) }
     }
+
 
     //Code based on tutorial for initial functionality: https://www.youtube.com/watch?v=5wbeWN4hQt0
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -49,6 +45,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         when (requestCode) {
             CAM_REQUEST_CODE -> {
+                val options = BitmapFactory.Options()
+
+                options.inScaled = false
+                //val source = BitmapFactory.decodeResource(getResources(), path, options)
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val bitmap: Bitmap = data.extras.get("data") as Bitmap
                     camView.setImageBitmap(bitmap)
