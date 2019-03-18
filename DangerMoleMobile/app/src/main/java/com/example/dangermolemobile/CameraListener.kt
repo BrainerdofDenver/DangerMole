@@ -20,7 +20,7 @@ class CameraListener {
         var picFileName = Date(System.currentTimeMillis()).toString()
         var photoFile: File = getPicFileUri(picFileName, mContext)
         val camIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-
+        //This line breaks the code:
         //val fileProvider = FileProvider.getUriForFile(mActivity, "com.example.dangermolemobile", photoFile) as Uri
 
         if (camIntent.resolveActivity(mContext.packageManager) != null) {
