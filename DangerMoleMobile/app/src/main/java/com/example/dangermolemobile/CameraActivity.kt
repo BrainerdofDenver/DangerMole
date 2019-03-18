@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.os.Environment
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
@@ -34,6 +35,11 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         //Camera Button Implementation
         take_pic_button.setOnClickListener {
             CameraListener().camIntentSender(CAM_REQUEST_CODE,this, this) }
+
+        val str = Environment.getExternalStorageDirectory().toString() + "/"+"testFile";
+        camView.setOnClickListener {
+            Toast.makeText(this, str, Toast.LENGTH_SHORT).show()
+        }
     }
 
 
