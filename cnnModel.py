@@ -12,6 +12,7 @@ from sklearn.model_selection import train_test_split
 import random
 import gc
 
+
 # Amount of test data
 TEST_PERCENT = 0.2
 
@@ -34,7 +35,7 @@ gc.collect()
 X= []
 y= []
 
-for i in range(2000):
+for i in range(100):
     malignant.append(benign[i])
 print(type(malignant))
 
@@ -79,6 +80,7 @@ with open("model.json", "w") as json_file:
 model.save_weights("model.h5")
 print("saved model")
 
+
 # Just doing my own little test to make sure im not crazy
 predictions = model.predict(X_test)
 i = 0
@@ -108,3 +110,4 @@ plt.savefig('Log_ROC')
 plt.show()
 
 print(classification_report(y_test,predictions))
+
