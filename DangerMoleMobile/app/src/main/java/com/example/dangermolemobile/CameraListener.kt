@@ -15,14 +15,13 @@ class CameraListener {
     lateinit var photoFile: File
 
     fun camIntentSender(requestCode: Int, mContext: Context, mActivity: Activity){
-        createDirectoryIfDoesNotExist()
         val camIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         if (camIntent.resolveActivity(mContext.packageManager) != null) {
             mActivity.startActivityForResult(camIntent, requestCode)
         }
     }
 
-    fun createDirectoryIfDoesNotExist(){
+    fun saveImageFile(){
         var picFileName = Date(System.currentTimeMillis()).toString()
         var filePath = Environment.getExternalStorageDirectory().toString()
         photoFile = File(filePath, picFileName + ".jpg")

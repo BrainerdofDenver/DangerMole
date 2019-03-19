@@ -34,7 +34,8 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
 
         //Camera Button Implementation
         take_pic_button.setOnClickListener {
-            CameraListener().camIntentSender(CAM_REQUEST_CODE,this, this) }
+            CameraListener().camIntentSender(CAM_REQUEST_CODE,this, this)
+        }
 
         //This needs to be removed, only implemented for testing
         val str = Environment.getExternalStorageDirectory().toString() + "/"+"testFile"
@@ -42,7 +43,6 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             Toast.makeText(this, str, Toast.LENGTH_SHORT).show()
         }
     }
-
 
     //Code based on tutorial for initial functionality: https://www.youtube.com/watch?v=5wbeWN4hQt0
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
