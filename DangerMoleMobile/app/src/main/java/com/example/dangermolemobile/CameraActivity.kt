@@ -47,6 +47,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             dispatchTakePictureIntent()
         }
 
+        //This will be removed, just to test date/time formatting
         camView.setOnClickListener {
             Toast.makeText(this, dateTimeFormatter(), Toast.LENGTH_SHORT).show()
         }
