@@ -1,6 +1,5 @@
 package com.example.dangermolemobile
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -26,8 +25,7 @@ import java.io.IOException
 import java.util.*
 
 class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-    val CAM_REQUEST_CODE = 0
-    var currentPhotoPath = ""
+    private var currentPhotoPath = ""
     val REQUEST_TAKE_PHOTO = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,6 +47,9 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             dispatchTakePictureIntent()
         }
 
+        camView.setOnClickListener {
+            Toast.makeText(this, dateTimeFormatter(), Toast.LENGTH_SHORT).show()
+        }
     }
 
     //Code based on tutorial for initial functionality: https://www.youtube.com/watch?v=5wbeWN4hQt0
@@ -119,7 +120,6 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
-
     private fun dateTimeFormatter(): String{
         var str = Date(System.currentTimeMillis()).toString()
         return str.replace(" ", "")
