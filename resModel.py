@@ -66,10 +66,6 @@ custom_resnet_model.fit_generator(generator(X_file_names_full, y_file_names_full
                     epochs=5,
                     class_weight=class_weights)
 
-
-#scores = custom_resnet_model.evaluate(X_test,y_test)
-#print("%s: %.2f%%" % (custom_resnet_model.metrics_names[1], scores[1] * 100))
-
 # Saves model along with weights
 model_json = custom_resnet_model.to_json()
 with open("resModel.json", "w") as json_file:
@@ -77,26 +73,3 @@ with open("resModel.json", "w") as json_file:
 
 custom_resnet_model.save_weights("resModel.h5")
 print("saved model")
-'''
-above_threshold_indices = predictions > 0.5
-below_threshold_indices = predictions < 0.5
-predictions[above_threshold_indices] = 1
-predictions[below_threshold_indices] = 0
-
-# most of this block was taken from https://towardsdatascience.com/building-a-logistic-regression-in-python-step-by-step-becd4d56c9c8
-logit_roc_auc = roc_auc_score(y_test, predictions)
-fpr, tpr, thresholds = roc_curve(y_test, predictions)
-plt.figure()
-plt.plot(fpr, tpr, label='Binary classification(area = %0.2f)' % logit_roc_auc)
-plt.plot([0, 1], [0, 1],'r--')
-plt.xlim([0.0, 1.0])
-plt.ylim([0.0, 1.05])
-plt.xlabel('False Positive Rate')
-plt.ylabel('True Positive Rate')
-plt.title('Receiver operating characteristic')
-plt.legend(loc="lower right")
-plt.savefig('Log_ROC')
-plt.show()
-
-print(classification_report(y_test,predictions))
-'''
