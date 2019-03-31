@@ -4,6 +4,7 @@ Base cnn model.
 import tensorflow as tf
 from keras.models import Sequential, model_from_json,Model
 from keras.layers import Dense,Dropout,Activation,Flatten,Conv2D,MaxPooling2D,Input
+from keras.preprocessing.image import ImageDataGenerator
 import numpy as np
 import matplotlib.pyplot as plt
 from random import shuffle
@@ -36,6 +37,26 @@ X_file_names_full = np.array(X_file_names_full)
 y_file_names_full = np.array(y_file_names_full)
 ytest = [getLabel(y_file_names_full[i]) for i in range(0,len(y_file_names_full))]
 
+train_datagen = ImageDataGenerator(
+        rescale=1./255,
+        shear_range=0.2,
+        zoom_range=0.2,
+        horizontal_flip=True)
+
+test_datagen = ImageDataGenerator(rescale=1./255)
+
+train_generator = train_datagen.flow_from_directory(
+        'data/train',
+        target_size=(224,224),
+        batch_size=32,
+        class_mode='binary')
+
+validation_generator = test_datagen.flow_from_directory(
+        'D:\TrainingData\Images',
+        target_size=(224, 224),
+        batch_size=32,
+        class_mode='binary')
+
 steps = np.ceil(len(X_file_names_full) / batch_size)
 
 class_weights = class_weight.compute_class_weight('balanced',np.unique(ytest),ytest)
@@ -65,7 +86,14 @@ custom_resnet_model.fit_generator(generator(X_file_names_full, y_file_names_full
                     steps_per_epoch=steps,
                     epochs=5,
                     class_weight=class_weights)
-
+'''
+custom_resnet_model.fit_generator(train_generator,
+                    steps_per_epoch=steps,
+                    epochs=5,
+                    validation_data=validation_generator,
+                    validation_steps=800,
+                    class_weight=class_weights)
+'''
 # Saves model along with weights
 model_json = custom_resnet_model.to_json()
 with open("resModel.json", "w") as json_file:
