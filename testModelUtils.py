@@ -1,5 +1,7 @@
 import unittest
 import modelUtils
+from numpy.testing import assert_array_equal
+from cv2 import imread,resize,flip,IMREAD_COLOR
 
 class TestModelUtilsMethods(unittest.TestCase):
 
@@ -10,7 +12,11 @@ class TestModelUtilsMethods(unittest.TestCase):
         self.assertEqual(modelUtils.getLabel(self.test_path_descriptions),0)
     
     def test_get_next_image(self):
-
+        img = imread(self.test_path_image,IMREAD_COLOR)
+        img = flip(img,0)
+        img_resized = resize(img,(224,224))
+        img_final = img_resized / 255.0
+        assert_array_equal(modelUtils.get_next_image([self.test_path_image],0),img_final)
 
 if __name__ == '__main__':
     unittest.main()

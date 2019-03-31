@@ -37,7 +37,7 @@ def get_next_image(features, index):
         index = int(np.random.choice(len(features),1))
         img = cv2.imread(str(features[index]),1)
 
-
+    img = cv2.flip(img,0)
     img_resized = cv2.resize(img,(224,224))
     img_final = img_resized / 255.0
     return img_final
