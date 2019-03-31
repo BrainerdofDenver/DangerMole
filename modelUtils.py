@@ -1,23 +1,10 @@
-'''
-Base cnn model.
-'''
-import tensorflow as tf
-from tensorflow.keras.models import Sequential, model_from_json
-from tensorflow.keras.layers import Dense,Dropout,Activation,Flatten,Conv2D,MaxPooling2D
 import numpy as np
-import matplotlib.pyplot as plt
+from tensorflow.keras.models import model_from_json
 import json
-from random import shuffle
-from sklearn.metrics import roc_curve,roc_auc_score,classification_report
-from sklearn.model_selection import train_test_split
-from generator import My_Generator
 import cv2
 import os
-import gc
-import pandas as pd
 
 def getLabel(file_name):
-    #data = openJsonFile(file_name[:-5])
     data = openJsonFile(file_name)
 
     if 'meta' in data:
