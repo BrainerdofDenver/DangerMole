@@ -28,9 +28,19 @@ def getLabel(file_name):
                 else:
                     return 1
 
-def get_next_image(self, features, index):
+def get_next_image(features, index):
     
-    return null
+    img = cv2.imread(str(features[index]),1)
+
+    while img is None:
+        print('im still null')
+        index = int(np.random.choice(len(features),1))
+        img = cv2.imread(str(features[index]),1)
+
+
+    img_resized = cv2.resize(img,(224,224))
+    img_final = img_resized / 255.0
+    return img_final
 
 def openJsonFile(file_name):
     with open(file_name) as f:
@@ -39,26 +49,15 @@ def openJsonFile(file_name):
 
 def generator(features, labels, batch_size):
     batch_features = np.zeros((batch_size,224,224,3))
-    #batch_features = []
-
     batch_labels = np.zeros((batch_size,1))
     
     while True:
         for i in range(batch_size):
             index = int(np.random.choice(len(features),1))
-            img = cv2.imread(str(features[index]),1)
-
-            while img is None:
-                print('im still null')
-                index = int(np.random.choice(len(features),1))
-                img = cv2.imread(str(features[index]),1)
-
-
-            img_resized = cv2.resize(img,(224,224))
-            img_final = img_resized / 255.0
+            img = get_next_image(features,index)
 
             label = getLabel(str(labels[index]))
-            batch_features[i] = img_final
+            batch_features[i] = img
             batch_labels[i] = label
         yield batch_features, batch_labels
 
