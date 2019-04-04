@@ -91,16 +91,16 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             R.id.nav_gallery -> {
 
             }
-            R.id.nav_slideshow -> {
+            R.id.nav_generalinfo -> {
 
             }
-            R.id.nav_manage -> {
+            R.id.nav_localclinics -> {
 
             }
-            R.id.nav_share -> {
+            R.id.nav_aboutus -> {
 
             }
-            R.id.nav_send -> {
+            R.id.nav_disclaimer -> {
 
             }
         }
