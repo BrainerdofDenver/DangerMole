@@ -265,9 +265,11 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         //https://stackoverflow.com/questions/6908604/android-crop-center-of-bitmap
         val bm = BitmapFactory.decodeFile(currentPhotoPath)
         val imgView: ImageView = findViewById(R.id.camView)
+        //Get text for probablity view up
         val probTextView: TextView = findViewById(R.id.probabilityView)
         val dimension = getSquareCropDimensionForBitmap(bm)
         var bitmap = Bitmap.createScaledBitmap(bm, INPUT_SIZE, INPUT_SIZE, false)
+        //Call on the classifier to get bitmap of the image
         val results = classifier.recognizeImage(bitmap)
         val returnedBitMap = ThumbnailUtils.extractThumbnail(bm, dimension, dimension)
         probTextView.setText(results.toString())
@@ -302,4 +304,6 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
  /*   private fun makeButtonVisible() {
         runOnUiThread { btnDetectObject.visibility = View.VISIBLE }
     }*/
+
+    
 }
