@@ -41,12 +41,11 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         nav_view.setNavigationItemSelectedListener(this)
 
 
-        //Camera Button Implementation
         take_pic_button.setOnClickListener {
-            //CameraListener().camIntentSender(CAM_REQUEST_CODE,this, this)
             dispatchTakePictureIntent()
         }
 
+        //This will be removed, just to test date/time formatting
         camView.setOnClickListener {
             Toast.makeText(this, dateTimeFormatter(), Toast.LENGTH_SHORT).show()
         }
@@ -55,18 +54,6 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     //Code based on tutorial for initial functionality: https://www.youtube.com/watch?v=5wbeWN4hQt0
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
-//        when (requestCode) {
-////            CAM_REQUEST_CODE -> {
-////                if (resultCode == Activity.RESULT_OK && data != null) {
-////                    val bitmap: Bitmap = data.extras.get("data") as Bitmap
-////                    camView.setImageBitmap(bitmap)
-////                }
-////            }
-////            else -> {
-////                Toast.makeText(this, "Unrecognized request code", Toast.LENGTH_SHORT).show()
-////            }
-////        }
         loadPicToPreview()
     }
 
@@ -96,28 +83,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
-        when (item.itemId) {
-            R.id.nav_camera -> {
-                // Handle the camera action
-            }
-            R.id.nav_gallery -> {
-
-            }
-            R.id.nav_slideshow -> {
-
-            }
-            R.id.nav_manage -> {
-
-            }
-            R.id.nav_share -> {
-
-            }
-            R.id.nav_send -> {
-
-            }
-        }
-        drawer_layout.closeDrawer(GravityCompat.START)
+        NavigationHandler().NavigationOnClickListener(this, this, item)
         return true
     }
     private fun dateTimeFormatter(): String{
