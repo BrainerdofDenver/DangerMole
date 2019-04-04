@@ -83,31 +83,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
-        when (item.itemId) {
-            R.id.nav_camera -> {
-                val intent = Intent(this, CameraActivity::class.java)
-                startActivity(intent)
-            }
-            R.id.nav_gallery -> {
-
-            }
-            R.id.nav_generalinfo -> {
-                val intent = Intent(this, GeneralInformationActivity::class.java)
-                startActivity(intent)
-            }
-            R.id.nav_localclinics -> {
-
-
-            }
-            R.id.nav_aboutus -> {
-
-            }
-            R.id.nav_disclaimer -> {
-
-            }
-        }
-        drawer_layout.closeDrawer(GravityCompat.START)
+        NavigationHandler().NavigationOnClickListener(this, this, item)
         return true
     }
     private fun dateTimeFormatter(): String{
