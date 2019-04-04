@@ -86,15 +86,18 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.nav_camera -> {
-                // Handle the camera action
+                val intent = Intent(this, CameraActivity::class.java)
+                startActivity(intent)
             }
             R.id.nav_gallery -> {
 
             }
             R.id.nav_generalinfo -> {
-
+                val intent = Intent(this, GeneralInformationActivity::class.java)
+                startActivity(intent)
             }
             R.id.nav_localclinics -> {
+
 
             }
             R.id.nav_aboutus -> {
