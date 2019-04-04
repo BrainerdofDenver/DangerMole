@@ -41,9 +41,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         nav_view.setNavigationItemSelectedListener(this)
 
 
-        //Camera Button Implementation
         take_pic_button.setOnClickListener {
-            //CameraListener().camIntentSender(CAM_REQUEST_CODE,this, this)
             dispatchTakePictureIntent()
         }
 
@@ -56,18 +54,6 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     //Code based on tutorial for initial functionality: https://www.youtube.com/watch?v=5wbeWN4hQt0
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
-//        when (requestCode) {
-////            CAM_REQUEST_CODE -> {
-////                if (resultCode == Activity.RESULT_OK && data != null) {
-////                    val bitmap: Bitmap = data.extras.get("data") as Bitmap
-////                    camView.setImageBitmap(bitmap)
-////                }
-////            }
-////            else -> {
-////                Toast.makeText(this, "Unrecognized request code", Toast.LENGTH_SHORT).show()
-////            }
-////        }
         loadPicToPreview()
     }
 
