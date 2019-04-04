@@ -43,20 +43,22 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     //Values for tensorflow
     lateinit var classifier: Classifier
     private val executor = Executors.newSingleThreadExecutor()
-    lateinit var textViewResult: TextView
+    /*lateinit var textViewResult: TextView
     lateinit var btnDetectObject: Button
     lateinit var btnToggleCamera: Button
     lateinit var imageViewResult: ImageView
     lateinit var cameraView: CameraView
-    //
+    *///
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
         //
-        imageViewResult = findViewById<ImageView>(R.id.imageViewResult)
-        textViewResult = findViewById(R.id.textViewResult)
+/*
+
+        imageViewResult = findViewById<ImageView>(R.id.iViewResult)
+        textViewResult = findViewById(R.id.tvResult)
         textViewResult.movementMethod = ScrollingMovementMethod()
 
         btnToggleCamera = findViewById(R.id.btnToggleCamera)
@@ -115,11 +117,12 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             ivImageResult.visibility = View.GONE
 
         }
-
+        //Just show whats on the activitiy
         resultDialog.setOnDismissListener {
             tvLoadingText.visibility = View.VISIBLE
             aviLoaderHolder.visibility = View.VISIBLE
         }
+*/
 
         val toggle = ActionBarDrawerToggle(
             this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
@@ -129,20 +132,22 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         nav_view.setNavigationItemSelectedListener(this)
 
 
-        /* //Camera Button Implementation
+         //Camera Button Implementation
          take_pic_button.setOnClickListener {
              //CameraListener().camIntentSender(CAM_REQUEST_CODE,this, this)
-             dispatchTakePictureIntent()
+             //**********Got comment out for testing*******************
+            // dispatchTakePictureIntent()
+             loadPicToPreview()
          }
 
          camView.setOnClickListener {
              Toast.makeText(this, dateTimeFormatter(), Toast.LENGTH_SHORT).show()
-         }*/
+         }
         initTensorFlowAndLoadModel()
     }
 
     //Code based on tutorial for initial functionality: https://www.youtube.com/watch?v=5wbeWN4hQt0
-    /* override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
          super.onActivityResult(requestCode, resultCode, data)
 
  //        when (requestCode) {
@@ -157,8 +162,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
  ////            }
  ////        }
          loadPicToPreview()
-     }*/
-
+     }
     //Part of Navigation Drawer
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
@@ -257,22 +261,23 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     }
 
 
-    /*private fun loadPicToPreview(){
+    private fun loadPicToPreview(){
         //https://stackoverflow.com/questions/6908604/android-crop-center-of-bitmap
         val bm = BitmapFactory.decodeFile(currentPhotoPath)
         val imgView: ImageView = findViewById(R.id.camView)
-
+        val probTextView: TextView = findViewById(R.id.probabilityView)
         val dimension = getSquareCropDimensionForBitmap(bm)
-
+        var bitmap = Bitmap.createScaledBitmap(bm, INPUT_SIZE, INPUT_SIZE, false)
+        val results = classifier.recognizeImage(bitmap)
         val returnedBitMap = ThumbnailUtils.extractThumbnail(bm, dimension, dimension)
-
+        probTextView.setText(results.toString())
         imgView.setImageBitmap(returnedBitMap)
-    }*/
+    }
 
-    /*private fun getSquareCropDimensionForBitmap(bitmap: Bitmap): Int {
+    private fun getSquareCropDimensionForBitmap(bitmap: Bitmap): Int {
         //use the smallest dimension of the image to crop to
         return Math.min(bitmap.width, bitmap.height)
-    }*/
+    }
 
     companion object {
         private const val MODEL_PATH = "mobilenet_quant_v1_224.tflite"
@@ -288,13 +293,13 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
                     MODEL_PATH,
                     LABEL_PATH,
                     INPUT_SIZE)
-                makeButtonVisible()
+               // makeButtonVisible()
             } catch (e: Exception) {
                 throw RuntimeException("Error initializing TensorFlow!", e)
             }
         }
     }
-    private fun makeButtonVisible() {
+ /*   private fun makeButtonVisible() {
         runOnUiThread { btnDetectObject.visibility = View.VISIBLE }
-    }
+    }*/
 }
