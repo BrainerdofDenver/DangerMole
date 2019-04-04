@@ -13,11 +13,11 @@
                 android:icon="@drawable/ic_menu_gallery"
                 android:title="Gallery"/>
         <item
-                android:id="@+id/nav_slideshow"
+                android:id="@+id/nav_generalinfo"
                 android:icon="@drawable/ic_menu_slideshow"
                 android:title="General Information"/>
         <item
-                android:id="@+id/nav_manage"
+                android:id="@+id/nav_localclinics"
                 android:icon="@drawable/ic_menu_manage"
                 android:title="Local Clinics"/>
     </group>
@@ -25,11 +25,11 @@
     <item android:title="About Us">
         <menu>
             <item
-                    android:id="@+id/nav_share"
+                    android:id="@+id/nav_aboutus"
                     android:icon="@drawable/ic_menu_share"
-                    android:title="More Information"/>
+                    android:title="About Us"/>
             <item
-                    android:id="@+id/nav_send"
+                    android:id="@+id/nav_disclaimer"
                     android:icon="@drawable/ic_menu_send"
                     android:title="Disclaimer"/>
         </menu>

@@ -41,32 +41,14 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         nav_view.setNavigationItemSelectedListener(this)
 
 
-        //Camera Button Implementation
         take_pic_button.setOnClickListener {
-            //CameraListener().camIntentSender(CAM_REQUEST_CODE,this, this)
             dispatchTakePictureIntent()
-        }
-
-        camView.setOnClickListener {
-            Toast.makeText(this, dateTimeFormatter(), Toast.LENGTH_SHORT).show()
         }
     }
 
     //Code based on tutorial for initial functionality: https://www.youtube.com/watch?v=5wbeWN4hQt0
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
-//        when (requestCode) {
-////            CAM_REQUEST_CODE -> {
-////                if (resultCode == Activity.RESULT_OK && data != null) {
-////                    val bitmap: Bitmap = data.extras.get("data") as Bitmap
-////                    camView.setImageBitmap(bitmap)
-////                }
-////            }
-////            else -> {
-////                Toast.makeText(this, "Unrecognized request code", Toast.LENGTH_SHORT).show()
-////            }
-////        }
         loadPicToPreview()
     }
 
@@ -86,9 +68,6 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
@@ -96,33 +75,20 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
-        when (item.itemId) {
-            R.id.nav_camera -> {
-                // Handle the camera action
-            }
-            R.id.nav_gallery -> {
-
-            }
-            R.id.nav_slideshow -> {
-
-            }
-            R.id.nav_manage -> {
-
-            }
-            R.id.nav_share -> {
-
-            }
-            R.id.nav_send -> {
-
-            }
-        }
-        drawer_layout.closeDrawer(GravityCompat.START)
+        NavigationHandler().NavigationOnClickListener(this, this, item)
         return true
     }
     private fun dateTimeFormatter(): String{
-        var str = Date(System.currentTimeMillis()).toString()
-        return str.replace(" ", "")
+        val calendar = Calendar.getInstance()
+        val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH).toString()
+        val month = (calendar.get(Calendar.MONTH) + 1).toString() //Java is dumb, so add 1 to months
+        val year = calendar.get(Calendar.YEAR).toString()
+        val hour = calendar.get(Calendar.HOUR).toString()
+        val min = calendar.get(Calendar.MINUTE).toString()
+        val sec = calendar.get(Calendar.SECOND).toString()
+
+        val str = hour + "_" + min + "_" + sec + "&"+ month + "_" + dayOfMonth + "_" + year
+        return str
     }
 
     @Throws(IOException::class)
@@ -166,7 +132,6 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             }
         }
     }
-
 
     private fun loadPicToPreview(){
         //https://stackoverflow.com/questions/6908604/android-crop-center-of-bitmap
