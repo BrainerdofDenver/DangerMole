@@ -10,30 +10,32 @@ import matplotlib.pyplot as plt
 import os 
 import cv2
 import json
+from tqdm import tqdm
 from random import shuffle
 
 #change directory to the data to work on your machine
-DATADIR = "/Users/alexparmentier/Downloads/ISIC-Archive-Downloader-master/Data/Images"
-DESCDIR = "/Users/alexparmentier/Downloads/ISIC-Archive-Downloader-master/Data/Descriptions"
+DATADIR = "D:/TrainingData/Images"
+DESCDIR = "D:/TrainingData/Descriptions"
 
 CATEGORIES = ['Benign','Malignant']
 #new image size after resizing
 IMG_SIZE = 224
-IMG_AMOUNT = 1000
+IMG_AMOUNT = 22000
 
 training_data = []
 #check if image is none and skip it if so
 
 def createTrainingData():
-    for image in os.listdir(DATADIR):
+    for image in tqdm(os.listdir(DATADIR)):
         img_array = cv2.imread(os.path.join(DATADIR,image))
         new_array = cv2.resize(img_array, (IMG_SIZE, IMG_SIZE))
-        
-        if getLabel(image) == None:
+        new_array = cv2.cvtColor(new_array,cv2.COLOR_BGR2RGB)
+        label = getLabel(image)
+        if label == None:
             continue
         
         # new_array = new_array/255
-        training_data.append([new_array,getLabel(image)])
+        training_data.append([new_array,label])
         if len(training_data) >= IMG_AMOUNT:
             break
 
@@ -41,7 +43,8 @@ def createTrainingData():
 
 # This needs to change to work with all data descriptions
 def getLabel(fileName):
-    data = openJsonFile(os.path.join(DESCDIR,fileName[:-5]))
+    data = openJsonFile(os.path.join(DESCDIR,fileName.split(".")[0]))
+
     if 'meta' in data:
         if 'clinical' in data['meta']:
             if 'benign_malignant' in data['meta']['clinical']:
@@ -50,7 +53,7 @@ def getLabel(fileName):
                 else:
                     return 1
     else:
-        raise ValueError("No benign bool given in data given at file: " + file)
+        raise ValueError("No benign bool given in data given at file: " + fileName)
 
 def openJsonFile(fileName):
     with open(fileName) as f:
@@ -69,7 +72,8 @@ for features, label in training_data:
     y.append(label)
 
 plt.imshow(X[0])
+plt.title(y[0])
 plt.show()
 X = np.array(X).reshape(-1,IMG_SIZE,IMG_SIZE,3)
-np.save('X_data',X)
-np.save('y_data',y)
+np.save('X_data1',X)
+np.save('y_data1',y)

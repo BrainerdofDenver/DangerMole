@@ -93,11 +93,11 @@ for i in range(num_images):
     test_images.append(image)
     test_labels.append(getLabel(os.path.join(DATADESC,y_file_names[index])))
 
-json_file = open('resModel.json','r')
+json_file = open('restest_model.json','r')
 loaded_model_json = json_file.read()
 json_file.close()
 model = model_from_json(loaded_model_json,custom_objects={"GlorotUniform": tf.keras.initializers.glorot_uniform})
-model.load_weights('resModel.h5')
+model.load_weights('restest_model.h5')
 
 predictions = model.predict(np.array(test_images))
 '''

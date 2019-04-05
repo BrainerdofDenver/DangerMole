@@ -36,7 +36,7 @@ for file_name in y_file_names:
 X_file_names_full = np.array(X_file_names_full)
 y_file_names_full = np.array(y_file_names_full)
 ytest = [getLabel(y_file_names_full[i]) for i in range(0,len(y_file_names_full))]
-
+'''
 train_datagen = ImageDataGenerator(
         rescale=1./255,
         shear_range=0.2,
@@ -56,7 +56,7 @@ validation_generator = test_datagen.flow_from_directory(
         target_size=(224, 224),
         batch_size=32,
         class_mode='binary')
-
+'''
 steps = np.ceil(len(X_file_names_full) / batch_size)
 
 class_weights = class_weight.compute_class_weight('balanced',np.unique(ytest),ytest)
