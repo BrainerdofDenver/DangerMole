@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="imageViewResult" type="id"/>
+    <item name="textViewResult" type="id"/>
+    <item name="btnToggleCamera" type="id"/>
+    <item name="btnDetectObject" type="id"/>
+    <item name="iViewResult" type="id"/>
+    <item name="tvLoadingRecognition" type="id"/>
+    <item name="aviLoaderHolderView" type="id"/>
+    <item name="tvResult" type="id"/>
+</resources>
