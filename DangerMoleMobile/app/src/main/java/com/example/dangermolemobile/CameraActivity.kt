@@ -1,7 +1,6 @@
 package com.example.dangermolemobile
 
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.ThumbnailUtils
 import android.net.Uri
@@ -15,7 +14,6 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.*
 import android.widget.ImageView
-import android.widget.Toast
 
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -55,7 +53,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         //Delete this
         camView.setOnClickListener{
             val file = rootFileCreator()
-            toastCreator(file.toString())
+            Utility().toastCreator(file.toString(), this)
         }
 
 
@@ -120,13 +118,13 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
     }
 
-    private fun dispatchTakePictureIntent() {
+    fun dispatchTakePictureIntent() {
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
             takePictureIntent.resolveActivity(packageManager)?.also {
                 val photoFile: File? = try {
                     createImageFile()
                 } catch (ex: IOException) {
-                    toastCreator(getString(R.string.file_creation_error_msg))
+                    Utility().toastCreator(getString(R.string.file_creation_error_msg), this)
                     null
                 }
                 // Continue only if the File was successfully created
@@ -147,25 +145,15 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         //https://stackoverflow.com/questions/6908604/android-crop-center-of-bitmap
         val bm = BitmapFactory.decodeFile(currentPhotoPath)
         val imgView: ImageView = findViewById(R.id.camView)
-        val dimension = getSquareCropDimensionForBitmap(bm)
+        val dimension = Utility().getSquareCropDimensionForBitmap(bm)
         val returnedBitMap = ThumbnailUtils.extractThumbnail(bm, dimension, dimension)
 
         imgView.setImageBitmap(returnedBitMap)
     }
 
-    private fun getSquareCropDimensionForBitmap(bitmap: Bitmap): Int {
-        //use the smallest dimension of the image to crop to
-        return Math.min(bitmap.width, bitmap.height)
-    }
-
     private fun rootFileCreator(): File
             = File(Environment.getExternalStorageDirectory().toString()
             + File.separator + folderName + File.separator)
-
-
-    private fun toastCreator(messageToDisplay: String){
-        Toast.makeText(this, messageToDisplay, Toast.LENGTH_SHORT).show()
-    }
 
     private fun directoryCreator(file: File): File{
         if (!file.exists()) {
