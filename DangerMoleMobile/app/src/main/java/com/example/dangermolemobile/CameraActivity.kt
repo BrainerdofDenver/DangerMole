@@ -139,9 +139,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         //https://stackoverflow.com/questions/6908604/android-crop-center-of-bitmap
         val bm = BitmapFactory.decodeFile(currentPhotoPath)
         val imgView: ImageView = findViewById(R.id.camView)
-
         val dimension = getSquareCropDimensionForBitmap(bm)
-
         val returnedBitMap = ThumbnailUtils.extractThumbnail(bm, dimension, dimension)
 
         imgView.setImageBitmap(returnedBitMap)
@@ -157,7 +155,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             + File.separator + folderName + File.separator)
 
 
-    fun toastCreator(messageToDisplay: String){
+    private fun toastCreator(messageToDisplay: String){
         Toast.makeText(this, messageToDisplay, Toast.LENGTH_SHORT).show()
     }
 
