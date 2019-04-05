@@ -1,6 +1,5 @@
 package com.example.dangermolemobile
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -14,16 +13,9 @@ import android.support.v4.content.FileProvider
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.text.method.ScrollingMovementMethod
 import android.view.*
-import android.widget.Button
 import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
-import android.view.LayoutInflater
-import android.view.View
-import android.view.Window
-
 
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -32,7 +24,6 @@ import java.io.File
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.Executors
-import com.wonderkiln.camerakit.*
 
 
 
@@ -44,12 +35,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     //Values for tensorflow
     lateinit var classifier: Classifier
     private val executor = Executors.newSingleThreadExecutor()
-    lateinit var textViewResult: TextView
-    lateinit var btnDetectObject: Button
-    lateinit var btnToggleCamera: Button
-    lateinit var imageViewResult: ImageView
-    lateinit var cameraView: CameraView
-    //
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -71,12 +57,8 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             val file = rootFileCreator()
             toastCreator(file.toString())
         }
-    }
 
 
-         camView.setOnClickListener {
-             Toast.makeText(this, dateTimeFormatter(), Toast.LENGTH_SHORT).show()
-         }*/
         initTensorFlowAndLoadModel()
     }
 
@@ -192,23 +174,6 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         return file
     }
 
-    /*private fun loadPicToPreview(){
-        //https://stackoverflow.com/questions/6908604/android-crop-center-of-bitmap
-        val bm = BitmapFactory.decodeFile(currentPhotoPath)
-        val imgView: ImageView = findViewById(R.id.camView)
-
-        val dimension = getSquareCropDimensionForBitmap(bm)
-
-        val returnedBitMap = ThumbnailUtils.extractThumbnail(bm, dimension, dimension)
-
-        imgView.setImageBitmap(returnedBitMap)
-    }*/
-
-    /*private fun getSquareCropDimensionForBitmap(bitmap: Bitmap): Int {
-        //use the smallest dimension of the image to crop to
-        return Math.min(bitmap.width, bitmap.height)
-    }*/
-
     companion object {
         private const val MODEL_PATH = "mobilenet_quant_v1_224.tflite"
         private const val LABEL_PATH = "labels.txt"
@@ -223,13 +188,10 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
                     MODEL_PATH,
                     LABEL_PATH,
                     INPUT_SIZE)
-                makeButtonVisible()
+
             } catch (e: Exception) {
                 throw RuntimeException("Error initializing TensorFlow!", e)
             }
         }
-    }
-    private fun makeButtonVisible() {
-        runOnUiThread { btnDetectObject.visibility = View.VISIBLE }
     }
 }
