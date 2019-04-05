@@ -27,6 +27,7 @@ import java.util.*
 class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private var currentPhotoPath = ""
     val REQUEST_TAKE_PHOTO = 1
+    val folderName = "DangerMole"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +40,6 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
         nav_view.setNavigationItemSelectedListener(this)
-
 
         take_pic_button.setOnClickListener {
             dispatchTakePictureIntent()
@@ -88,7 +88,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     }
 
     //to be tested
-    private fun dateTimeFormatter(): String{
+    private fun fileNameCreator(): String{
         val calendar = Calendar.getInstance()
         val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH).toString()
         val month = (calendar.get(Calendar.MONTH) + 1).toString() //Java is dumb, so add 1 to months
@@ -103,10 +103,10 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
 
     @Throws(IOException::class)
     private fun createImageFile(): File {
-        val file = rootFileCreator()
-        directoryCreator(file)
+        val fileRoot = rootFileCreator()
+        directoryCreator(fileRoot)
         return File.createTempFile(
-            dateTimeFormatter(), ".png", file
+            fileNameCreator(), ".png", fileRoot
         ).apply {
             currentPhotoPath = absolutePath
         }
@@ -118,15 +118,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
                 val photoFile: File? = try {
                     createImageFile()
                 } catch (ex: IOException) {
-                    Toast.makeText(this, "Error occurred creating file. Please try again.",
-                        Toast.LENGTH_SHORT).show()
-                    val folder_main = "DangerMole"
-
-                    val f = File(Environment.getExternalStorageDirectory(), folder_main)
-                    if (!f.exists()) {
-                        f.mkdirs()
-                    }
-
+                    toastCreator(getString(R.string.file_creation_error_msg))
                     null
                 }
                 // Continue only if the File was successfully created
@@ -162,7 +154,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
 
     private fun rootFileCreator(): File
             = File(Environment.getExternalStorageDirectory().toString()
-            + File.separator + "DangerMole" + File.separator)
+            + File.separator + folderName + File.separator)
 
 
     fun toastCreator(messageToDisplay: String){
@@ -170,7 +162,9 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     }
 
     private fun directoryCreator(file: File): File{
-        file.mkdirs()
+        if (!file.exists()) {
+            file.mkdirs()
+        }
         return file
     }
 }
