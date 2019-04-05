@@ -2,6 +2,14 @@
     <string name="app_name">DangerMoleMobile</string>
     <string name="action_settings">Settings</string>
     <string name="take_pic">Snap</string>
-    <string name="test_str">Hello World!</string>
-    <string name="update_str">Ooooo SNAP</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">DangerMole</string>
+    <string name="nav_header_subtitle">(example username)</string>
+    <string name="nav_header_logout">Logout</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="full_disclaimer">Disclaimer: This app is intended for entertainment purposes only and should not be
+        used in place of a Doctor\'s advice or in lieu of medical attention
+    </string>
+    <string name="file_creation_error_msg">Error occurred creating file. Please try again.</string>
 </resources>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+                android:id="@+id/nav_camera"
+                android:icon="@drawable/ic_menu_camera"
+                android:title="Camera"/>
+        <item
+                android:id="@+id/nav_gallery"
+                android:icon="@drawable/ic_menu_gallery"
+                android:title="Gallery"/>
+        <item
+                android:id="@+id/nav_generalinfo"
+                android:icon="@drawable/ic_menu_slideshow"
+                android:title="General Information"/>
+        <item
+                android:id="@+id/nav_localclinics"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="Local Clinics"/>
+    </group>
+
+    <item android:title="About Us">
+        <menu>
+            <item
+                    android:id="@+id/nav_aboutus"
+                    android:icon="@drawable/ic_menu_share"
+                    android:title="About Us"/>
+            <item
+                    android:id="@+id/nav_disclaimer"
+                    android:icon="@drawable/ic_menu_send"
+                    android:title="Disclaimer"/>
+        </menu>
+    </item>
+
+</menu>
