@@ -50,13 +50,6 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             dispatchTakePictureIntent()
         }
 
-        //Delete this
-        camView.setOnClickListener{
-            val file = rootFileCreator()
-            Utility().toastCreator(file.toString(), this)
-        }
-
-
         initTensorFlowAndLoadModel()
     }
 
