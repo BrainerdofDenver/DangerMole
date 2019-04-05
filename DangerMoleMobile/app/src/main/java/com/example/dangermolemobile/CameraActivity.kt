@@ -1,6 +1,6 @@
 package com.example.dangermolemobile
 
-import android.app.Dialog
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -39,6 +39,7 @@ import com.wonderkiln.camerakit.*
 class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private var currentPhotoPath = ""
     val REQUEST_TAKE_PHOTO = 1
+    val folderName = "DangerMole"
 
     //Values for tensorflow
     lateinit var classifier: Classifier
@@ -54,73 +55,6 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        //
-        imageViewResult = findViewById<ImageView>(R.id.imageViewResult)
-        textViewResult = findViewById(R.id.textViewResult)
-        textViewResult.movementMethod = ScrollingMovementMethod()
-
-        btnToggleCamera = findViewById(R.id.btnToggleCamera)
-        btnDetectObject = findViewById(R.id.btnDetectObject)
-
-        val resultDialog = Dialog(this)
-        val customProgressView = LayoutInflater.from(this).inflate(R.layout.result_dialog_layout, null)
-        resultDialog.setCancelable(false)
-        resultDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        resultDialog.setContentView(customProgressView)
-
-        val ivImageResult = customProgressView.findViewById<ImageView>(R.id.iViewResult)
-
-        val tvLoadingText = customProgressView.findViewById<TextView>(R.id.tvLoadingRecognition)
-
-        val tvTextResults = customProgressView.findViewById<TextView>(R.id.tvResult)
-
-
-        // The Loader Holder is used due to a bug in the Avi Loader library
-        val aviLoaderHolder = customProgressView.findViewById<View>(R.id.aviLoaderHolderView)
-
-
-        cameraView.addCameraKitListener(object : CameraKitEventListener {
-            override fun onEvent(cameraKitEvent: CameraKitEvent) { }
-
-            override fun onError(cameraKitError: CameraKitError) { }
-
-            override fun onImage(cameraKitImage: CameraKitImage) {
-
-                var bitmap = cameraKitImage.bitmap
-                bitmap = Bitmap.createScaledBitmap(bitmap, INPUT_SIZE, INPUT_SIZE, false)
-
-                aviLoaderHolder.visibility = View.GONE
-                tvLoadingText.visibility = View.GONE
-
-                val results = classifier.recognizeImage(bitmap)
-                ivImageResult.setImageBitmap(bitmap)
-                tvTextResults.text = results.toString()
-
-                tvTextResults.visibility = View.VISIBLE
-                ivImageResult.visibility = View.VISIBLE
-
-                resultDialog.setCancelable(true)
-
-            }
-
-            override fun onVideo(cameraKitVideo: CameraKitVideo) { }
-        })
-
-        btnToggleCamera.setOnClickListener { cameraView.toggleFacing() }
-
-        btnDetectObject.setOnClickListener {
-            cameraView.captureImage()
-            resultDialog.show()
-            tvTextResults.visibility = View.GONE
-            ivImageResult.visibility = View.GONE
-
-        }
-
-        resultDialog.setOnDismissListener {
-            tvLoadingText.visibility = View.VISIBLE
-            aviLoaderHolder.visibility = View.VISIBLE
-        }
-
         val toggle = ActionBarDrawerToggle(
             this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
         )
@@ -128,12 +62,17 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         toggle.syncState()
         nav_view.setNavigationItemSelectedListener(this)
 
+        take_pic_button.setOnClickListener {
+            dispatchTakePictureIntent()
+        }
 
-        /* //Camera Button Implementation
-         take_pic_button.setOnClickListener {
-             //CameraListener().camIntentSender(CAM_REQUEST_CODE,this, this)
-             dispatchTakePictureIntent()
-         }
+        //Delete this
+        camView.setOnClickListener{
+            val file = rootFileCreator()
+            toastCreator(file.toString())
+        }
+    }
+
 
          camView.setOnClickListener {
              Toast.makeText(this, dateTimeFormatter(), Toast.LENGTH_SHORT).show()
@@ -142,22 +81,10 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     }
 
     //Code based on tutorial for initial functionality: https://www.youtube.com/watch?v=5wbeWN4hQt0
-    /* override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-         super.onActivityResult(requestCode, resultCode, data)
-
- //        when (requestCode) {
- ////            CAM_REQUEST_CODE -> {
- ////                if (resultCode == Activity.RESULT_OK && data != null) {
- ////                    val bitmap: Bitmap = data.extras.get("data") as Bitmap
- ////                    camView.setImageBitmap(bitmap)
- ////                }
- ////            }
- ////            else -> {
- ////                Toast.makeText(this, "Unrecognized request code", Toast.LENGTH_SHORT).show()
- ////            }
- ////        }
-         loadPicToPreview()
-     }*/
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        loadPicToPreview()
+    }
 
     //Part of Navigation Drawer
     override fun onBackPressed() {
@@ -167,59 +94,45 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             super.onBackPressed()
         }
     }
-
+    //Nav
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
-
+    //Nav
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
     }
-
+    //Nav
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
-        when (item.itemId) {
-            R.id.nav_camera -> {
-                // Handle the camera action
-            }
-            R.id.nav_gallery -> {
-
-            }
-            R.id.nav_slideshow -> {
-
-            }
-            R.id.nav_manage -> {
-
-            }
-            R.id.nav_share -> {
-
-            }
-            R.id.nav_send -> {
-
-            }
-        }
-        drawer_layout.closeDrawer(GravityCompat.START)
+        NavigationHandler().NavigationOnClickListener(this, this, item)
         return true
     }
-    private fun dateTimeFormatter(): String{
-        var str = Date(System.currentTimeMillis()).toString()
-        return str.replace(" ", "")
+
+    //to be tested
+    private fun fileNameCreator(): String{
+        val calendar = Calendar.getInstance()
+        val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH).toString()
+        val month = (calendar.get(Calendar.MONTH) + 1).toString() //Java is dumb, so add 1 to months
+        val year = calendar.get(Calendar.YEAR).toString()
+        val hour = calendar.get(Calendar.HOUR).toString()
+        val min = calendar.get(Calendar.MINUTE).toString()
+        val sec = calendar.get(Calendar.SECOND).toString()
+
+        val str = hour + "_" + min + "_" + sec + "&"+ month + "_" + dayOfMonth + "_" + year
+        return str
     }
 
     @Throws(IOException::class)
     private fun createImageFile(): File {
-        val root = File(Environment.getExternalStorageDirectory().toString() + File.separator + "DangerMole" + File.separator)
-        root.mkdirs()
+        val fileRoot = rootFileCreator()
+        directoryCreator(fileRoot)
         return File.createTempFile(
-            dateTimeFormatter(), ".png", root
+            fileNameCreator(), ".png", fileRoot
         ).apply {
             currentPhotoPath = absolutePath
         }
@@ -231,15 +144,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
                 val photoFile: File? = try {
                     createImageFile()
                 } catch (ex: IOException) {
-                    Toast.makeText(this, "Error occurred creating file. Please try again.",
-                        Toast.LENGTH_SHORT).show()
-                    val folder_main = "DangerMole"
-
-                    val f = File(Environment.getExternalStorageDirectory(), folder_main)
-                    if (!f.exists()) {
-                        f.mkdirs()
-                    }
-
+                    toastCreator(getString(R.string.file_creation_error_msg))
                     null
                 }
                 // Continue only if the File was successfully created
@@ -256,6 +161,36 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
     }
 
+    private fun loadPicToPreview(){
+        //https://stackoverflow.com/questions/6908604/android-crop-center-of-bitmap
+        val bm = BitmapFactory.decodeFile(currentPhotoPath)
+        val imgView: ImageView = findViewById(R.id.camView)
+        val dimension = getSquareCropDimensionForBitmap(bm)
+        val returnedBitMap = ThumbnailUtils.extractThumbnail(bm, dimension, dimension)
+
+        imgView.setImageBitmap(returnedBitMap)
+    }
+
+    private fun getSquareCropDimensionForBitmap(bitmap: Bitmap): Int {
+        //use the smallest dimension of the image to crop to
+        return Math.min(bitmap.width, bitmap.height)
+    }
+
+    private fun rootFileCreator(): File
+            = File(Environment.getExternalStorageDirectory().toString()
+            + File.separator + folderName + File.separator)
+
+
+    private fun toastCreator(messageToDisplay: String){
+        Toast.makeText(this, messageToDisplay, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun directoryCreator(file: File): File{
+        if (!file.exists()) {
+            file.mkdirs()
+        }
+        return file
+    }
 
     /*private fun loadPicToPreview(){
         //https://stackoverflow.com/questions/6908604/android-crop-center-of-bitmap
