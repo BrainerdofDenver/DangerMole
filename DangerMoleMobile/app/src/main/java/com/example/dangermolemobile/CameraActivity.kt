@@ -44,7 +44,15 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         take_pic_button.setOnClickListener {
             dispatchTakePictureIntent()
         }
+
+        //Delete this
+        camView.setOnClickListener{
+            val file = rootFileCreator()
+            toastCreator(file.toString())
+        }
     }
+
+
 
     //Code based on tutorial for initial functionality: https://www.youtube.com/watch?v=5wbeWN4hQt0
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -60,24 +68,26 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             super.onBackPressed()
         }
     }
-
+    //Nav
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
-
+    //Nav
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
     }
-
+    //Nav
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         NavigationHandler().NavigationOnClickListener(this, this, item)
         return true
     }
+
+    //to be tested
     private fun dateTimeFormatter(): String{
         val calendar = Calendar.getInstance()
         val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH).toString()
@@ -93,10 +103,10 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
 
     @Throws(IOException::class)
     private fun createImageFile(): File {
-        val root = File(Environment.getExternalStorageDirectory().toString() + File.separator + "DangerMole" + File.separator)
-        root.mkdirs()
+        val file = rootFileCreator()
+        directoryCreator(file)
         return File.createTempFile(
-            dateTimeFormatter(), ".png", root
+            dateTimeFormatter(), ".png", file
         ).apply {
             currentPhotoPath = absolutePath
         }
@@ -148,5 +158,19 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     private fun getSquareCropDimensionForBitmap(bitmap: Bitmap): Int {
         //use the smallest dimension of the image to crop to
         return Math.min(bitmap.width, bitmap.height)
+    }
+
+    private fun rootFileCreator(): File
+            = File(Environment.getExternalStorageDirectory().toString()
+            + File.separator + "DangerMole" + File.separator)
+
+
+    fun toastCreator(messageToDisplay: String){
+        Toast.makeText(this, messageToDisplay, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun directoryCreator(file: File): File{
+        file.mkdirs()
+        return file
     }
 }
