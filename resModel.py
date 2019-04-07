@@ -1,5 +1,5 @@
 '''
-Base cnn model.
+Train resModel using generators
 '''
 import tensorflow as tf
 from keras.models import Sequential, model_from_json,Model
@@ -36,27 +36,7 @@ for file_name in y_file_names:
 X_file_names_full = np.array(X_file_names_full)
 y_file_names_full = np.array(y_file_names_full)
 ytest = [getLabel(y_file_names_full[i]) for i in range(0,len(y_file_names_full))]
-'''
-train_datagen = ImageDataGenerator(
-        rescale=1./255,
-        shear_range=0.2,
-        zoom_range=0.2,
-        horizontal_flip=True)
 
-test_datagen = ImageDataGenerator(rescale=1./255)
-
-train_generator = train_datagen.flow_from_directory(
-        'data/train',
-        target_size=(224,224),
-        batch_size=32,
-        class_mode='binary')
-
-validation_generator = test_datagen.flow_from_directory(
-        'D:\TrainingData\Images',
-        target_size=(224, 224),
-        batch_size=32,
-        class_mode='binary')
-'''
 steps = np.ceil(len(X_file_names_full) / batch_size)
 
 class_weights = class_weight.compute_class_weight('balanced',np.unique(ytest),ytest)
@@ -66,7 +46,6 @@ image_input = Input(shape=(224,224,3))
 model = ResNet50(include_top=True, weights='imagenet',
              input_tensor=image_input)
 
-#model.summary()
 last_layer = model.get_layer('avg_pool').output
 x = Flatten(name='flatten')(last_layer)
 out = Dense(1,activation='relu',name='output_layer')(x)
@@ -86,14 +65,7 @@ custom_resnet_model.fit_generator(generator(X_file_names_full, y_file_names_full
                     steps_per_epoch=steps,
                     epochs=5,
                     class_weight=class_weights)
-'''
-custom_resnet_model.fit_generator(train_generator,
-                    steps_per_epoch=steps,
-                    epochs=5,
-                    validation_data=validation_generator,
-                    validation_steps=800,
-                    class_weight=class_weights)
-'''
+
 # Saves model along with weights
 model_json = custom_resnet_model.to_json()
 with open("resModel.json", "w") as json_file:

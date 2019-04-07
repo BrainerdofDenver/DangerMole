@@ -35,15 +35,10 @@ def main():
     print(len(benign))
     print(len(malignant))
 
-    # Don't know if this actually does anything but im leaving it here for now
-    del X_load
-    del y_load
-    gc.collect()
-
     X= []
     y= []
 
-    for i in range(1100):
+    for i in range(500):
         malignant.append(benign[i])
     print(len(malignant))
 
@@ -56,7 +51,7 @@ def main():
     y= np.asarray(y)
     X= X/255.0
 
-    X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.2,random_state=2)
+    X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=TEST_PERCENT,random_state=2)
     '''
     model = Sequential()
     model.add(Conv2D(32,(3,3),activation='relu', input_shape = (224,224,3),data_format='channels_last'))
@@ -79,7 +74,7 @@ def main():
     '''
     image_input = Input(shape=(224,224,3))
 
-    model = ResNet50(include_top=True, weights='imagenet',
+    model = ResNet50(include_top=True, weights=None,
                      input_tensor=image_input)
 
     #model.summary()
