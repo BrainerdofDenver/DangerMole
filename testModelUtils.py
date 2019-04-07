@@ -10,8 +10,8 @@ class TestModelUtilsMethods(unittest.TestCase):
     test_path_image = 'D:\TrainingData\Images\ISIC_0000000.jpeg'
  
     def test_getLabel(self):
-        self.assertEqual(modelUtils.getLabel(self.test_path_descriptions),0)
-        self.assertEqual(modelUtils.getLabel(self.test_path_descriptions2),1)
+        self.assertEqual(modelUtils.get_label(self.test_path_descriptions),0)
+        self.assertEqual(modelUtils.get_label(self.test_path_descriptions2),1)
     
     def test_get_next_image(self):
         img = imread(self.test_path_image,IMREAD_COLOR)
@@ -19,10 +19,9 @@ class TestModelUtilsMethods(unittest.TestCase):
         img_resized = resize(img,(224,224))
         img_final = img_resized / 255.0
 
-        img_actual, index_actual = modelUtils.get_next_image_index([self.test_path_image])
+        img_actual = modelUtils.get_image_at_index([self.test_path_image],0)
 
         assert_allclose(img_actual,img_final)
-        self.assertEqual(index_actual, 0)
 
 if __name__ == '__main__':
     unittest.main()

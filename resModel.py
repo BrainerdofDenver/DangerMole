@@ -12,7 +12,7 @@ from sklearn.utils import class_weight
 import random
 import os
 from keras.applications.resnet50 import preprocess_input,ResNet50
-from modelUtils import generator,openJsonFile,getLabel
+from modelUtils import generator,open_json_file,get_label
 import gc
 
 DATADIR = 'D:\TrainingData\Images'
@@ -35,7 +35,7 @@ for file_name in y_file_names:
 
 X_file_names_full = np.array(X_file_names_full)
 y_file_names_full = np.array(y_file_names_full)
-ytest = [getLabel(y_file_names_full[i]) for i in range(0,len(y_file_names_full))]
+ytest = [get_label(y_file_names_full[i]) for i in range(0,len(y_file_names_full))]
 
 steps = np.ceil(len(X_file_names_full) / batch_size)
 
@@ -48,7 +48,7 @@ model = ResNet50(include_top=True, weights='imagenet',
 
 last_layer = model.get_layer('avg_pool').output
 x = Flatten(name='flatten')(last_layer)
-out = Dense(1,activation='relu',name='output_layer')(x)
+out = Dense(1,activation='sigmoid',name='output_layer')(x)
 custom_resnet_model = Model(inputs=image_input,outputs=out)
 custom_resnet_model.summary()
 

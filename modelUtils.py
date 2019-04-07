@@ -4,8 +4,8 @@ import json
 import cv2
 import os
 
-def getLabel(file_name):
-    data = openJsonFile(file_name)
+def get_label(file_name):
+    data = open_json_file(file_name)
 
     if 'meta' in data:
         if 'clinical' in data['meta']:
@@ -15,19 +15,15 @@ def getLabel(file_name):
                 else:
                     return 1
 
-def get_next_image_index(features):
-    index = int(np.random.choice(len(features),1))
+def get_image_at_index(features,index):
+    
     img = cv2.imread(str(features[index]),1)
-
-    while img is None:
-        index = int(np.random.choice(len(features),1))
-        img = cv2.imread(str(features[index]),1)
     img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
     img_resized = cv2.resize(img,(224,224))
     img_final = img_resized / 255.0
-    return img_final,index
+    return img_final
 
-def openJsonFile(file_name):
+def open_json_file(file_name):
     with open(file_name) as f:
         data = json.load(f)
         return data
@@ -38,10 +34,10 @@ def generator(features, labels, batch_size):
     
     while True:
         for i in range(batch_size):
-            
-            img,index = get_next_image_index(features)
+            index = int(np.random.choice(len(features),1))
+            img,index = get_image_at_index(features,index)
 
-            label = getLabel(str(labels[index]))
+            label = get_label(str(labels[index]))
             batch_features[i] = img
             batch_labels[i] = label
         yield batch_features, batch_labels

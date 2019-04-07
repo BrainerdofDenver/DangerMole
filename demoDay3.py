@@ -9,31 +9,14 @@ import json
 import modelUtils
 import matplotlib.pyplot as plt
 from keras.initializers import glorot_uniform
+from modelUtils import get_label, open_json_file, get_image_at_index
 
-DATADIR = 'E:/school/tensorflowprc/moleDataSet/Data/Images'
-DATADESC = 'E:/school/tensorflowprc/moleDataSet/Data/Descriptions'
+DATADIR = 'D:/TrainingData/Images'
+DATADESC = 'D:/TrainingData/Descriptions'
 
 X_file_names = np.array(os.listdir(DATADIR))
 y_file_names = np.array(os.listdir(DATADESC))
 class_names = ['benign','malignant']
-
-def getLabel(file_name):
-    #data = openJsonFile(file_name[:-5])
-    data = openJsonFile(file_name)
-
-    if 'meta' in data:
-        if 'clinical' in data['meta']:
-            if 'benign_malignant' in data['meta']['clinical']:
-                if data['meta']['clinical']['benign_malignant'] == 'benign':
-                    return 0
-                else:
-                    return 1
-
-def openJsonFile(file_name):
-    with open(file_name) as f:
-        data = json.load(f)
-        return data
-
 
 def plot_image(i, predictions_array, true_label, img):
     predictions_array, true_label, img = predictions_array[i], true_label[i], img[i]
@@ -89,9 +72,9 @@ for i in range(num_images):
     #test_images.append(cv2.resize(cv2.imread(os.path.join(DATADIR,X_file_names[index])),(224,224)))
     file_name = os.path.join(DATADIR,X_file_names[index])
     print(file_name)
-    image,ignore = modelUtils.get_next_image_index(np.array([file_name]))
+    image = get_image_at_index(np.array([file_name]),0)
     test_images.append(image)
-    test_labels.append(getLabel(os.path.join(DATADESC,y_file_names[index])))
+    test_labels.append(get_label(os.path.join(DATADESC,y_file_names[index])))
 
 json_file = open('restest_model.json','r')
 loaded_model_json = json_file.read()
