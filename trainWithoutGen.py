@@ -2,15 +2,13 @@
 Trains a model using numpy arrays for the data instead of generators
 '''
 import tensorflow as tf
-from keras.models import Sequential, model_from_json,Model
-from keras.layers import Dense,Dropout,Activation,Flatten,Conv2D,MaxPooling2D,Input
-from keras.applications.resnet50 import preprocess_input,ResNet50
 from keras.optimizers import SGD
 import numpy as np
 import matplotlib.pyplot as plt
 from random import shuffle
 from sklearn.metrics import roc_curve,roc_auc_score,classification_report
 from sklearn.model_selection import train_test_split
+from models import get_res_model, get_cnn_model
 import random
 import gc
 from memory_profiler import profile
@@ -51,46 +49,8 @@ def main():
     X= X/255.0
 
     X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=TEST_PERCENT,random_state=2)
-    '''
-    model = Sequential()
-    model.add(Conv2D(32,(3,3),activation='relu', input_shape = (224,224,3),data_format='channels_last'))
-    model.add(MaxPooling2D(pool_size=(2,2),strides=2))
 
-    model.add(Conv2D(64,(3,3),activation='relu'))
-    model.add(MaxPooling2D(pool_size=(2,2)))
-
-    model.add(Flatten())
-    model.add(Dense(64,activation='relu'))
-    model.add(Dropout(0.25))
-
-    model.add(Dense(1,activation='sigmoid'))
-
-    model.compile(loss='binary_crossentropy',
-                optimizer='adam',
-                metrics=['accuracy'])
-
-    model.fit(X_train,y_train,batch_size = 32,epochs=40,shuffle=True,validation_split=0.1)
-    '''
-    image_input = Input(shape=(224,224,3))
-
-    model = ResNet50(include_top=True, weights=None,
-                     input_tensor=image_input,classes=2)
-
-    #model.summary()
-    last_layer = model.get_layer('avg_pool').output
-    x = Flatten(name='flatten')(last_layer)
-    out = Dense(1,activation='sigmoid',name='output_layer')(x)
-    custom_resnet_model = Model(inputs=image_input,outputs=out)
-    #custom_resnet_model.summary()
-
-    for layer in custom_resnet_model.layers[:-1]:
-        layer.trainable = False
-
-    custom_resnet_model.layers[-1].trainable
-    opt = SGD(lr=0.0001)
-    custom_resnet_model.compile(loss='binary_crossentropy',
-                optimizer='adam',
-                metrics=['binary_accuracy'])
+    custom_resnet_model = get_res_model()
                 
     custom_resnet_model.fit(X_train,y_train,batch_size = 32,epochs=100,shuffle=True,validation_split=0.1)            
 
