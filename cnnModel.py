@@ -1,6 +1,5 @@
 '''
-Base cnn model.
-test change.
+Trains a model using numpy arrays for the data instead of generators
 '''
 import tensorflow as tf
 from keras.models import Sequential, model_from_json,Model
@@ -38,7 +37,7 @@ def main():
     X= []
     y= []
 
-    for i in range(500):
+    for i in range(1000):
         malignant.append(benign[i])
     print(len(malignant))
 
@@ -75,7 +74,7 @@ def main():
     image_input = Input(shape=(224,224,3))
 
     model = ResNet50(include_top=True, weights=None,
-                     input_tensor=image_input)
+                     input_tensor=image_input,classes=2)
 
     #model.summary()
     last_layer = model.get_layer('avg_pool').output
@@ -90,7 +89,7 @@ def main():
     custom_resnet_model.layers[-1].trainable
     opt = SGD(lr=0.0001)
     custom_resnet_model.compile(loss='binary_crossentropy',
-                optimizer=opt,
+                optimizer='adam',
                 metrics=['binary_accuracy'])
                 
     custom_resnet_model.fit(X_train,y_train,batch_size = 32,epochs=100,shuffle=True,validation_split=0.1)            

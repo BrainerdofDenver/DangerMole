@@ -1,5 +1,6 @@
 import numpy as np
 from tensorflow.keras.models import model_from_json
+from tensorflow.keras.initializers import glorot_uniform
 import json
 import cv2
 import os
@@ -35,7 +36,7 @@ def generator(features, labels, batch_size):
     while True:
         for i in range(batch_size):
             index = int(np.random.choice(len(features),1))
-            img,index = get_image_at_index(features,index)
+            img = get_image_at_index(features,index)
 
             label = get_label(str(labels[index]))
             batch_features[i] = img
@@ -46,6 +47,6 @@ def load_model(model_name='model'):
     json_file = open(model_name + '.json','r')
     loaded_model_json = json_file.read()
     json_file.close()
-    model = model_from_json(loaded_model_json,custom_objects={"GlorotUniform": tf.keras.initializers.glorot_uniform})
+    model = model_from_json(loaded_model_json,custom_objects={"GlorotUniform": glorot_uniform})
     model.load_weights(model_name + '.h5')
     return model

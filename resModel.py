@@ -43,8 +43,8 @@ class_weights = class_weight.compute_class_weight('balanced',np.unique(ytest),yt
 
 image_input = Input(shape=(224,224,3))
 
-model = ResNet50(include_top=True, weights='imagenet',
-             input_tensor=image_input)
+model = ResNet50(include_top=True, weights=None,
+             input_tensor=image_input,classes=2)
 
 last_layer = model.get_layer('avg_pool').output
 x = Flatten(name='flatten')(last_layer)
