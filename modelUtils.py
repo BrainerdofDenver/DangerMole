@@ -50,3 +50,11 @@ def load_model(model_name='model'):
     model = model_from_json(loaded_model_json,custom_objects={"GlorotUniform": glorot_uniform})
     model.load_weights(model_name + '.h5')
     return model
+
+def save_model(model_to_save):
+    model_json = model_to_save.to_json()
+    with open("restest_model.json", "w") as json_file:
+        json_file.write(model_json)
+
+    model_to_save.save_weights("restest_model.h5")
+    print("saved model")

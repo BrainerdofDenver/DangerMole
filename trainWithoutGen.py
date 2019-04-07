@@ -9,6 +9,7 @@ from random import shuffle
 from sklearn.metrics import roc_curve,roc_auc_score,classification_report
 from sklearn.model_selection import train_test_split
 from models import get_res_model, get_cnn_model
+from modelUtils import save_model
 import random
 import gc
 from memory_profiler import profile
@@ -33,12 +34,7 @@ def main():
     print("%s: %.2f%%" % (custom_resnet_model.metrics_names[1], scores[1] * 100))
 
     # Saves model along with weights
-    model_json = custom_resnet_model.to_json()
-    with open("restest_model.json", "w") as json_file:
-        json_file.write(model_json)
-
-    custom_resnet_model.save_weights("restest_model.h5")
-    print("saved model")
+    save_model(custom_resnet_model)
 
     # Just doing my own little test to make sure im not crazy
     predictions = custom_resnet_model.predict(X_test)
@@ -74,7 +70,7 @@ def main():
 def create_subset_of_data(malignant, benign, amount_of_benign_examples=100):
     X= []
     y= []
-    
+
     if len(benign) is not 0:
         for i in range(amount_of_benign_examples):
             malignant.append(benign[i])
