@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import os 
 import cv2
 import json
+import sys
 from tqdm import tqdm
 from random import shuffle
 from modelUtils import get_label, open_json_file
@@ -16,14 +17,13 @@ from modelUtils import get_label, open_json_file
 DATADIR = "D:/TrainingData/Images"
 DESCDIR = "D:/TrainingData/Descriptions"
 
-CATEGORIES = ['Benign','Malignant']
 #new image size after resizing
 IMG_SIZE = 224
-IMG_AMOUNT = 1000
+IMG_AMOUNT = 1
 
 training_data = []
 
-def createTrainingData(image_amount):
+def create_training_data(image_amount, x_data_name, y_data_name):
     filenames = np.array(os.listdir(DATADIR))
     for image in tqdm(range(image_amount)):
         img_array = cv2.imread(os.path.join(DATADIR,filenames[image]))
@@ -38,9 +38,6 @@ def createTrainingData(image_amount):
         if len(training_data) >= image_amount:
             break
 
-def main():
-    createTrainingData(IMG_AMOUNT)
-
     print(len(training_data))
     shuffle(training_data)
     X = []
@@ -49,12 +46,13 @@ def main():
         X.append(features)
         y.append(label)
 
-    plt.imshow(X[0])
-    plt.title(y[0])
-    plt.show()
     X = np.array(X).reshape(-1,IMG_SIZE,IMG_SIZE,3)
-    np.save('X_data_test',X)
-    np.save('y_data_test',y)
+    np.save(x_data_name,X)
+    np.save(y_data_name,y)
+
+def main():
+    create_training_data(IMG_AMOUNT,sys.argv[1],sys.argv[2])
+
 
 if __name__ == "__main__":
     main()

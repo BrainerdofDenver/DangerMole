@@ -9,7 +9,7 @@ import json
 import modelUtils
 import matplotlib.pyplot as plt
 from keras.initializers import glorot_uniform
-from modelUtils import get_label, open_json_file, get_image_at_index
+from modelUtils import get_label, open_json_file, get_image_at_index,load_model
 
 DATADIR = 'D:/TrainingData/Images'
 DATADESC = 'D:/TrainingData/Descriptions'
@@ -76,11 +76,7 @@ for i in range(num_images):
     test_images.append(image)
     test_labels.append(get_label(os.path.join(DATADESC,y_file_names[index])))
 
-json_file = open('restest_model.json','r')
-loaded_model_json = json_file.read()
-json_file.close()
-model = model_from_json(loaded_model_json,custom_objects={"GlorotUniform": tf.keras.initializers.glorot_uniform})
-model.load_weights('restest_model.h5')
+model = load_model('restest_model')
 
 predictions = model.predict(np.array(test_images))
 '''
