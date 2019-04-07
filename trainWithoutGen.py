@@ -19,40 +19,15 @@ def main():
     # Amount of test data
     TEST_PERCENT = 0.2
 
-    X_load = np.load('X_data.npy')
-    y_load = np.load('y_data.npy')
-    benign = []
-    malignant = []
-
-    for i in range(len(X_load)):
-        if y_load[i] == 0:
-            benign.append([X_load[i],y_load[i]])
-        else:
-            malignant.append([X_load[i],y_load[i]])
-    print(len(benign))
-    print(len(malignant))
-
-    X= []
-    y= []
-
-    for i in range(1000):
-        malignant.append(benign[i])
-    print(len(malignant))
-
-    for feature,label in malignant:
-        X.append(feature)
-        y.append(label)
-
-    print(len(X))
-    X= np.asarray(X)
-    y= np.asarray(y)
+    benign, malignant = create_base_data('X_data.npy','y_data.npy')
+    X, y = create_subset_of_data(malignant, benign,100)
     X= X/255.0
 
     X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=TEST_PERCENT,random_state=2)
 
     custom_resnet_model = get_res_model()
                 
-    custom_resnet_model.fit(X_train,y_train,batch_size = 32,epochs=100,shuffle=True,validation_split=0.1)            
+    custom_resnet_model.fit(X_train,y_train,batch_size = 32,epochs=1,shuffle=True,validation_split=0.1)            
 
     scores = custom_resnet_model.evaluate(X_test,y_test)
     print("%s: %.2f%%" % (custom_resnet_model.metrics_names[1], scores[1] * 100))
@@ -68,12 +43,12 @@ def main():
     # Just doing my own little test to make sure im not crazy
     predictions = custom_resnet_model.predict(X_test)
     i = 0
-    '''
+    
     for prediction in predictions:
         print(prediction)
         print(y_test[i])
         i += 1
-    '''
+    
     above_threshold_indices = predictions > 0.5
     below_threshold_indices = predictions < 0.5
     predictions[above_threshold_indices] = 1
@@ -95,6 +70,38 @@ def main():
     plt.show()
 
     print(classification_report(y_test,predictions))
+
+def create_subset_of_data(malignant, benign, amount_of_benign_examples=100):
+    X= []
+    y= []
+    
+    if len(benign) is not 0:
+        for i in range(amount_of_benign_examples):
+            malignant.append(benign[i])
+        print(len(malignant))
+
+    for feature,label in malignant:
+        X.append(feature)
+        y.append(label)
+
+    print(len(X))
+    X= np.asarray(X)
+    y= np.asarray(y)
+    return X, y
+
+def create_base_data(x_data_name,y_data_name):
+    X_load = np.load(x_data_name)
+    y_load = np.load(y_data_name)
+
+    benign = []
+    malignant = []
+
+    for i in range(len(X_load)):
+        if y_load[i] == 0:
+            benign.append([X_load[i],y_load[i]])
+        else:
+            malignant.append([X_load[i],y_load[i]])
+    return benign, malignant
 
 if __name__ == "__main__":
     main()
