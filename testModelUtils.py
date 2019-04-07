@@ -1,5 +1,7 @@
 import unittest
 import modelUtils
+import os
+from models import get_cnn_model
 from numpy import array
 from tensorflow.keras import models
 from numpy.testing import assert_allclose
@@ -43,6 +45,13 @@ class TestModelUtilsMethods(unittest.TestCase):
             modelUtils.load_model('notamodel')
         err = cm.exception
         self.assertEqual(str(err),"[Errno 2] No such file or directory: 'notamodel.json'")
+
+    def test_save_model(self):
+        test_model = get_cnn_model()
+        test_model_name = 'test_model'
+        modelUtils.save_model(test_model, test_model_name)
+        self.assertTrue(os.path.isfile(test_model_name + ".h5"))
+        self.assertTrue(os.path.isfile(test_model_name + ".json"))
 
 if __name__ == '__main__':
     unittest.main()

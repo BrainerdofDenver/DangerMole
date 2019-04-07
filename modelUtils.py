@@ -51,10 +51,10 @@ def load_model(model_name='model'):
     model.load_weights(model_name + '.h5')
     return model
 
-def save_model(model_to_save):
+def save_model(model_to_save,model_name='model'):
     model_json = model_to_save.to_json()
-    with open("restest_model.json", "w") as json_file:
+    with open(model_name + ".json", "w") as json_file:
         json_file.write(model_json)
 
-    model_to_save.save_weights("restest_model.h5")
+    model_to_save.save_weights(model_name + ".h5")
     print("saved model")
