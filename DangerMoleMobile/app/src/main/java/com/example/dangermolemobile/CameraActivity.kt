@@ -13,21 +13,28 @@ import android.support.v4.content.FileProvider
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.view.Menu
-import android.view.MenuItem
+import android.view.*
 import android.widget.ImageView
 import android.widget.Toast
+
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import java.io.File
 import java.io.IOException
 import java.util.*
+import java.util.concurrent.Executors
+
+
 
 class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private var currentPhotoPath = ""
     val REQUEST_TAKE_PHOTO = 1
     val folderName = "DangerMole"
+
+    //Values for tensorflow
+    lateinit var classifier: Classifier
+    private val executor = Executors.newSingleThreadExecutor()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,9 +57,10 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             val file = rootFileCreator()
             toastCreator(file.toString())
         }
+
+
+        initTensorFlowAndLoadModel()
     }
-
-
 
     //Code based on tutorial for initial functionality: https://www.youtube.com/watch?v=5wbeWN4hQt0
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -164,5 +172,26 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             file.mkdirs()
         }
         return file
+    }
+
+    companion object {
+        private const val MODEL_PATH = "mobilenet_quant_v1_224.tflite"
+        private const val LABEL_PATH = "labels.txt"
+        private const val INPUT_SIZE = 224
+    }
+
+    private fun initTensorFlowAndLoadModel() {
+        executor.execute {
+            try {
+                classifier = Classifier.create(
+                    assets,
+                    MODEL_PATH,
+                    LABEL_PATH,
+                    INPUT_SIZE)
+
+            } catch (e: Exception) {
+                throw RuntimeException("Error initializing TensorFlow!", e)
+            }
+        }
     }
 }
