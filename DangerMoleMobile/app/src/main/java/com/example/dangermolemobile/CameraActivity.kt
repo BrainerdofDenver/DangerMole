@@ -15,7 +15,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.*
 import android.widget.ImageView
 
-import kotlinx.android.synthetic.main.drawer_layout.*
+import kotlinx.android.synthetic.main.drawer_layout_camera.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.activity_camera.*
 import java.io.File
@@ -36,7 +36,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.drawer_layout)
+        setContentView(R.layout.drawer_layout_camera)
         setSupportActionBar(toolbar)
 
         val toggle = ActionBarDrawerToggle(

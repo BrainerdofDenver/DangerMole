@@ -7,6 +7,6 @@ class LocalClinicsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_local_clinics)
+        setContentView(R.layout.drawer_layout_localclinics)
     }
 }
