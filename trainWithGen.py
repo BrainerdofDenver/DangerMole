@@ -20,7 +20,7 @@ DATADIR = 'D:\TrainingData\Images'
 DATADESC = 'D:\TrainingData\Descriptions'
 
 TEST_PERCENT = 0.2
-batch_size = 32
+batch_size = 10
 
 X_file_names = list(os.listdir(DATADIR))
 y_file_names = os.listdir(DATADESC)
