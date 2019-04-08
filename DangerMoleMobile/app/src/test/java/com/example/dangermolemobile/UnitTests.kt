@@ -10,7 +10,7 @@ import android.support.test.espresso.assertion.ViewAssertions.*
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-
+import android.support.test.espresso.*
 @RunWith(RobolectricTestRunner::class)
 class UnitTests {
 
