@@ -35,16 +35,7 @@ def main():
 
     # Saves model along with weights
     save_model(custom_resnet_model)
-
-    # Just doing my own little test to make sure im not crazy
-    predictions = custom_resnet_model.predict(X_test)
-    i = 0
-    
-    for prediction in predictions:
-        print(prediction)
-        print(y_test[i])
-        i += 1
-    
+    '''
     above_threshold_indices = predictions > 0.5
     below_threshold_indices = predictions < 0.5
     predictions[above_threshold_indices] = 1
@@ -66,6 +57,7 @@ def main():
     plt.show()
 
     print(classification_report(y_test,predictions))
+    '''
 
 def create_subset_of_data(malignant, benign, amount_of_benign_examples=100):
     X= []
