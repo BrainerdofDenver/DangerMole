@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.support.v4.view.GravityCompat
 import android.view.MenuItem
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.drawer_layout.*
 
 class NavigationHandler {
     fun NavigationOnClickListener(mContext: Context, mActivity: Activity, item: MenuItem){
