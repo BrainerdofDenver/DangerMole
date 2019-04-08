@@ -8,7 +8,6 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.app_bar_main.*
-import kotlinx.android.synthetic.main.drawer_layout_camera.*
 import kotlinx.android.synthetic.main.drawer_layout_localclinics.*
 
 class LocalClinicsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -16,9 +15,7 @@ class LocalClinicsActivity : AppCompatActivity(), NavigationView.OnNavigationIte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.drawer_layout_localclinics)
-
         setSupportActionBar(toolbar)
-
 
         val toggle = ActionBarDrawerToggle(
             this, drawer_layout_localclinics, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
@@ -30,8 +27,8 @@ class LocalClinicsActivity : AppCompatActivity(), NavigationView.OnNavigationIte
 
     //Part of Navigation Drawer
     override fun onBackPressed() {
-        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
-            drawer_layout.closeDrawer(GravityCompat.START)
+        if (drawer_layout_localclinics.isDrawerOpen(GravityCompat.START)) {
+            drawer_layout_localclinics.closeDrawer(GravityCompat.START)
         } else {
             super.onBackPressed()
         }

@@ -8,7 +8,6 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:showIn="@layout/drawer_layout_localclinics"
         tools:context=".LocalClinicsActivity">
-
     <TextView
             android:text="TextView"
             android:layout_width="56dp"

@@ -15,23 +15,19 @@ class NavigationHandler {
 
         when (item.itemId) {
             R.id.nav_camera -> {
-
                 val intent = Intent(mContext, CameraActivity::class.java)
-                mActivity.finish()
-                drawerLayoutCloser(mActivity)
-                mContext.startActivity(intent)
+                navItemHandler(mActivity, mContext, intent)
             }
             R.id.nav_gallery -> {
 
             }
             R.id.nav_generalinfo -> {
-
+                val intent = Intent(mContext, GeneralInfoActivity::class.java)
+                navItemHandler(mActivity, mContext, intent)
             }
             R.id.nav_localclinics -> {
                 val intent = Intent(mContext, LocalClinicsActivity::class.java)
-                mActivity.finish()
-                drawerLayoutCloser(mActivity)
-                mContext.startActivity(intent)
+                navItemHandler(mActivity, mContext, intent)
             }
             R.id.nav_aboutus -> {
 
@@ -64,5 +60,11 @@ class NavigationHandler {
                 mActivity.drawer_layout_generalinfo.closeDrawer(GravityCompat.START)
             }
         }
+    }
+
+    private fun navItemHandler(mActivity: Activity, mContext: Context, intent: Intent){
+        mActivity.finish()
+        drawerLayoutCloser(mActivity)
+        mContext.startActivity(intent)
     }
 }
