@@ -17,7 +17,7 @@ import android.widget.ImageView
 
 import kotlinx.android.synthetic.main.drawer_layout.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.android.synthetic.main.activity_camera.*
 import java.io.File
 import java.io.IOException
 import java.util.*
