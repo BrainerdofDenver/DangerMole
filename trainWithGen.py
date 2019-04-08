@@ -11,7 +11,8 @@ from random import shuffle
 from sklearn.utils import class_weight
 import random
 import os
-from keras.applications.resnet50 import preprocess_input,ResNet50
+#from keras.applications.resnet50 import preprocess_input,ResNet50
+from models import get_res_model
 from modelUtils import generator,open_json_file,get_label
 import gc
 
@@ -19,7 +20,7 @@ DATADIR = 'D:\TrainingData\Images'
 DATADESC = 'D:\TrainingData\Descriptions'
 
 TEST_PERCENT = 0.2
-batch_size = 32
+batch_size = 10
 
 X_file_names = list(os.listdir(DATADIR))
 y_file_names = os.listdir(DATADESC)
@@ -41,25 +42,7 @@ steps = np.ceil(len(X_file_names_full) / batch_size)
 
 class_weights = class_weight.compute_class_weight('balanced',np.unique(ytest),ytest)
 
-image_input = Input(shape=(224,224,3))
-
-model = ResNet50(include_top=True, weights='imagenet',
-             input_tensor=image_input)
-
-last_layer = model.get_layer('avg_pool').output
-x = Flatten(name='flatten')(last_layer)
-out = Dense(1,activation='sigmoid',name='output_layer')(x)
-custom_resnet_model = Model(inputs=image_input,outputs=out)
-custom_resnet_model.summary()
-
-for layer in custom_resnet_model.layers[:-1]:
-    layer.trainable = False
-
-custom_resnet_model.layers[-1].trainable
-
-custom_resnet_model.compile(loss='binary_crossentropy',
-              optimizer='adam',
-              metrics=['accuracy'])
+custom_resnet_model = get_res_model()
 
 custom_resnet_model.fit_generator(generator(X_file_names_full, y_file_names_full, batch_size),
                     steps_per_epoch=steps,
