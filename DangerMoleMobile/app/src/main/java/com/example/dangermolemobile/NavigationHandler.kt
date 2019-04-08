@@ -7,6 +7,7 @@ import android.support.v4.view.GravityCompat
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.drawer_layout_aboutus.*
 import kotlinx.android.synthetic.main.drawer_layout_camera.*
+import kotlinx.android.synthetic.main.drawer_layout_gallery.*
 import kotlinx.android.synthetic.main.drawer_layout_generalinfo.*
 import kotlinx.android.synthetic.main.drawer_layout_localclinics.*
 
@@ -19,7 +20,8 @@ class NavigationHandler {
                 navItemHandler(mActivity, mContext, intent)
             }
             R.id.nav_gallery -> {
-
+                val intent = Intent(mContext, GalleryActivity::class.java)
+                navItemHandler(mActivity, mContext, intent)
             }
             R.id.nav_generalinfo -> {
                 val intent = Intent(mContext, GeneralInfoActivity::class.java)
@@ -39,12 +41,10 @@ class NavigationHandler {
         }
     }
 
-    //This function separates the activity name string from the total output of mActivity.toString()
-    //mActivity.toString() outputs: com.example.dangermolemobile.CameraActivity@<instance variables>
-    private fun fromActivityStringBuilder(mActivity: Activity): String{
-        val fromActivityLabelArray = mActivity.toString().split('.')
-        val activityString = fromActivityLabelArray[3].split('@')
-        return activityString[0]
+    private fun navItemHandler(mActivity: Activity, mContext: Context, intent: Intent){
+        mActivity.finish()
+        mContext.startActivity(intent)
+        drawerLayoutCloser(mActivity)
     }
 
     private fun drawerLayoutCloser(mActivity: Activity){
@@ -63,12 +63,17 @@ class NavigationHandler {
             "AboutUsActivity" -> {
                 mActivity.drawer_layout_aboutus.closeDrawer(GravityCompat.START)
             }
+            "GalleryActivity" -> {
+                mActivity.drawer_layout_gallery.closeDrawer(GravityCompat.START)
+            }
         }
     }
 
-    private fun navItemHandler(mActivity: Activity, mContext: Context, intent: Intent){
-        mActivity.finish()
-        mContext.startActivity(intent)
-        drawerLayoutCloser(mActivity)
+    //This function separates the activity name string from the total output of mActivity.toString()
+    //mActivity.toString() outputs: com.example.dangermolemobile.CameraActivity@<instance variables>
+    private fun fromActivityStringBuilder(mActivity: Activity): String{
+        val fromActivityLabelArray = mActivity.toString().split('.')
+        val activityString = fromActivityLabelArray[3].split('@')
+        return activityString[0]
     }
 }
