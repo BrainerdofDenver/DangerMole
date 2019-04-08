@@ -6,6 +6,7 @@ import android.content.Intent
 import android.support.v4.view.GravityCompat
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.drawer_layout_camera.*
+import kotlinx.android.synthetic.main.drawer_layout_generalinfo.*
 import kotlinx.android.synthetic.main.drawer_layout_localclinics.*
 
 class NavigationHandler {
@@ -58,6 +59,9 @@ class NavigationHandler {
             }
             "LocalClinicsActivity" -> {
                 mActivity.drawer_layout_localclinics.closeDrawer(GravityCompat.START)
+            }
+            "GeneralInfoActivity" -> {
+                mActivity.drawer_layout_generalinfo.closeDrawer(GravityCompat.START)
             }
         }
     }
