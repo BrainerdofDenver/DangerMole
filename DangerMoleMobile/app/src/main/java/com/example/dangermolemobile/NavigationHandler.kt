@@ -5,13 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.support.v4.view.GravityCompat
 import android.view.MenuItem
+import kotlinx.android.synthetic.main.drawer_layout_aboutus.*
 import kotlinx.android.synthetic.main.drawer_layout_camera.*
 import kotlinx.android.synthetic.main.drawer_layout_generalinfo.*
 import kotlinx.android.synthetic.main.drawer_layout_localclinics.*
 
 class NavigationHandler {
     fun NavigationOnClickListener(mContext: Context, mActivity: Activity, item: MenuItem){
-
 
         when (item.itemId) {
             R.id.nav_camera -> {
@@ -30,7 +30,8 @@ class NavigationHandler {
                 navItemHandler(mActivity, mContext, intent)
             }
             R.id.nav_aboutus -> {
-
+                val intent = Intent(mContext, AboutUsActivity::class.java)
+                navItemHandler(mActivity, mContext, intent)
             }
             R.id.nav_disclaimer -> {
 
@@ -59,12 +60,15 @@ class NavigationHandler {
             "GeneralInfoActivity" -> {
                 mActivity.drawer_layout_generalinfo.closeDrawer(GravityCompat.START)
             }
+            "AboutUsActivity" -> {
+                mActivity.drawer_layout_aboutus.closeDrawer(GravityCompat.START)
+            }
         }
     }
 
     private fun navItemHandler(mActivity: Activity, mContext: Context, intent: Intent){
         mActivity.finish()
-        drawerLayoutCloser(mActivity)
         mContext.startActivity(intent)
+        drawerLayoutCloser(mActivity)
     }
 }
