@@ -13,46 +13,48 @@ import random
 import os
 #from keras.applications.resnet50 import preprocess_input,ResNet50
 from models import get_res_model
-from modelUtils import generator,open_json_file,get_label
+from modelUtils import generator,open_json_file,get_label,save_model
 import gc
 
 DATADIR = 'D:\TrainingData\Images'
 DATADESC = 'D:\TrainingData\Descriptions'
+    
+def main():
+    TEST_PERCENT = 0.2
+    batch_size = 10
 
-TEST_PERCENT = 0.2
-batch_size = 10
+    X_file_names = os.listdir(DATADIR)
+    y_file_names = os.listdir(DATADESC)
 
-X_file_names = list(os.listdir(DATADIR))
-y_file_names = os.listdir(DATADESC)
+    y_file_names_full, X_file_names_full = setup_full_file_names(X_file_names,y_file_names)
+    ytest = [get_label(y_file_names_full[i]) for i in range(0,len(y_file_names_full))]
 
-X_file_names_full = []
-y_file_names_full = []
+    steps = np.ceil(len(X_file_names_full) / batch_size)
 
-for file_name in X_file_names:
-    X_file_names_full.append(os.path.join(DATADIR, file_name))
+    class_weights = class_weight.compute_class_weight('balanced',np.unique(ytest),ytest)
 
-for file_name in y_file_names:
-    y_file_names_full.append(os.path.join(DATADESC, file_name))
+    custom_resnet_model = get_res_model()
 
-X_file_names_full = np.array(X_file_names_full)
-y_file_names_full = np.array(y_file_names_full)
-ytest = [get_label(y_file_names_full[i]) for i in range(0,len(y_file_names_full))]
+    custom_resnet_model.fit_generator(generator(X_file_names_full, y_file_names_full, batch_size),
+                        steps_per_epoch=steps,
+                        epochs=5,
+                        class_weight=class_weights)
 
-steps = np.ceil(len(X_file_names_full) / batch_size)
+    save_model(custom_resnet_model,"resModel")
 
-class_weights = class_weight.compute_class_weight('balanced',np.unique(ytest),ytest)
+def setup_full_file_names(X_file_names, y_file_names):
+    X_file_names_full = []
+    y_file_names_full = []
 
-custom_resnet_model = get_res_model()
+    for file_name in X_file_names:
+        X_file_names_full.append(os.path.join(DATADIR, file_name))
 
-custom_resnet_model.fit_generator(generator(X_file_names_full, y_file_names_full, batch_size),
-                    steps_per_epoch=steps,
-                    epochs=5,
-                    class_weight=class_weights)
+    for file_name in y_file_names:
+        y_file_names_full.append(os.path.join(DATADESC, file_name))
 
-# Saves model along with weights
-model_json = custom_resnet_model.to_json()
-with open("resModel.json", "w") as json_file:
-    json_file.write(model_json)
+    X_file_names_full = np.array(X_file_names_full)
+    y_file_names_full = np.array(y_file_names_full)
+    return y_file_names_full, X_file_names_full
 
-custom_resnet_model.save_weights("resModel.h5")
-print("saved model")
+if __name__ == "__main__":
+    main()

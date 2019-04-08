@@ -35,7 +35,7 @@ class TestModelUtilsMethods(unittest.TestCase):
         for batch in modelUtils.generator(array([self.test_path_image]),array([self.test_path_descriptions]),1):
             actual_image, actual_label = batch
             expected_image, expected_label = expected
-            assert_allclose(actual_image,expected_image)
+            self.assertEqual(len(actual_image),len(expected_image))
             self.assertEqual(actual_label,expected_label)
             break
 
