@@ -1,75 +1,58 @@
 '''
 This file takes the downloaded dataset and creates a numpy array with the image and its label
-and saves it. It takes a long time to do this so be ready to wait. Also doesn't actually work
-for all the data yet as some of it is labeled differently than others so it currently crashes
-when trying to run and hits that differntly labeled data.
+and saves it. It takes about 20 minutes on my machine, but has a progress bar so you can keep
+track of progress.
 '''
-
 import numpy as np
 import matplotlib.pyplot as plt
 import os 
 import cv2
 import json
+import sys
+from tqdm import tqdm
 from random import shuffle
+from modelUtils import get_label, open_json_file
 
 #change directory to the data to work on your machine
-DATADIR = "C:\\Users\khang\Desktop\ProjectMole\ISIC-Archive-Downloader\Data\Images"
-DESCDIR = "C:\\Users\khang\Desktop\ProjectMole\ISIC-Archive-Downloader\Data\Descriptions"
+DATADIR = "D:/TrainingData/Images"
+DESCDIR = "D:/TrainingData/Descriptions"
 
-CATEGORIES = ['Benign','Malignant']
 #new image size after resizing
 IMG_SIZE = 224
-IMG_AMOUNT = 1000
+IMG_AMOUNT = 1
 
 training_data = []
-#check if image is none and skip it if so
 
-def createTrainingData():
-    for image in os.listdir(DATADIR):
-        img_array = cv2.imread(os.path.join(DATADIR,image))
+def create_training_data(image_amount, x_data_name, y_data_name):
+    filenames = np.array(os.listdir(DATADIR))
+    for image in tqdm(range(image_amount)):
+        img_array = cv2.imread(os.path.join(DATADIR,filenames[image]))
         new_array = cv2.resize(img_array, (IMG_SIZE, IMG_SIZE))
-        
-        if getLabel(image) == None:
+        new_array = cv2.cvtColor(new_array,cv2.COLOR_BGR2RGB)
+        label = get_label(os.path.join(DESCDIR,filenames[image].split(".")[0]))
+        if label == None:
             continue
         
         # new_array = new_array/255
-        training_data.append([new_array,getLabel(image)])
-        if len(training_data) >= IMG_AMOUNT:
+        training_data.append([new_array,label])
+        if len(training_data) >= image_amount:
             break
 
+    print(len(training_data))
+    shuffle(training_data)
+    X = []
+    y = []
+    for features, label in training_data:
+        X.append(features)
+        y.append(label)
+
+    X = np.array(X).reshape(-1,IMG_SIZE,IMG_SIZE,3)
+    np.save(x_data_name,X)
+    np.save(y_data_name,y)
+
+def main():
+    create_training_data(IMG_AMOUNT,sys.argv[1],sys.argv[2])
 
 
-# This needs to change to work with all data descriptions
-def getLabel(fileName):
-    data = openJsonFile(os.path.join(DESCDIR,fileName[:-5]))
-    if 'meta' in data:
-        if 'clinical' in data['meta']:
-            if 'benign_malignant' in data['meta']['clinical']:
-                if data['meta']['clinical']['benign_malignant'] == 'benign':
-                    return 0
-                else:
-                    return 1
-    else:
-        raise ValueError("No benign bool given in data given at file: " + file)
-
-def openJsonFile(fileName):
-    with open(fileName) as f:
-        data = json.load(f)
-        #print(data)
-        return data
-
-createTrainingData()
-
-print(len(training_data))
-shuffle(training_data)
-X = []
-y = []
-for features, label in training_data:
-    X.append(features)
-    y.append(label)
-
-plt.imshow(X[0])
-plt.show()
-X = np.array(X).reshape(-1,IMG_SIZE,IMG_SIZE,3)
-np.save('X_data',X)
-np.save('y_data',y)
+if __name__ == "__main__":
+    main()
