@@ -35,11 +35,16 @@ def main():
 
     # Saves model along with weights
     save_model(custom_resnet_model)
-    '''
+    
+    predictions = custom_resnet_model.predict(X_test)
+    plot_roc(predictions, y_test)
+
+def plot_roc(predictions, y_test):
     above_threshold_indices = predictions > 0.5
     below_threshold_indices = predictions < 0.5
     predictions[above_threshold_indices] = 1
     predictions[below_threshold_indices] = 0
+
 
     # most of this block was taken from https://towardsdatascience.com/building-a-logistic-regression-in-python-step-by-step-becd4d56c9c8
     logit_roc_auc = roc_auc_score(y_test, predictions)
@@ -57,7 +62,7 @@ def main():
     plt.show()
 
     print(classification_report(y_test,predictions))
-    '''
+    
 
 def create_subset_of_data(malignant, benign, amount_of_benign_examples=100):
     X= []
