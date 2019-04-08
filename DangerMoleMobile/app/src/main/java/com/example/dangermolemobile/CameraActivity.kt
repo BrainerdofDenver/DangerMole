@@ -44,7 +44,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         )
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
-        nav_view.setNavigationItemSelectedListener(this)
+        nav_view_camera.setNavigationItemSelectedListener(this)
 
         take_pic_button.setOnClickListener {
             dispatchTakePictureIntent()
