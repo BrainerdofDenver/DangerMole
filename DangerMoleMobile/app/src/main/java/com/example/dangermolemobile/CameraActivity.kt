@@ -96,7 +96,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         val min = calendar.get(Calendar.MINUTE).toString()
         val sec = calendar.get(Calendar.SECOND).toString()
 
-        val str = hour + "_" + min + "_" + sec + "&"+ month + "_" + dayOfMonth + "_" + year
+        val str = hour + "_" + min + "_" + sec + "&"+ month + "_" + dayOfMonth + "_" + year + ")"
         return str
     }
 
@@ -111,7 +111,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
     }
 
-    fun dispatchTakePictureIntent() {
+    private fun dispatchTakePictureIntent() {
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
             takePictureIntent.resolveActivity(packageManager)?.also {
                 val photoFile: File? = try {
