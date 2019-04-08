@@ -7,40 +7,30 @@ import android.support.v4.view.GravityCompat
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.drawer_layout_camera.*
 import kotlinx.android.synthetic.main.drawer_layout_localclinics.*
-import java.lang.NullPointerException
 
 class NavigationHandler {
     fun NavigationOnClickListener(mContext: Context, mActivity: Activity, item: MenuItem){
+
+
         when (item.itemId) {
             R.id.nav_camera -> {
+
                 val intent = Intent(mContext, CameraActivity::class.java)
                 mActivity.finish()
-                try {
-                    mActivity.drawer_layout.closeDrawer(GravityCompat.START)
-                }catch(e: NullPointerException){
-                    mActivity.drawer_layout_localclinics.closeDrawer(GravityCompat.START)
-                }
+                drawerLayoutCloser(mActivity)
                 mContext.startActivity(intent)
             }
             R.id.nav_gallery -> {
 
             }
             R.id.nav_generalinfo -> {
-//                val intent = Intent(mContext, GeneralInformationActivity::class.java)
-//                mContext.startActivity(intent)
+
             }
             R.id.nav_localclinics -> {
                 val intent = Intent(mContext, LocalClinicsActivity::class.java)
                 mActivity.finish()
-                try {
-                    mActivity.drawer_layout.closeDrawer(GravityCompat.START)
-                }catch(e: NullPointerException){
-                    mActivity.drawer_layout_localclinics.closeDrawer(GravityCompat.START)
-                }
+                drawerLayoutCloser(mActivity)
                 mContext.startActivity(intent)
-
-
-
             }
             R.id.nav_aboutus -> {
 
@@ -49,6 +39,26 @@ class NavigationHandler {
 
             }
         }
-        //mActivity.drawer_layout.closeDrawer(GravityCompat.START)
+    }
+
+    //This function separates the activity name string from the total output of mActivity.toString()
+    //mActivity.toString() outputs: com.example.dangermolemobile.CameraActivity@<instance variables>
+    private fun fromActivityStringBuilder(mActivity: Activity): String{
+        val fromActivityLabelArray = mActivity.toString().split('.')
+        val activityString = fromActivityLabelArray[3].split('@')
+        return activityString[0]
+    }
+
+    private fun drawerLayoutCloser(mActivity: Activity){
+        val activityLabel = fromActivityStringBuilder(mActivity)
+
+        when(activityLabel){
+            "CameraActivity" -> {
+                mActivity.drawer_layout.closeDrawer(GravityCompat.START)
+            }
+            "LocalClinicsActivity" -> {
+                mActivity.drawer_layout_localclinics.closeDrawer(GravityCompat.START)
+            }
+        }
     }
 }
