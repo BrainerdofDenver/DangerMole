@@ -22,6 +22,8 @@ class NavigationHandler {
 //                mContext.startActivity(intent)
             }
             R.id.nav_localclinics -> {
+                val intent = Intent(mContext, LocalClinicsActivity::class.java)
+                mContext.startActivity(intent)
 
 
             }
