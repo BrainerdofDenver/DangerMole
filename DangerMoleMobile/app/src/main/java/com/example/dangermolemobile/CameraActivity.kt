@@ -86,7 +86,6 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         return true
     }
 
-    //to be tested
     private fun fileNameCreator(): String{
         val calendar = Calendar.getInstance()
         val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH).toString()
@@ -96,10 +95,11 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         val min = calendar.get(Calendar.MINUTE).toString()
         val sec = calendar.get(Calendar.SECOND).toString()
 
-        val str = hour + "_" + min + "_" + sec + "&"+ month + "_" + dayOfMonth + "_" + year
+        val str = month + "_" + dayOfMonth + "_" + year +  "_" + hour + "_" + min + "_" + sec +  "_"
         return str
     }
 
+    //This function creates a tempfile to append random integers to the end of the file, to prevent duplicates
     @Throws(IOException::class)
     private fun createImageFile(): File {
         val fileRoot = rootFileCreator()
@@ -111,7 +111,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
     }
 
-    fun dispatchTakePictureIntent() {
+    private fun dispatchTakePictureIntent() {
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
             takePictureIntent.resolveActivity(packageManager)?.also {
                 val photoFile: File? = try {
