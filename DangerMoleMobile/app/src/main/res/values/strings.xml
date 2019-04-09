@@ -19,6 +19,12 @@
         https://www.isic-archive.com/#!/topWithHeader/wideContentTop/main
         Our team is composed of four undergraduates in pursuit of a BS in computer science.
         The project is currently in development as of spring 2019 and is intended as a prototype and not a definitive medical resource.
-        https://github.com/greengroupmsudenver/DangerMole
-    </string>
+        https://github.com/greengroupmsudenver/DangerMole</string>
+    <string name="general_info_text">
+        Melanocytic Nevi are a subcategory of melanocytic tumors containing nevus cells.
+        While the majority of moles are benign, it is important to regularly check your moles for changes in shape,
+        texture, symmetry and color as these are signs of melanoma. Danger Mole uses these metrics to gauge the
+        overall health of the mole by analyzing it against a trained neural network using TensorFlow’s framework.
+        Further resources on melanoma can be found at the official dot gov site:
+        https://www.cancer.gov/types/skin</string>
 </resources>
