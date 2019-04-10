@@ -7,13 +7,10 @@ import android.widget.Toast
 import android.content.pm.PackageManager
 import android.support.v4.content.ContextCompat
 import android.app.Activity
-import android.os.Build
 import android.support.v4.app.ActivityCompat
 
 class Utility {
-    private val REQUEST_WRITE_STORAGE_REQUEST_CODE = 104
-    private val REQUEST_READ_STORAGE_REQUEST_CODE = 105
-    private val CAMERA_REQUEST_CODE = 298
+    private val REQUEST_CAM_STORAGE_PERMISSIONS_CODE = 298
 
     fun toastCreator(messageToDisplay: String, mContext: Context){
         Toast.makeText(mContext, messageToDisplay, Toast.LENGTH_SHORT).show()
@@ -30,7 +27,7 @@ class Utility {
             ContextCompat.checkSelfPermission(mContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
         {
             ActivityCompat.requestPermissions(mActivity,arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA), REQUEST_WRITE_STORAGE_REQUEST_CODE )
+                Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA), REQUEST_CAM_STORAGE_PERMISSIONS_CODE )
         }
 
     }
