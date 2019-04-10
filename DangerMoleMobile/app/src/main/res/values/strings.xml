@@ -8,8 +8,8 @@
     <string name="nav_header_subtitle">(example username)</string>
     <string name="nav_header_logout">Logout</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="full_disclaimer">Disclaimer: This app is intended for entertainment purposes only and should not be
-        used in place of a Doctor\'s advice or in lieu of medical attention
+    <string name="full_disclaimer">This app is intended for entertainment and educational purposes only and should not be
+        used in place of a Doctor\'s advice or in lieu of medical attention.
     </string>
-    <string name="file_creation_error_msg">Error occurred creating file. Please try again.</string>
+    <string name="file_creation_error_msg">Needs camera and storage permissions.</string>
 </resources>
