@@ -26,20 +26,23 @@ def get_cnn_model():
 def get_res_model():
         image_input = Input(shape=(224,224,3))
 
-        model = ResNet50(include_top=True, weights=None,
-                input_tensor=image_input,classes=2)
+        model = ResNet50(include_top=False, weights=None,
+                input_tensor=image_input,input_shape=(224,224,3))
 
         last_layer = model.get_layer('avg_pool').output
         x = Flatten(name='flatten')(last_layer)
-        out = Dense(1,activation='sigmoid',name='output_layer')(x)
+        out = Dense(2048,activation='sigmoid',name='fcl-1')(x)
+        out = Dense(2048,activation='sigmoid',name='fcl-2')(out)
+        out = Dense(1,activation='sigmoid',name='output_layer')(out)
         custom_resnet_model = Model(inputs=image_input,outputs=out)
         custom_resnet_model.summary()
-
+        '''
         for layer in custom_resnet_model.layers[:-1]:
                 layer.trainable = False
 
-        custom_resnet_model.layers[-1].trainable
-
+        for layer in custom_resnet_model.layers[-3:]:
+                layer.trainable
+        '''
         custom_resnet_model.compile(loss='binary_crossentropy',
                 optimizer='adam',
                 metrics=['accuracy'])

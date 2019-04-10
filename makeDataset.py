@@ -19,7 +19,6 @@ DESCDIR = "D:/TrainingData/Descriptions"
 
 #new image size after resizing
 IMG_SIZE = 224
-IMG_AMOUNT = 1
 
 training_data = []
 
@@ -44,14 +43,16 @@ def create_training_data(image_amount, x_data_name, y_data_name):
     y = []
     for features, label in training_data:
         X.append(features)
-        y.append(label)
-
+        y.append([label])
+    
     X = np.array(X).reshape(-1,IMG_SIZE,IMG_SIZE,3)
+    y = np.array(y)
+    print(y.shape)
     np.save(x_data_name,X)
     np.save(y_data_name,y)
 
 def main():
-    create_training_data(IMG_AMOUNT,sys.argv[1],sys.argv[2])
+    create_training_data(int(sys.argv[1]),sys.argv[2],sys.argv[3])
 
 
 if __name__ == "__main__":
