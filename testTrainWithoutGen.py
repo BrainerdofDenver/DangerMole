@@ -4,6 +4,7 @@ import makeDataset
 import trainWithoutGen
 import os
 import numpy as np
+from cv2 import destroyAllWindows
 
 class TestModelUtilsMethods(unittest.TestCase):
     XDATA = 'X_data_for_test.npy'
@@ -32,7 +33,7 @@ class TestModelUtilsMethods(unittest.TestCase):
         predictions = np.random.rand(10)
         y_test = np.random.randint(2,size=10)
         trainWithoutGen.plot_roc(predictions,y_test)
-
+        destroyAllWindows()
 
 if __name__ == '__main__':
     unittest.main()
