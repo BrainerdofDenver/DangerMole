@@ -4,7 +4,9 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.support.v4.view.GravityCompat
+import android.view.Gravity
 import android.view.MenuItem
+import android.widget.Toast
 import kotlinx.android.synthetic.main.drawer_layout_aboutus.*
 import kotlinx.android.synthetic.main.drawer_layout_camera.*
 import kotlinx.android.synthetic.main.drawer_layout_gallery.*
@@ -36,7 +38,7 @@ class NavigationHandler {
                 navItemHandler(mActivity, mContext, intent)
             }
             R.id.nav_disclaimer -> {
-
+                disclaimerToastCreator(mContext)
             }
         }
     }
@@ -75,5 +77,12 @@ class NavigationHandler {
         val fromActivityLabelArray = mActivity.toString().split('.')
         val activityString = fromActivityLabelArray[3].split('@')
         return activityString[0]
+    }
+
+    private fun disclaimerToastCreator(mContext: Context){
+        val toast: Toast = Toast.makeText(mContext, mContext.getString(R.string.full_disclaimer), Toast.LENGTH_LONG)
+        toast.setGravity(Gravity.CENTER,0,0)
+        toast.show()
+
     }
 }

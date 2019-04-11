@@ -46,6 +46,8 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         toggle.syncState()
         nav_view_camera.setNavigationItemSelectedListener(this)
 
+        Utility().requestCameraAndStoragePermissions(this, this)
+
         take_pic_button.setOnClickListener {
             dispatchTakePictureIntent()
         }
@@ -112,6 +114,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     }
 
     private fun dispatchTakePictureIntent() {
+        Utility().requestCameraAndStoragePermissions(this, this)
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
             takePictureIntent.resolveActivity(packageManager)?.also {
                 val photoFile: File? = try {
