@@ -11,7 +11,6 @@
     <string name="full_disclaimer">This app is intended for entertainment and educational purposes only and should not be
         used in place of a Doctor\'s advice or in lieu of medical attention.
     </string>
-    <string name="file_creation_error_msg">Error occurred creating file. Please try again.</string>
     <string name="about_us_text">
         Danger Mole is an app conceived and developed by MSU Denver students as a solution to early detection of melanoma in nevi (moles).
         Danger Mole is designed to run on android and makes use of TensorFlow’s powerful machine learning libraries.
