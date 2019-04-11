@@ -11,5 +11,24 @@
     <string name="full_disclaimer">This app is intended for entertainment and educational purposes only and should not be
         used in place of a Doctor\'s advice or in lieu of medical attention.
     </string>
+    <string name="file_creation_error_msg">Error occurred creating file. Please try again.</string>
+    <string name="about_us_text">
+        Danger Mole is an app conceived and developed by MSU Denver students as a solution to early detection of melanoma in nevi (moles).
+        Danger Mole is designed to run on android and makes use of TensorFlow’s powerful machine learning libraries.
+        The model itself is trained on data acquired from the International Skin Imaging Collaboration (ISIC) database linked below.
+        Our team is composed of four undergraduates in pursuit of a BS in computer science.
+        The project is currently in development as of spring 2019 and is intended as a prototype and not a definitive medical resource.</string>
+    <string name="general_info_text">
+        Melanocytic Nevi are a subcategory of melanocytic tumors containing nevus cells.
+        While the majority of moles are benign, it is important to regularly check your moles for changes in shape,
+        texture, symmetry and color as these are signs of melanoma. Danger Mole uses these metrics to gauge the
+        overall health of the mole by analyzing it against a trained neural network using TensorFlow’s framework.
+        Further resources on melanoma can be found at the official dot gov site:</string>
+    <string name="link_skin">
+        <a href="https://www.cancer.gov/types/skin">Official resource on skin cancer</a> </string>
+    <string name="link_ISIC">
+        <a href= "https://www.isic-archive.com/#!/topWithHeader/wideContentTop/main">Isic website</a></string>
+    <string name="git_dangermole">
+        <a href="https://github.com/greengroupmsudenver/DangerMole">Our Github</a></string>
     <string name="file_creation_error_msg">Needs camera and storage permissions.</string>
 </resources>

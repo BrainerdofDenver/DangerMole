@@ -5,8 +5,10 @@ import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
+import android.text.method.LinkMovementMethod
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.TextView
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.drawer_layout_generalinfo.*
 
@@ -16,6 +18,9 @@ class GeneralInfoActivity : AppCompatActivity(), NavigationView.OnNavigationItem
         super.onCreate(savedInstanceState)
         setContentView(R.layout.drawer_layout_generalinfo)
         setSupportActionBar(toolbar)
+
+        val textGov: TextView = findViewById(R.id.govLink)
+        textGov.setMovementMethod(LinkMovementMethod.getInstance())
 
         val toggle = ActionBarDrawerToggle(
             this, drawer_layout_generalinfo, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
