@@ -13,10 +13,8 @@ import android.support.v4.content.FileProvider
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.*
 import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 
 import kotlinx.android.synthetic.main.activity_main.*
@@ -26,7 +24,6 @@ import java.io.File
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.Executors
-
 
 
 
@@ -150,15 +147,9 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         //https://stackoverflow.com/questions/6908604/android-crop-center-of-bitmap
         val bm = BitmapFactory.decodeFile(currentPhotoPath)
         val imgView: ImageView = findViewById(R.id.camView)
-        //Get text for probablity view up
-        val probTextView: TextView = findViewById(R.id.probabilityView)
         val dimension = getSquareCropDimensionForBitmap(bm)
-        var bitmap = Bitmap.createScaledBitmap(bm, INPUT_SIZE, INPUT_SIZE, false)
-        //Call on the classifier to get bitmap of the image
-        val results = classifier.recognizeImage(bitmap)
         val returnedBitMap = ThumbnailUtils.extractThumbnail(bm, dimension, dimension)
-       // probTextView.setText(results.toString())
-        Log.d("Image",results.toString())
+
         imgView.setImageBitmap(returnedBitMap)
     }
 
@@ -184,10 +175,9 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     }
 
     companion object {
-       // private const val MODEL_PATH = "mobilenet_quant_v1_224.tflite"
+        private const val MODEL_PATH = "mobilenet_quant_v1_224.tflite"
         private const val LABEL_PATH = "labels.txt"
         private const val INPUT_SIZE = 224
-        private const val MODEL_PATH = "converted_model.tflite"
     }
 
     private fun initTensorFlowAndLoadModel() {

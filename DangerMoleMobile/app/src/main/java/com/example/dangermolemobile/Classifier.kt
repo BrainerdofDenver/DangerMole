@@ -50,7 +50,7 @@ class Classifier(
     }
 
 
-
+        // Change to recognize two things
     override fun recognizeImage(bitmap: Bitmap): List<IClassifier.Recognition> {
         val byteBuffer = convertBitmapToByteBuffer(bitmap)
        val result = Array(1) { kotlin.FloatArray(labelList.size) }
