@@ -19,9 +19,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.drawer_layout_camera.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.android.synthetic.main.activity_camera.*
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -92,7 +92,6 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         return true
     }
 
-    //to be tested
     private fun fileNameCreator(): String{
         val calendar = Calendar.getInstance()
         val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH).toString()
@@ -102,10 +101,11 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         val min = calendar.get(Calendar.MINUTE).toString()
         val sec = calendar.get(Calendar.SECOND).toString()
 
-        val str = hour + "_" + min + "_" + sec + "&"+ month + "_" + dayOfMonth + "_" + year
+        val str = month + "_" + dayOfMonth + "_" + year +  "_" + hour + "_" + min + "_" + sec +  "_"
         return str
     }
 
+    //This function creates a tempfile to append random integers to the end of the file, to prevent duplicates
     @Throws(IOException::class)
     private fun createImageFile(): File {
         val fileRoot = rootFileCreator()
@@ -118,12 +118,13 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     }
 
     private fun dispatchTakePictureIntent() {
+        Utility().requestCameraAndStoragePermissions(this, this)
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
             takePictureIntent.resolveActivity(packageManager)?.also {
                 val photoFile: File? = try {
                     createImageFile()
                 } catch (ex: IOException) {
-                    toastCreator(getString(R.string.file_creation_error_msg))
+                    Utility().toastCreator(getString(R.string.file_creation_error_msg), this)
                     null
                 }
                 // Continue only if the File was successfully created
@@ -140,7 +141,8 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
     }
 
-    private fun loadPicToPreview() {
+    private fun loadPicToPreview(){
+        //https://stackoverflow.com/questions/6908604/android-crop-center-of-bitmap
         val bm = BitmapFactory.decodeFile(currentPhotoPath)
         val imgView: ImageView = findViewById(R.id.camView)
         //Get text for probablity view up
@@ -163,11 +165,6 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     private fun rootFileCreator(): File
             = File(Environment.getExternalStorageDirectory().toString()
             + File.separator + folderName + File.separator)
-
-
-    private fun toastCreator(messageToDisplay: String){
-        Toast.makeText(this, messageToDisplay, Toast.LENGTH_SHORT).show()
-    }
 
     private fun directoryCreator(file: File): File{
         if (!file.exists()) {
