@@ -15,10 +15,11 @@ import java.nio.ByteOrder
 import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
 import java.util.*
+import kotlin.collections.ArrayList
 
 class Classifier(
     var interpreter: Interpreter? = null,
-    var inputSize: Int = 299,
+    var inputSize: Int = 224,
     var labelList: List<String> = emptyList()
 ) : IClassifier {
 
@@ -50,18 +51,18 @@ class Classifier(
 
 
 
-    /*override fun recognizeImage(bitmap: Bitmap): List<IClassifier.Recognition> {
+    override fun recognizeImage(bitmap: Bitmap): List<IClassifier.Recognition> {
         val byteBuffer = convertBitmapToByteBuffer(bitmap)
-       // val result = Array(1) { ByteArray(labelList.size) }
+       val result = Array(1) { kotlin.FloatArray(labelList.size) }
         //val result: FloatArray = floatArrayOf(1,{ByteArray (labelList.size)
-        var result = Array<FloatArray>(1, {ByteArray(labelList.size })
+        //var result = Array<FloatArray>(1, {ByteArray(labelList.size )}
         interpreter!!.run(byteBuffer, result)
         return getSortedResult(result)
-    }*/
+    }
 
 
 
-   override fun recognizeImage(bitmap:Bitmap):List<IClassifier.Recognition> {
+   /*override fun recognizeImage(bitmap:Bitmap):List<IClassifier.Recognition> {
         val byteBuffer = convertBitmapToByteBuffer(bitmap)
         val result = Array<FloatArray>(1, { FloatArray(labelList.size) })
         //val startTime = SystemClock.uptimeMillis()
@@ -69,7 +70,7 @@ class Classifier(
         return getSortedResult(result)
     }
 
-
+*/
 
 
 
@@ -92,7 +93,9 @@ class Classifier(
 
     @Throws(IOException::class)
     private fun loadLabelList(assetManager: AssetManager, labelPath: String): List<String> {
-        val labelList = ArrayList<String>()
+        val labelList:ArrayList<String> = ArrayList()
+
+        //return labelList
         val reader = BufferedReader(InputStreamReader(assetManager.open(labelPath)))
         while (true) {
             val line = reader.readLine() ?: break
