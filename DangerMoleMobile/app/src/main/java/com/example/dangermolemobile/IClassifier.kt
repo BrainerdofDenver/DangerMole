@@ -14,7 +14,7 @@ interface IClassifier {
         }
     }
 
-    fun recognizeImage(bitmap: Bitmap): List<Recognition>
+    fun recognizeImage(bitmap: Bitmap): Float
 
     fun close()
 }

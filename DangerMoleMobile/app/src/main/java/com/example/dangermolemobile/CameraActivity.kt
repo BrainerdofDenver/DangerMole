@@ -13,6 +13,7 @@ import android.support.v4.content.FileProvider
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
@@ -39,7 +40,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.drawer_layout_camera)
         setSupportActionBar(toolbar)
 
         val toggle = ActionBarDrawerToggle(
@@ -47,18 +48,13 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         )
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
-        nav_view.setNavigationItemSelectedListener(this)
+        nav_view_camera.setNavigationItemSelectedListener(this)
+
+        Utility().requestCameraAndStoragePermissions(this, this)
 
         take_pic_button.setOnClickListener {
             dispatchTakePictureIntent()
         }
-
-        //Delete this
-        camView.setOnClickListener{
-            val file = rootFileCreator()
-            toastCreator(file.toString())
-        }
-
 
         initTensorFlowAndLoadModel()
     }
@@ -155,6 +151,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         val results = classifier.recognizeImage(bitmap)
         val returnedBitMap = ThumbnailUtils.extractThumbnail(bm, dimension, dimension)
         probTextView.setText(results.toString())
+        Log.d("output to prob view", results.toString())
         imgView.setImageBitmap(returnedBitMap)
     }
 
@@ -180,7 +177,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     }
 
     companion object {
-        private const val MODEL_PATH = "mobilenet_quant_v1_224.tflite"
+        private const val MODEL_PATH = "converted_model.tflite"
         private const val LABEL_PATH = "labels.txt"
         private const val INPUT_SIZE = 224
     }

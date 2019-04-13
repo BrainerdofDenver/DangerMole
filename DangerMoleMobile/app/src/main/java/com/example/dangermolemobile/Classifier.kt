@@ -4,6 +4,7 @@ package com.example.dangermolemobile
 import android.annotation.SuppressLint
 import android.content.res.AssetManager
 import android.graphics.Bitmap
+import android.util.Log
 import org.tensorflow.lite.Interpreter
 import java.io.BufferedReader
 import java.io.FileInputStream
@@ -51,30 +52,17 @@ class Classifier(
 
 
         // Change to recognize two things
-    override fun recognizeImage(bitmap: Bitmap): List<IClassifier.Recognition> {
+    override fun recognizeImage(bitmap: Bitmap): kotlin.Float {
         val byteBuffer = convertBitmapToByteBuffer(bitmap)
-       val result = Array(1) { kotlin.FloatArray(labelList.size) }
-        //val result: FloatArray = floatArrayOf(1,{ByteArray (labelList.size)
-        //var result = Array<FloatArray>(1, {ByteArray(labelList.size )}
+            var result = Array(1){FloatArray(labelList.size)}
         interpreter!!.run(byteBuffer, result)
-        return getSortedResult(result)
+            Log.d("predict size: ", result.size.toString())
+            Log.d("predict indices: ", result.indices.toString())
+            Log.d("labellist size: ", labelList.size.toString())
+            Log.d("value at index 0: ", ((result[0][0].toInt() and 0xff) / 255.0f).toString())
+
+        return (result[0][0].toInt() and 0xff) / 255.0f
     }
-
-
-
-   /*override fun recognizeImage(bitmap:Bitmap):List<IClassifier.Recognition> {
-        val byteBuffer = convertBitmapToByteBuffer(bitmap)
-        val result = Array<FloatArray>(1, { FloatArray(labelList.size) })
-        //val startTime = SystemClock.uptimeMillis()
-        interpreter!!.run(byteBuffer, result)
-        return getSortedResult(result)
-    }
-
-*/
-
-
-
-
 
     override fun close() {
         interpreter!!.close()
@@ -99,6 +87,7 @@ class Classifier(
         val reader = BufferedReader(InputStreamReader(assetManager.open(labelPath)))
         while (true) {
             val line = reader.readLine() ?: break
+            Log.d("list reading:", line.toString())
             labelList.add(line)
         }
         reader.close()
