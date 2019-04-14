@@ -4,6 +4,7 @@ package com.example.dangermolemobile
 import android.annotation.SuppressLint
 import android.content.res.AssetManager
 import android.graphics.Bitmap
+import android.util.Log
 import org.tensorflow.lite.Interpreter
 import java.io.BufferedReader
 import java.io.FileInputStream
@@ -51,7 +52,7 @@ class Classifier(
 
 
         // Change to recognize two things
-    override fun recognizeImage(bitmap: Bitmap): List<IClassifier.Recognition> {
+    /*override fun recognizeImage(bitmap: Bitmap): List<IClassifier.Recognition> {
         val byteBuffer = convertBitmapToByteBuffer(bitmap)
        val result = Array(1) { kotlin.FloatArray(labelList.size) }
         //val result: FloatArray = floatArrayOf(1,{ByteArray (labelList.size)
@@ -60,8 +61,19 @@ class Classifier(
         return getSortedResult(result)
     }
 
+*/
 
+    override fun recognizeImage(bitmap: Bitmap): kotlin.Float {
+        val byteBuffer = convertBitmapToByteBuffer(bitmap)
+        var result = Array(1){FloatArray(labelList.size)}
+        interpreter!!.run(byteBuffer, result)
+        Log.d("predict size: ", result.size.toString())
+        Log.d("predict indices: ", result.indices.toString())
+        Log.d("labellist size: ", labelList.size.toString())
+        Log.d("value at index 0: ", ((result[0][0].toInt() and 0xff) / 255.0f).toString())
 
+        return (result[0][0].toInt() and 0xff) / 255.0f
+    }
    /*override fun recognizeImage(bitmap:Bitmap):List<IClassifier.Recognition> {
         val byteBuffer = convertBitmapToByteBuffer(bitmap)
         val result = Array<FloatArray>(1, { FloatArray(labelList.size) })
@@ -114,9 +126,9 @@ class Classifier(
         for (i in 0 until inputSize) {
             for (j in 0 until inputSize) {
                 val `val` = intValues[pixel++]
-                byteBuffer.putFloat((`val` shr 16 and 0xFF).toFloat()/ CONSTANT) //IMAGE_MEAN/ IMAGE_STD)
-                byteBuffer.putFloat((`val` shr 8 and 0xFF).toFloat() / CONSTANT) //IMAGE_MEAN/ IMAGE_STD)
-                byteBuffer.putFloat((`val` and 0xFF).toFloat() / CONSTANT) //IMAGE_MEAN/ IMAGE_STD)
+                byteBuffer.putFloat((`val` shr 16 and 0xFF).toFloat()) // CONSTANT) //IMAGE_MEAN/ IMAGE_STD)
+                byteBuffer.putFloat((`val` shr 8 and 0xFF).toFloat())  // CONSTANT) //IMAGE_MEAN/ IMAGE_STD)
+                byteBuffer.putFloat((`val` and 0xFF).toFloat() )      // CONSTANT) //IMAGE_MEAN/ IMAGE_STD)
             }
         }
         return byteBuffer
