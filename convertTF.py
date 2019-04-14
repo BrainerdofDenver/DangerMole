@@ -23,10 +23,10 @@ model = model_from_json (loadInModel, custom_objects = {'GlorotUniform': tf.kera
 
 model.load_weights('model.h5')
 
-model.save('model.h5')
+model.save('full_model.h5')
 
 
 
-converter = lite.TFLiteConverter.from_keras_model_file('model.h5') 
+converter = lite.TFLiteConverter.from_keras_model_file('full_model.h5') 
 tflite_model = converter.convert()
 file = open( "converted_model.tflite" , "wb" ).write(tflite_model)
