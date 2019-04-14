@@ -174,7 +174,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     }
 
     companion object {
-        private const val MODEL_PATH = "converted_model.tflite"
+        private const val MODEL_PATH = "converted_model2.tflite"
         private const val LABEL_PATH = "labels.txt"
         private const val INPUT_SIZE = 224
     }
