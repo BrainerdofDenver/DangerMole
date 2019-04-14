@@ -14,7 +14,6 @@ import random
 import gc
 from memory_profiler import profile
 
-
 @profile 
 def main():
     # Amount of test data
@@ -28,19 +27,19 @@ def main():
     X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=TEST_PERCENT,random_state=2)
 
     custom_resnet_model = get_cnn_model()
-                
     custom_resnet_model.fit(X_train,y_train,batch_size = 32,epochs=12,shuffle=True,validation_split=0.1)            
 
     scores = custom_resnet_model.evaluate(X_test,y_test)
     print("%s: %.2f%%" % (custom_resnet_model.metrics_names[1], scores[1] * 100))
 
     # Saves model along with weights
-    #save_model(custom_resnet_model,'testcnnModel')
-    tf.keras.models.save_model(custom_resnet_model, 'testCnnModel1')
-    converter = tf.lite.TFLiteConverter.from_keras_model_file('testCnnModel1')
+    save_model(custom_resnet_model,'testCnnModel1')
+    '''
+    tf.keras.models.save_model(custom_resnet_model, 'testCnnModel1.h5')
+    converter = tf.lite.TFLiteConverter.from_keras_model_file('testCnnModel1.h5')
     tflite_model = converter.convert()
     open("converted_model1.tflite","wb").write(tflite_model)
-
+    '''
     predictions = custom_resnet_model.predict(X_test)
     plot_roc(predictions, y_test)
 

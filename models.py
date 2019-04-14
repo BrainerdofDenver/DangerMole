@@ -1,14 +1,19 @@
 import tensorflow as tf
+from keras.initializers import RandomNormal
+from keras import regularizers
 from keras.models import Sequential, model_from_json,Model
 from keras.layers import Dense,Dropout,Flatten,Conv2D,MaxPooling2D,Input
 from keras.applications.resnet50 import preprocess_input,ResNet50
 
 def get_cnn_model():
     model = Sequential()
-    model.add(Conv2D(32,(3,3),activation='relu', input_shape = (224,224,3),data_format='channels_last'))
+    model.add(Conv2D(32,(3,3),activation='relu', input_shape = (224,224,3),data_format='channels_last',
+              kernel_initializer=RandomNormal(mean=0.0,stddev=1e-2,seed=None),kernel_regularizer=regularizers.l2(0.),
+              use_bias=False, bias_initializer=RandomNormal(mean=0.0,stddev=1e-2)))
     model.add(MaxPooling2D(pool_size=(2,2),strides=2))
 
-    model.add(Conv2D(64,(3,3),activation='relu'))
+    model.add(Conv2D(64,(3,3),activation='relu',kernel_initializer=RandomNormal(mean=0.0,stddev=1e-2,seed=None),
+              kernel_regularizer=regularizers.l2(0.),use_bias=False, bias_initializer=RandomNormal(mean=0.0,stddev=1e-2)))
     model.add(MaxPooling2D(pool_size=(2,2)))
 
     model.add(Flatten())
@@ -19,8 +24,9 @@ def get_cnn_model():
 
     model.compile(loss='binary_crossentropy',
             optimizer='adam',
-            metrics=['accuracy'])
-
+            metrics=['accuracy'],
+            sample_weight_mode=None)
+    tf.global_variables_initializer()
     return model
 
 def get_res_model():

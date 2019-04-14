@@ -15,18 +15,22 @@ from keras.initializers import glorot_uniform
 #from keras.models import load_weights
 
 #Keras file to tflite file
-jsonOpen = open('model.json', 'r')
+jsonOpen = open('testCnnModel1.json', 'r')
 loadInModel = jsonOpen.read()
 jsonOpen.close()
 
 model = model_from_json (loadInModel, custom_objects = {'GlorotUniform': tf.keras.initializers.glorot_uniform})
 
-model.load_weights('model.h5')
+model.load_weights('testCnnModel1.h5')
+model.compile(loss='binary_crossentropy',
+        optimizer='adam',
+        metrics=['accuracy'],
+        sample_weight_mode=None)
+ 
+model.save('fulltestcnnmodel.h5')
 
-model.save('model.h5')
 
 
-
-converter = lite.TFLiteConverter.from_keras_model_file('model.h5') 
+converter = lite.TFLiteConverter.from_keras_model_file('fulltestcnnmodel.h5') 
 tflite_model = converter.convert()
-file = open( "converted_model.tflite" , "wb" ).write(tflite_model)
+file = open( "converted_model2.tflite" , "wb" ).write(tflite_model)
