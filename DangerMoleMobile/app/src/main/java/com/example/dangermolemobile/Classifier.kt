@@ -59,9 +59,9 @@ class Classifier(
             Log.d("predict size: ", result.size.toString())
             Log.d("predict indices: ", result.indices.toString())
             Log.d("labellist size: ", labelList.size.toString())
-            Log.d("value at index 0: ", ((result[0][0].toInt() and 0xff) / 255.0f).toString())
+            Log.d("value at index 0: ", result[0][0].toString())
 
-        return (result[0][0].toInt() and 0xff) / 255.0f
+        return result[0][0]
     }
 
     override fun close() {
