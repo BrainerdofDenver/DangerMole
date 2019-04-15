@@ -76,7 +76,7 @@ for i in range(num_images):
     test_images.append(image)
     test_labels.append(get_label(os.path.join(DATADESC,y_file_names[index])))
 
-model = load_model('restest_model')
+model = load_model('resmodel')
 
 predictions = model.predict(np.array(test_images))
 '''

@@ -23,7 +23,7 @@ def get_image_at_index(features,index):
     img = cv2.imread(str(features[index]),1)
     img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
     img_resized = cv2.resize(img,(224,224))
-    img_final = img_resized / 255.0
+    img_final = img_resized.astype('float32') / 255.0
     return img_final
 
 def get_image_at_index_with_transform(features,index):   
@@ -31,7 +31,7 @@ def get_image_at_index_with_transform(features,index):
     img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
     img_resized = cv2.resize(img,(224,224))
     img_transformed = random_augment_images(img_resized)
-    img_final = img_transformed / 255.0
+    img_final = img_transformed.astype('float32') / 255.0
     return img_final
 
 def open_json_file(file_name):
@@ -49,7 +49,7 @@ def generator(features, labels, batch_size):
             img = get_image_at_index_with_transform(features,index)
             label = get_label(str(labels[index]))
             batch_features[i] = img
-            batch_labels[i] = label
+            batch_labels[i] = [label]
 
         yield batch_features, batch_labels
 
