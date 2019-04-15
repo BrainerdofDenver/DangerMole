@@ -145,21 +145,6 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
     }
 
-  /*  private fun loadPicToPreview() {
-        val bm = BitmapFactory.decodeFile(currentPhotoPath)
-        val imgView: ImageView = findViewById(R.id.camView)
-        //Get text for probablity view up
-        val probTextView: TextView = findViewById(R.id.probabilityView)
-        val dimension = getSquareCropDimensionForBitmap(bm)
-        var bitmap = Bitmap.createScaledBitmap(bm, INPUT_SIZE, INPUT_SIZE, false)
-        //Call on the classifier to get bitmap of the image
-        val results = classifier.recognizeImage(bitmap)
-        val returnedBitMap = ThumbnailUtils.extractThumbnail(bm, dimension, dimension)
-        probTextView.setText(results.toString())
-        Log.d("Image",results.toString())
-        imgView.setImageBitmap(returnedBitMap)
-    }
-*/
 
     private fun loadPicToPreview(){
         //https://stackoverflow.com/questions/6908604/android-crop-center-of-bitmap
@@ -167,15 +152,22 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         val imgView: ImageView = findViewById(R.id.camView)
         //Get text for probablity view up
         val probTextView: TextView = findViewById(R.id.probabilityView)
+        val accTextView: TextView = findViewById(R.id.accuracyView)
+
         val dimension = getSquareCropDimensionForBitmap(bm)
         var bitmap = Bitmap.createScaledBitmap(bm, INPUT_SIZE, INPUT_SIZE, false)
         //Call on the classifier to get bitmap of the image
         val results = classifier.recognizeImage(bitmap)
         val returnedBitMap = ThumbnailUtils.extractThumbnail(bm, dimension, dimension)
-        probTextView.setText(results.toString())
+        val newResult  = (results * 100)
+        val newResult2 = "%.2f".format(newResult)
+        accTextView.setText("Malignant : " + results.toString()+"\n\n" + this.fileNameCreator())
+        probTextView.setText("Probability : " + newResult2 + "%")
+
         Log.d("output to prob view", results.toString())
         imgView.setImageBitmap(returnedBitMap)
     }
+
 
     private fun getSquareCropDimensionForBitmap(bitmap: Bitmap): Int {
         //use the smallest dimension of the image to crop to
@@ -199,7 +191,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     }
 
     companion object {
-        private const val MODEL_PATH = "converted_model.tflite"
+        private const val MODEL_PATH = "converted_model2.tflite"
         private const val LABEL_PATH = "labels.txt"
         private const val INPUT_SIZE = 224
     }
