@@ -36,7 +36,7 @@ class LocalClinicsActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         super.onCreate(savedInstanceState)
         setContentView(R.layout.drawer_layout_localclinics)
         setSupportActionBar(toolbar)
-        
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         val mapFragment = getFragmentManager().findFragmentById(R.id.map) as MapFragment
@@ -80,11 +80,6 @@ class LocalClinicsActivity : AppCompatActivity(), NavigationView.OnNavigationIte
     override fun onMapReady(map: GoogleMap){
         this.map = map
         setUpMap()
-        map.addMarker(
-            MarkerOptions()
-                .position(LatLng(-33.852, 151.211))
-                .title("Marker")
-        )
     }
     //Maps
     companion object {
@@ -98,15 +93,14 @@ class LocalClinicsActivity : AppCompatActivity(), NavigationView.OnNavigationIte
                 arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
             return
         }
+        
         map.isMyLocationEnabled = true
 
         fusedLocationClient.lastLocation.addOnSuccessListener(this) { location ->
-            // Got last known location. In some rare situations this can be null.
-            // 3
             if (location != null) {
                 lastLocation = location
                 val currentLatLng = LatLng(location.latitude, location.longitude)
-                map.addMarker( MarkerOptions().position(currentLatLng))
+                map.addMarker( MarkerOptions().position(currentLatLng).title("Current Location"))
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 12f))
                 findLocalClinics()
             }
