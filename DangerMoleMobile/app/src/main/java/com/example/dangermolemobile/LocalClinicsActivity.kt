@@ -5,25 +5,25 @@ import android.location.Location
 import android.location.LocationManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.constraint.ConstraintLayout
 import android.support.design.widget.NavigationView
 import android.support.v4.app.ActivityCompat
-import android.support.v4.app.FragmentManager
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.drawer_layout_localclinics.*
 
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import java.util.*
 
 class LocalClinicsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
                              OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
@@ -36,9 +36,12 @@ class LocalClinicsActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         super.onCreate(savedInstanceState)
         setContentView(R.layout.drawer_layout_localclinics)
         setSupportActionBar(toolbar)
+        
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        /*val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.getMapAsync(this)*/
+
+        val mapFragment = getFragmentManager().findFragmentById(R.id.map) as MapFragment
+        mapFragment.getMapAsync(this)
+
         val toggle = ActionBarDrawerToggle(
             this, drawer_layout_localclinics, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
         )
@@ -79,7 +82,7 @@ class LocalClinicsActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         setUpMap()
         map.addMarker(
             MarkerOptions()
-                .position(LatLng(0.0, 0.0))
+                .position(LatLng(-33.852, 151.211))
                 .title("Marker")
         )
     }
@@ -103,9 +106,29 @@ class LocalClinicsActivity : AppCompatActivity(), NavigationView.OnNavigationIte
             if (location != null) {
                 lastLocation = location
                 val currentLatLng = LatLng(location.latitude, location.longitude)
+                map.addMarker( MarkerOptions().position(currentLatLng))
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 12f))
+                findLocalClinics()
             }
         }
+
     }
     override fun onMarkerClick(p0: Marker?) = false
+
+    public fun findLocalClinics(){
+        val appinfo = this.packageManager.getApplicationInfo(this.packageName,PackageManager.GET_META_DATA)
+        val key = appinfo.metaData.getString("com.google.android.geo.API_KEY")
+        val stringBuilder = StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?")
+        stringBuilder.append("&radius="+50000)
+        stringBuilder.append("&location="+lastLocation.latitude.toString() + "," + lastLocation.longitude.toString())
+        stringBuilder.append("&keyword="+"dermatologist")
+        stringBuilder.append("&key="+key)
+        val url = stringBuilder.toString()
+
+        //val dataTransfer = arrayOf(map,url)
+        val dataTransfer = Pair(map,url)
+
+        val getNearbyPlaces = GetNearbyPlaces()
+        getNearbyPlaces.execute(dataTransfer)
+    }
 }
