@@ -23,7 +23,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
+import java.io.OutputStreamWriter
 import java.util.*
 import java.util.concurrent.Executors
 
@@ -33,6 +35,8 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     private var currentPhotoPath = ""
     val REQUEST_TAKE_PHOTO = 1
     val folderName = "DangerMole"
+    val fileName = "Output.txt"
+    val filePath = "data/data/com.example.dangermolemobile/files/OutputData.txt"
 
     //Values for tensorflow
     lateinit var classifier: Classifier
@@ -164,8 +168,13 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         accTextView.setText("Malignant : " + results.toString()+"\n\n" + this.fileNameCreator())
         probTextView.setText("Probability : " + newResult2 + "%")
 
+        val combineResults: String =  newResult2 + "-" + results.toString() + "-" + this.fileNameCreator()
         Log.d("output to prob view", results.toString())
         imgView.setImageBitmap(returnedBitMap)
+        //fileSaveData(results,newResult2) might used to pass the data ontoi the save file
+        //fileSaveData(results.toString(),newResult2,this.fileNameCreator())
+        fileSaveData(combineResults)
+
     }
 
 
@@ -189,6 +198,50 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
         return file
     }
+    //https://stackoverflow.com/questions/48303280/write-a-file-to-a-folder-in-the-android-device-internal-storage
+
+   private fun fileSaveData(combineResults: String) {
+
+        val directory = File( File.separator + this.getFilesDir() + File.separator + "MyFolder")
+        if (!directory.exists())
+            directory.mkdir()
+        val newFile = File(directory, fileName)
+        if (!newFile.exists())
+        {
+            try
+            {
+
+                    newFile.createNewFile()
+
+
+            }
+            catch (e:IOException) {
+                e.printStackTrace()
+            }
+        }
+        try
+        {
+            val fOut = FileOutputStream(newFile)
+            val outputWriter = OutputStreamWriter(fOut)
+            outputWriter.write(combineResults)
+            outputWriter.close()
+            //display file saved message
+            Toast.makeText(getBaseContext(), "File saved successfully!",
+                Toast.LENGTH_SHORT).show()
+        }
+        catch (e:Exception) {
+            e.printStackTrace()
+        }
+        //implement the code here save the data straight into internal
+
+        //Throw  accTextView.setText("Malignant : " + results.toString()+"\n\n" + this.fileNameCreator())
+        //        probTextView.setText("Probability : " + newResult2 + "%")
+
+
+    }
+
+
+
 
     companion object {
         private const val MODEL_PATH = "converted_model2.tflite"
