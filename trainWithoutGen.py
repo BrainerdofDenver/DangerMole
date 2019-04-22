@@ -14,29 +14,32 @@ import random
 import gc
 from memory_profiler import profile
 
-
 @profile 
 def main():
     # Amount of test data
     TEST_PERCENT = 0.2
 
-    benign, malignant = create_base_data('testx.npy','testy.npy')
-    X, y = create_subset_of_data(malignant, benign,100)
+    benign, malignant = create_base_data('Xdata.npy','ydata.npy')
+    X, y = create_subset_of_data(malignant, benign,2000)
     X= X.astype('float32')/255.0
     print(X.shape)
     print(y.shape)
     X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=TEST_PERCENT,random_state=2)
 
-    custom_resnet_model = get_res_model()
-                
-    custom_resnet_model.fit(X_train,y_train,batch_size = 32,epochs=50,shuffle=True,validation_split=0.1)            
+    custom_resnet_model = get_cnn_model()
+    custom_resnet_model.fit(X_train,y_train,batch_size = 32,epochs=12,shuffle=True,validation_split=0.1)            
 
     scores = custom_resnet_model.evaluate(X_test,y_test)
     print("%s: %.2f%%" % (custom_resnet_model.metrics_names[1], scores[1] * 100))
 
     # Saves model along with weights
-    save_model(custom_resnet_model,'testresModel')
-    
+    save_model(custom_resnet_model,'testCnnModel1')
+    '''
+    tf.keras.models.save_model(custom_resnet_model, 'testCnnModel1.h5')
+    converter = tf.lite.TFLiteConverter.from_keras_model_file('testCnnModel1.h5')
+    tflite_model = converter.convert()
+    open("converted_model1.tflite","wb").write(tflite_model)
+    '''
     predictions = custom_resnet_model.predict(X_test)
     plot_roc(predictions, y_test)
 
