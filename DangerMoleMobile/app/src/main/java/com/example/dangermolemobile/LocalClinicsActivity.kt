@@ -93,7 +93,7 @@ class LocalClinicsActivity : AppCompatActivity(), NavigationView.OnNavigationIte
                 arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
             return
         }
-        
+
         map.isMyLocationEnabled = true
 
         fusedLocationClient.lastLocation.addOnSuccessListener(this) { location ->
@@ -109,7 +109,7 @@ class LocalClinicsActivity : AppCompatActivity(), NavigationView.OnNavigationIte
     }
     override fun onMarkerClick(p0: Marker?) = false
 
-    public fun findLocalClinics(){
+    private fun findLocalClinics(){
         val appinfo = this.packageManager.getApplicationInfo(this.packageName,PackageManager.GET_META_DATA)
         val key = appinfo.metaData.getString("com.google.android.geo.API_KEY")
         val stringBuilder = StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?")
@@ -119,7 +119,6 @@ class LocalClinicsActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         stringBuilder.append("&key="+key)
         val url = stringBuilder.toString()
 
-        //val dataTransfer = arrayOf(map,url)
         val dataTransfer = Pair(map,url)
 
         val getNearbyPlaces = GetNearbyPlaces()
