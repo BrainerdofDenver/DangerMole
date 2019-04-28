@@ -198,8 +198,8 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
         return file
     }
-    //https://stackoverflow.com/questions/48303280/write-a-file-to-a-folder-in-the-android-device-internal-storage
 
+    //https://stackoverflow.com/questions/48303280/write-a-file-to-a-folder-in-the-android-device-internal-storage
    private fun fileSaveData(combineResults: String) {
 
         val directory = File( File.separator + this.getFilesDir() + File.separator + "MyFolder")
@@ -210,9 +210,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         {
             try
             {
-
                     newFile.createNewFile()
-
 
             }
             catch (e:IOException) {
@@ -232,10 +230,6 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         catch (e:Exception) {
             e.printStackTrace()
         }
-        //implement the code here save the data straight into internal
-
-        //Throw  accTextView.setText("Malignant : " + results.toString()+"\n\n" + this.fileNameCreator())
-        //        probTextView.setText("Probability : " + newResult2 + "%")
 
 
     }
