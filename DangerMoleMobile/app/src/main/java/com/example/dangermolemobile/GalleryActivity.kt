@@ -8,27 +8,27 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.app_bar_main.*
-import kotlinx.android.synthetic.main.drawer_layout_localclinics.*
+import kotlinx.android.synthetic.main.drawer_layout_gallery.*
 
-class LocalClinicsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.drawer_layout_localclinics)
+        setContentView(R.layout.drawer_layout_gallery)
         setSupportActionBar(toolbar)
 
         val toggle = ActionBarDrawerToggle(
-            this, drawer_layout_localclinics, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
+            this, drawer_layout_gallery, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
         )
-        drawer_layout_localclinics.addDrawerListener(toggle)
+        drawer_layout_gallery.addDrawerListener(toggle)
         toggle.syncState()
-        nav_view_localclinics.setNavigationItemSelectedListener(this)
+        nav_view_gallery.setNavigationItemSelectedListener(this)
     }
 
     //Part of Navigation Drawer
     override fun onBackPressed() {
-        if (drawer_layout_localclinics.isDrawerOpen(GravityCompat.START)) {
-            drawer_layout_localclinics.closeDrawer(GravityCompat.START)
+        if (drawer_layout_gallery.isDrawerOpen(GravityCompat.START)) {
+            drawer_layout_gallery.closeDrawer(GravityCompat.START)
         } else {
             super.onBackPressed()
         }
@@ -52,3 +52,4 @@ class LocalClinicsActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         return true
     }
 }
+

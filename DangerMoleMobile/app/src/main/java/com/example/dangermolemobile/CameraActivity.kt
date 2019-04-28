@@ -1,8 +1,8 @@
 package com.example.dangermolemobile
 
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Bitmap
 import android.media.ThumbnailUtils
 import android.net.Uri
 import android.os.Bundle
@@ -19,9 +19,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.drawer_layout_camera.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.android.synthetic.main.activity_camera.*
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -44,7 +44,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.drawer_layout_camera)
         setSupportActionBar(toolbar)
 
         val toggle = ActionBarDrawerToggle(
@@ -52,17 +52,14 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         )
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
-        nav_view.setNavigationItemSelectedListener(this)
+        nav_view_camera.setNavigationItemSelectedListener(this)
+
+        Utility().requestCameraAndStoragePermissions(this, this)
 
         take_pic_button.setOnClickListener {
             dispatchTakePictureIntent()
         }
 
-        //Delete this
-        camView.setOnClickListener{
-            val file = rootFileCreator()
-            toastCreator(file.toString())
-        }
 
 
         initTensorFlowAndLoadModel()
@@ -127,12 +124,13 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     }
 
     private fun dispatchTakePictureIntent() {
+        Utility().requestCameraAndStoragePermissions(this, this)
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
             takePictureIntent.resolveActivity(packageManager)?.also {
                 val photoFile: File? = try {
                     createImageFile()
                 } catch (ex: IOException) {
-                    toastCreator(getString(R.string.file_creation_error_msg))
+                    Utility().toastCreator(getString(R.string.file_creation_error_msg), this)
                     null
                 }
                 // Continue only if the File was successfully created
@@ -149,7 +147,6 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
     }
 
-
     private fun loadPicToPreview(){
         //https://stackoverflow.com/questions/6908604/android-crop-center-of-bitmap
         val bm = BitmapFactory.decodeFile(currentPhotoPath)
@@ -158,39 +155,18 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         val probTextView: TextView = findViewById(R.id.probabilityView)
         val accTextView: TextView = findViewById(R.id.accuracyView)
 
-        val dimension = getSquareCropDimensionForBitmap(bm)
+        val dimension = Utility().getSquareCropDimensionForBitmap(bm)
         var bitmap = Bitmap.createScaledBitmap(bm, INPUT_SIZE, INPUT_SIZE, false)
         //Call on the classifier to get bitmap of the image
         val results = classifier.recognizeImage(bitmap)
         val returnedBitMap = ThumbnailUtils.extractThumbnail(bm, dimension, dimension)
-        val newResult  = (results * 100)
-        val newResult2 = "%.2f".format(newResult)
-        accTextView.setText("Malignant : " + results.toString()+"\n\n" + this.fileNameCreator())
-        probTextView.setText("Probability : " + newResult2 + "%")
 
-        val combineResults: String =  newResult2 + "-" + results.toString() + "-" + this.fileNameCreator()
-        Log.d("output to prob view", results.toString())
         imgView.setImageBitmap(returnedBitMap)
-        //fileSaveData(results,newResult2) might used to pass the data ontoi the save file
-        //fileSaveData(results.toString(),newResult2,this.fileNameCreator())
-        fileSaveData(combineResults)
-
-    }
-
-
-    private fun getSquareCropDimensionForBitmap(bitmap: Bitmap): Int {
-        //use the smallest dimension of the image to crop to
-        return Math.min(bitmap.width, bitmap.height)
     }
 
     private fun rootFileCreator(): File
             = File(Environment.getExternalStorageDirectory().toString()
             + File.separator + folderName + File.separator)
-
-
-    private fun toastCreator(messageToDisplay: String){
-        Toast.makeText(this, messageToDisplay, Toast.LENGTH_SHORT).show()
-    }
 
     private fun directoryCreator(file: File): File{
         if (!file.exists()) {
