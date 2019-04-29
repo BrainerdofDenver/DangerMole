@@ -29,8 +29,6 @@ import java.text.DecimalFormat
 import java.util.*
 import java.util.concurrent.Executors
 
-
-
 class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private var currentPhotoPath = ""
     val REQUEST_TAKE_PHOTO = 1
@@ -95,46 +93,6 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         return true
     }
 
-    private fun fileNameCreator(): String{
-        val calendar = Calendar.getInstance()
-        val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH).toString()
-        val month = (calendar.get(Calendar.MONTH) + 1).toString() //Java is dumb, so add 1 to months
-        val year = calendar.get(Calendar.YEAR).toString()
-        val hour = calendar.get(Calendar.HOUR).toString()
-        val min = calendar.get(Calendar.MINUTE).toString()
-        val sec = calendar.get(Calendar.SECOND).toString()
-
-        val str = month + "_" + dayOfMonth + "_" + year +  "_" + hour + "_" + min + "_" + sec +  "_"
-        currentFileName = str
-        return str
-    }
-
-    private fun dateSanitizer(): String{
-        //var currentDateTime = currentFileName
-        val splitStringList = currentFileName.split("_".toRegex())
-        var formattedDate = splitStringList[0] + '/' + splitStringList[1] + '/' + splitStringList[2]
-        return formattedDate
-    }
-
-    private fun timeSanitizer(): String{
-        val splitStringList = currentFileName.split("_".toRegex())
-        var formattedTime = splitStringList[3].padStart(2, '0') +
-                ':' + splitStringList[4].padStart(2,'0') + ":" + splitStringList[5]
-        return formattedTime
-    }
-
-    //This function creates a tempfile to append random integers to the end of the file, to prevent duplicates
-    @Throws(IOException::class)
-    private fun createImageFile(): File {
-        val fileRoot = rootFileCreator()
-        directoryCreator(fileRoot)
-        return File.createTempFile(
-            fileNameCreator(), ".png", fileRoot
-        ).apply {
-            currentPhotoPath = absolutePath
-        }
-    }
-
     private fun dispatchTakePictureIntent() {
         Utility().requestCameraAndStoragePermissions(this, this)
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
@@ -142,6 +100,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
                 val photoFile: File? = try {
                     createImageFile()
                 } catch (ex: IOException) {
+                    Thread.sleep(1000)
                     Utility().toastCreator(getString(R.string.file_creation_error_msg), this)
                     null
                 }
@@ -190,8 +149,6 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         return number.toString()
     }
 
-
-
     private fun getSquareCropDimensionForBitmap(bitmap: Bitmap): Int {
         //use the smallest dimension of the image to crop to
         return Math.min(bitmap.width, bitmap.height)
@@ -226,6 +183,46 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             } catch (e: Exception) {
                 throw RuntimeException("Error initializing TensorFlow!", e)
             }
+        }
+    }
+
+    private fun fileNameCreator(): String{
+        val calendar = Calendar.getInstance()
+        val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH).toString()
+        val month = (calendar.get(Calendar.MONTH) + 1).toString() //Java is dumb, so add 1 to months
+        val year = calendar.get(Calendar.YEAR).toString()
+        val hour = calendar.get(Calendar.HOUR).toString()
+        val min = calendar.get(Calendar.MINUTE).toString()
+        val sec = calendar.get(Calendar.SECOND).toString()
+
+        val str = month + "_" + dayOfMonth + "_" + year +  "_" + hour + "_" + min + "_" + sec +  "_"
+        currentFileName = str
+        return str
+    }
+
+    private fun dateSanitizer(): String{
+        //var currentDateTime = currentFileName
+        val splitStringList = currentFileName.split("_".toRegex())
+        var formattedDate = splitStringList[0] + '/' + splitStringList[1] + '/' + splitStringList[2]
+        return formattedDate
+    }
+
+    private fun timeSanitizer(): String{
+        val splitStringList = currentFileName.split("_".toRegex())
+        var formattedTime = splitStringList[3].padStart(2, '0') +
+                ':' + splitStringList[4].padStart(2,'0') + ":" + splitStringList[5]
+        return formattedTime
+    }
+
+    //This function creates a tempfile to append random integers to the end of the file, to prevent duplicates
+    @Throws(IOException::class)
+    private fun createImageFile(): File {
+        val fileRoot = rootFileCreator()
+        directoryCreator(fileRoot)
+        return File.createTempFile(
+            fileNameCreator(), ".png", fileRoot
+        ).apply {
+            currentPhotoPath = absolutePath
         }
     }
 }
