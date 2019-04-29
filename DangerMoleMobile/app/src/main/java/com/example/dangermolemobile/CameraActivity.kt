@@ -24,6 +24,8 @@ import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.activity_camera.*
 import java.io.File
 import java.io.IOException
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import java.util.*
 import java.util.concurrent.Executors
 
@@ -150,11 +152,31 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         val dimension = getSquareCropDimensionForBitmap(bm)
         var bitmap = Bitmap.createScaledBitmap(bm, INPUT_SIZE, INPUT_SIZE, false)
         //Call on the classifier to get bitmap of the image
-        val results = classifier.recognizeImage(bitmap)
+        var results = classifier.recognizeImage(bitmap).toFloat()
         val returnedBitMap = ThumbnailUtils.extractThumbnail(bm, dimension, dimension)
-        probTextView.setText(results.toString())
+//        results = (results * 100)
+//        val dec = DecimalFormat("##.##")
+//        dec.roundingMode = RoundingMode.CEILING
+//        results = dec.format(results).toFloat()
+        //results =
+       // displayProbability(results)
+        val displayResults = floatSanitizer(results)
+        probTextView.setText("Malignant Probability: " + displayResults + "\n" + "Date: " + "\n" + "Time: ")
         Log.d("output to prob view", results.toString())
         imgView.setImageBitmap(returnedBitMap)
+    }
+
+//    private fun displayProbability(modelData: Float){
+//
+//    }
+
+    private fun floatSanitizer(float: Float): String{
+        var number = float
+        number = (number * 100)
+        val dec = DecimalFormat("##.##")
+        dec.roundingMode = RoundingMode.CEILING
+        number = dec.format(number).toFloat()
+        return number.toString()
     }
 
     private fun getSquareCropDimensionForBitmap(bitmap: Bitmap): Int {
