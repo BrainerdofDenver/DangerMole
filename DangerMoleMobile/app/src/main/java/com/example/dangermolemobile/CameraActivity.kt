@@ -1,5 +1,6 @@
 package com.example.dangermolemobile
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -17,7 +18,6 @@ import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 
 import kotlinx.android.synthetic.main.drawer_layout_camera.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -34,6 +34,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     val REQUEST_TAKE_PHOTO = 1
     val folderName = "DangerMole"
     var currentFileName = ""
+
 
     //Values for tensorflow
     lateinit var classifier: Classifier
@@ -127,9 +128,10 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         val dimension = getSquareCropDimensionForBitmap(bm)
         var bitmap = Bitmap.createScaledBitmap(bm, INPUT_SIZE, INPUT_SIZE, false)
         //Call on the classifier to get bitmap of the image
-        var results = classifier.recognizeImage(bitmap).toFloat()
+        var results = classifier.recognizeImage(bitmap)
         val returnedBitMap = ThumbnailUtils.extractThumbnail(bm, dimension, dimension)
         displayProbability(results, probTextView)
+        addNewDataToDataFile(results)
         imgView.setImageBitmap(returnedBitMap)
     }
 
@@ -223,6 +225,25 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             fileNameCreator(), ".png", fileRoot
         ).apply {
             currentPhotoPath = absolutePath
+        }
+    }
+
+    private fun addNewDataToDataFile(modelData: Float){
+        val filepath = this.filesDir.toString() + "/"
+        val savedDataFileName = "SavedData.txt"
+        initialFileChecker(File(filepath + savedDataFileName), savedDataFileName)
+        openFileOutput(savedDataFileName, Context.MODE_APPEND).use {
+            it.write((currentFileName + modelData.toString() + "\n").toByteArray())
+            it.close()
+        }
+    }
+
+    private fun initialFileChecker(file: File, fileName: String){
+        if (!(file.exists())) {
+            openFileOutput(fileName, Context.MODE_APPEND).use {
+                it.write("".toByteArray())
+                it.close()
+            }
         }
     }
 }
