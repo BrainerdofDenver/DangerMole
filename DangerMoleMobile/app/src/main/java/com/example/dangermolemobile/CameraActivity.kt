@@ -118,7 +118,8 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
 
     private fun timeSanitizer(): String{
         val splitStringList = currentFileName.split("_".toRegex())
-        var formattedTime = splitStringList[3].padStart(2, '0') + ':' + splitStringList[4].padStart(2,'0') + ":" + splitStringList[5]
+        var formattedTime = splitStringList[3].padStart(2, '0') +
+                ':' + splitStringList[4].padStart(2,'0') + ":" + splitStringList[5]
         return formattedTime
     }
 
