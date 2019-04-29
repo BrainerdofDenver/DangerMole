@@ -35,6 +35,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     private var currentPhotoPath = ""
     val REQUEST_TAKE_PHOTO = 1
     val folderName = "DangerMole"
+    var currentFileName = ""
 
     //Values for tensorflow
     lateinit var classifier: Classifier
@@ -104,7 +105,21 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         val sec = calendar.get(Calendar.SECOND).toString()
 
         val str = month + "_" + dayOfMonth + "_" + year +  "_" + hour + "_" + min + "_" + sec +  "_"
+        currentFileName = str
         return str
+    }
+
+    private fun dateSanitizer(): String{
+        //var currentDateTime = currentFileName
+        val splitStringList = currentFileName.split("_".toRegex())
+        var formattedDate = splitStringList[0] + '/' + splitStringList[1] + '/' + splitStringList[2]
+        return formattedDate
+    }
+
+    private fun timeSanitizer(): String{
+        val splitStringList = currentFileName.split("_".toRegex())
+        var formattedTime = splitStringList[3].padStart(2, '0') + ':' + splitStringList[4].padStart(2,'0') + ":" + splitStringList[5]
+        return formattedTime
     }
 
     //This function creates a tempfile to append random integers to the end of the file, to prevent duplicates
@@ -161,7 +176,8 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     private fun displayProbability(modelData: Float, tv: TextView){
         Log.d("output to prob view", modelData.toString())
         val displayResults = floatSanitizer(modelData)
-        tv.setText("Malignant Probability: " + displayResults + "\n" + "Date: " + "\n" + "Time: ")
+        tv.setText("Malignant Probability: " + displayResults + "%" + "\n"
+                + "Date: " + dateSanitizer() +  "\n" + "Time: " + timeSanitizer())
     }
 
     private fun floatSanitizer(float: Float): String{
@@ -172,6 +188,8 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         number = dec.format(number).toFloat()
         return number.toString()
     }
+
+
 
     private fun getSquareCropDimensionForBitmap(bitmap: Bitmap): Int {
         //use the smallest dimension of the image to crop to

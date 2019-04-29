@@ -30,7 +30,6 @@
             android:contentDescription="ImageView container that holds photos taken by Camera, and loaded from stored photos"/>
     <TextView
 
-            android:text="Probability:  ___%"
             android:layout_width="292dp"
             android:layout_height="190dp" android:id="@+id/probabilityView"
             app:layout_constraintStart_toStartOf="parent"
