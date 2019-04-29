@@ -1,6 +1,7 @@
 package com.example.dangermolemobile
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.ThumbnailUtils
 import android.net.Uri
@@ -12,8 +13,11 @@ import android.support.v4.content.FileProvider
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.*
 import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 
 import kotlinx.android.synthetic.main.drawer_layout_camera.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -141,10 +145,21 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         //https://stackoverflow.com/questions/6908604/android-crop-center-of-bitmap
         val bm = BitmapFactory.decodeFile(currentPhotoPath)
         val imgView: ImageView = findViewById(R.id.camView)
-        val dimension = Utility().getSquareCropDimensionForBitmap(bm)
+        //Get text for probablity view up
+        val probTextView: TextView = findViewById(R.id.probabilityView)
+        val dimension = getSquareCropDimensionForBitmap(bm)
+        var bitmap = Bitmap.createScaledBitmap(bm, INPUT_SIZE, INPUT_SIZE, false)
+        //Call on the classifier to get bitmap of the image
+        val results = classifier.recognizeImage(bitmap)
         val returnedBitMap = ThumbnailUtils.extractThumbnail(bm, dimension, dimension)
-
+        probTextView.setText(results.toString())
+        Log.d("output to prob view", results.toString())
         imgView.setImageBitmap(returnedBitMap)
+    }
+
+    private fun getSquareCropDimensionForBitmap(bitmap: Bitmap): Int {
+        //use the smallest dimension of the image to crop to
+        return Math.min(bitmap.width, bitmap.height)
     }
 
     private fun rootFileCreator(): File
@@ -159,7 +174,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     }
 
     companion object {
-        private const val MODEL_PATH = "mobilenet_quant_v1_224.tflite"
+        private const val MODEL_PATH = "converted_model2.tflite"
         private const val LABEL_PATH = "labels.txt"
         private const val INPUT_SIZE = 224
     }

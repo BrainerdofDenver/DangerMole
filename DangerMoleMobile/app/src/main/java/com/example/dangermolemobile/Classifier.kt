@@ -4,6 +4,7 @@ package com.example.dangermolemobile
 import android.annotation.SuppressLint
 import android.content.res.AssetManager
 import android.graphics.Bitmap
+import android.util.Log
 import org.tensorflow.lite.Interpreter
 import java.io.BufferedReader
 import java.io.FileInputStream
@@ -15,10 +16,11 @@ import java.nio.ByteOrder
 import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
 import java.util.*
+import kotlin.collections.ArrayList
 
 class Classifier(
     var interpreter: Interpreter? = null,
-    var inputSize: Int = 0,
+    var inputSize: Int = 224,
     var labelList: List<String> = emptyList()
 ) : IClassifier {
 
@@ -28,6 +30,11 @@ class Classifier(
         private val PIXEL_SIZE = 3
         private val THRESHOLD = 0.1f
 
+/*      Might need to get the model working not sure....
+        private const val IMAGE_MEAN = 128
+        private const val IMAGE_STD = 128.0f
+        */
+        private const val CONSTANT = 255.0f
         @Throws(IOException::class)
         fun create(assetManager: AssetManager,
                    modelPath: String,
@@ -44,12 +51,17 @@ class Classifier(
     }
 
 
-
-    override fun recognizeImage(bitmap: Bitmap): List<IClassifier.Recognition> {
+        // Change to recognize two things
+    override fun recognizeImage(bitmap: Bitmap): kotlin.Float {
         val byteBuffer = convertBitmapToByteBuffer(bitmap)
-        val result = Array(1) { ByteArray(labelList.size) }
+            var result = Array(1){FloatArray(labelList.size)}
         interpreter!!.run(byteBuffer, result)
-        return getSortedResult(result)
+            Log.d("predict size: ", result.size.toString())
+            Log.d("predict indices: ", result.indices.toString())
+            Log.d("labellist size: ", labelList.size.toString())
+            Log.d("value at index 0: ", result[0][0].toString())
+
+        return result[0][0]
     }
 
     override fun close() {
@@ -69,10 +81,13 @@ class Classifier(
 
     @Throws(IOException::class)
     private fun loadLabelList(assetManager: AssetManager, labelPath: String): List<String> {
-        val labelList = ArrayList<String>()
+        val labelList:ArrayList<String> = ArrayList()
+
+        //return labelList
         val reader = BufferedReader(InputStreamReader(assetManager.open(labelPath)))
         while (true) {
             val line = reader.readLine() ?: break
+            Log.d("list reading:", line.toString())
             labelList.add(line)
         }
         reader.close()
@@ -80,7 +95,7 @@ class Classifier(
     }
 
     private fun convertBitmapToByteBuffer(bitmap: Bitmap): ByteBuffer {
-        val byteBuffer = ByteBuffer.allocateDirect(BATCH_SIZE * inputSize * inputSize * PIXEL_SIZE)
+        val byteBuffer = ByteBuffer.allocateDirect(BATCH_SIZE * inputSize * inputSize * PIXEL_SIZE * 4)
         byteBuffer.order(ByteOrder.nativeOrder())
         val intValues = IntArray(inputSize * inputSize)
         bitmap.getPixels(intValues, 0, bitmap.width, 0, 0, bitmap.width, bitmap.height)
@@ -88,15 +103,15 @@ class Classifier(
         for (i in 0 until inputSize) {
             for (j in 0 until inputSize) {
                 val `val` = intValues[pixel++]
-                byteBuffer.put((`val` shr 16 and 0xFF).toByte())
-                byteBuffer.put((`val` shr 8 and 0xFF).toByte())
-                byteBuffer.put((`val` and 0xFF).toByte())
+                byteBuffer.putFloat((`val` shr 16 and 0xFF).toFloat()/ CONSTANT) //IMAGE_MEAN/ IMAGE_STD)
+                byteBuffer.putFloat((`val` shr 8 and 0xFF).toFloat() / CONSTANT) //IMAGE_MEAN/ IMAGE_STD)
+                byteBuffer.putFloat((`val` and 0xFF).toFloat() / CONSTANT) //IMAGE_MEAN/ IMAGE_STD)
             }
         }
         return byteBuffer
     }
 
-    private fun getSortedResult(labelProbArray: Array<ByteArray>): List<IClassifier.Recognition> {
+    private fun getSortedResult(labelProbArray: Array<FloatArray>): List<IClassifier.Recognition> {
 
         val pq = PriorityQueue(
             MAX_RESULTS,
