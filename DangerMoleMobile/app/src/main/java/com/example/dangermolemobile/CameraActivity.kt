@@ -154,21 +154,15 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         //Call on the classifier to get bitmap of the image
         var results = classifier.recognizeImage(bitmap).toFloat()
         val returnedBitMap = ThumbnailUtils.extractThumbnail(bm, dimension, dimension)
-//        results = (results * 100)
-//        val dec = DecimalFormat("##.##")
-//        dec.roundingMode = RoundingMode.CEILING
-//        results = dec.format(results).toFloat()
-        //results =
-       // displayProbability(results)
-        val displayResults = floatSanitizer(results)
-        probTextView.setText("Malignant Probability: " + displayResults + "\n" + "Date: " + "\n" + "Time: ")
-        Log.d("output to prob view", results.toString())
+        displayProbability(results, probTextView)
         imgView.setImageBitmap(returnedBitMap)
     }
 
-//    private fun displayProbability(modelData: Float){
-//
-//    }
+    private fun displayProbability(modelData: Float, tv: TextView){
+        Log.d("output to prob view", modelData.toString())
+        val displayResults = floatSanitizer(modelData)
+        tv.setText("Malignant Probability: " + displayResults + "\n" + "Date: " + "\n" + "Time: ")
+    }
 
     private fun floatSanitizer(float: Float): String{
         var number = float
