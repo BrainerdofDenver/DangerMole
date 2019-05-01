@@ -1,5 +1,6 @@
 package com.example.dangermolemobile
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.NavigationView
@@ -53,16 +54,30 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
                 Toast.makeText(applicationContext,
                     "Position :$position\nItem Value : $itemValue", Toast.LENGTH_LONG)
                     .show()
+
+                val intent = Intent(this@GalleryActivity, CameraActivity::class.java)
+                intent.putExtra("formattedDataString", itemValue)
+                startActivity(intent)
+
             }
         }
 
+    }
+
+    private fun listViewItemDisplaySanitizer(inputString: String): String{
+        val splitStringList = inputString.split("_".toRegex())
+        var formattedString = splitStringList[0] + '/' + splitStringList[1] + '/' + splitStringList[2] + " " +
+                splitStringList[3] + ":" + splitStringList[4] + ":" + splitStringList[5] + " Mole Score: " + splitStringList[6]
+
+        return formattedString
     }
 
     private fun displayListCleaner(list: Array<String>): ArrayList<String>{
         var newList = ArrayList<String>()
         for (item in list){
             if (item != ""){
-                newList.add(item)
+
+                newList.add(listViewItemDisplaySanitizer(item))
             }
         }
         return newList

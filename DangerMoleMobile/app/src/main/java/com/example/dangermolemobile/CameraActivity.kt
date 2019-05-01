@@ -137,18 +137,9 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
 
     private fun displayProbability(modelData: Float, tv: TextView){
         Log.d("output to prob view", modelData.toString())
-        val displayResults = floatSanitizer(modelData)
+        val displayResults = Utility().floatSanitizer(modelData)
         tv.setText("Malignant Probability: " + displayResults + "%" + "\n"
                 + "Date: " + dateSanitizer() +  "\n" + "Time: " + timeSanitizer())
-    }
-
-    private fun floatSanitizer(float: Float): String{
-        var number = float
-        number = (number * 100)
-        val dec = DecimalFormat("##.##")
-        dec.roundingMode = RoundingMode.CEILING
-        number = dec.format(number).toFloat()
-        return number.toString()
     }
 
     private fun getSquareCropDimensionForBitmap(bitmap: Bitmap): Int {
