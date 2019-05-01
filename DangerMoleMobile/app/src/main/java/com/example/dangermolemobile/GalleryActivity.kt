@@ -27,7 +27,7 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         val filePath = this.filesDir.toString()
 
         //var array = arrayOf("Melbourne", "Vienna", "Vancouver", "Toronto", "Calgary", "Adelaide", "Perth", "Auckland", "Helsinki", "Hamburg", "Munich", "New York", "Sydney", "Paris", "Cape Town", "Barcelona", "London", "Bangkok")
-        var listToDisplay = displayListCleaner(populateArrayFromFile(filePath + "/SavedData.txt"))
+        var listToDisplay = displayListCleaner(Utility().populateArrayFromFile(filePath + "/SavedData.txt"))
 
         val toggle = ActionBarDrawerToggle(
             this, drawer_layout_gallery, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
@@ -50,13 +50,13 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
                 // value of item that is clicked
                 val itemValue = listView.getItemAtPosition(position) as String
 
-                // Toast the values
+             //    Toast the values
 //                Toast.makeText(applicationContext,
 //                    "Position :$position\nItem Value : $itemValue", Toast.LENGTH_LONG)
 //                    .show()
 
                 val intent = Intent(this@GalleryActivity, CameraActivity::class.java)
-                intent.putExtra("formattedDataString", itemValue)
+                intent.putExtra("dataLineIndex", position)
                 startActivity(intent)
 
             }
@@ -109,14 +109,6 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         NavigationHandler().NavigationOnClickListener(this, this, item)
         return true
-    }
-
-    private fun readFileAsTextUsingInputStream(fileName: String)
-            = File(fileName).inputStream().readBytes().toString(Charsets.UTF_8)
-
-    fun populateArrayFromFile(filePath: String):Array<String>{
-        var str = readFileAsTextUsingInputStream(filePath)
-        return str.split("\n").toTypedArray()
     }
 }
 

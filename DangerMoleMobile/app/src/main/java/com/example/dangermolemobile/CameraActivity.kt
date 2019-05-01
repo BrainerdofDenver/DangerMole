@@ -60,13 +60,15 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
 
         initTensorFlowAndLoadModel()
-        var dataFromGallery = ""
-        if (intent.getStringExtra("formattedDataString") != null){
-            dataFromGallery = intent.getStringExtra("formattedDataString")
+
+        var dataIndexFromGallery = 0
+        if (intent.getStringExtra("dataLineIndex") != null){
+            dataIndexFromGallery = intent.getIntExtra("dataLineIndex", 0)
+
         }
 
         camView.setOnClickListener{
-            Toast.makeText(this, dataFromGallery, Toast.LENGTH_LONG).show()
+            Toast.makeText(this, dataIndexFromGallery.toString(), Toast.LENGTH_LONG).show()
         }
 
 
@@ -133,11 +135,6 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     private fun loadPicFromGallerytoPreview(formattedDataString: String){
 
     }
-//TODO: pass index -1 as intent and rebuild array from file to match imagefilename (take off ends _ prob/tempfile)
-//    private fun reformatIntentString(inputString: String): String{
-//        var returnString = inputString.split("/", "_")
-//        //returnString = inputString.split
-//    }
 
     private fun loadPicToPreview(){
         //https://stackoverflow.com/questions/6908604/android-crop-center-of-bitmap
