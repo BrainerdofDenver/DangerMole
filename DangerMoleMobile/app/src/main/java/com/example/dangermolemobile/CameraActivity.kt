@@ -18,6 +18,7 @@ import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 
 import kotlinx.android.synthetic.main.drawer_layout_camera.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -59,6 +60,16 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
 
         initTensorFlowAndLoadModel()
+        var dataFromGallery = ""
+        if (intent.getStringExtra("formattedDataString") != null){
+            dataFromGallery = intent.getStringExtra("formattedDataString")
+        }
+
+        camView.setOnClickListener{
+            Toast.makeText(this, dataFromGallery, Toast.LENGTH_LONG).show()
+        }
+
+
     }
 
     //Code based on tutorial for initial functionality: https://www.youtube.com/watch?v=5wbeWN4hQt0

@@ -51,9 +51,9 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
                 val itemValue = listView.getItemAtPosition(position) as String
 
                 // Toast the values
-                Toast.makeText(applicationContext,
-                    "Position :$position\nItem Value : $itemValue", Toast.LENGTH_LONG)
-                    .show()
+//                Toast.makeText(applicationContext,
+//                    "Position :$position\nItem Value : $itemValue", Toast.LENGTH_LONG)
+//                    .show()
 
                 val intent = Intent(this@GalleryActivity, CameraActivity::class.java)
                 intent.putExtra("formattedDataString", itemValue)
