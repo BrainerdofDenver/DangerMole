@@ -130,6 +130,15 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
     }
 
+    private fun loadPicFromGallerytoPreview(formattedDataString: String){
+
+    }
+//TODO: pass index -1 as intent and rebuild array from file to match imagefilename (take off ends _ prob/tempfile)
+//    private fun reformatIntentString(inputString: String): String{
+//        var returnString = inputString.split("/", "_")
+//        //returnString = inputString.split
+//    }
+
     private fun loadPicToPreview(){
         //https://stackoverflow.com/questions/6908604/android-crop-center-of-bitmap
         val bm = BitmapFactory.decodeFile(currentPhotoPath)
