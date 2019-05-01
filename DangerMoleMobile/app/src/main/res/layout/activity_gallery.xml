@@ -8,13 +8,13 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:showIn="@layout/drawer_layout_gallery"
         tools:context=".GalleryActivity">
-    <TextView
-            android:text="gallery"
-            android:layout_width="56dp"
-            android:layout_height="18dp" android:id="@+id/textView3" android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="parent" android:layout_marginTop="8dp"
-            app:layout_constraintTop_toTopOf="parent" app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="8dp" app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="8dp"/>
 
+
+    <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="parent" app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="8dp" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="8dp" android:id="@+id/gallery_list_view"/>
 </android.support.constraint.ConstraintLayout>
