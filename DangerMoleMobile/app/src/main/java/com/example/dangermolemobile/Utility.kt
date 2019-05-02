@@ -8,6 +8,9 @@ import android.content.pm.PackageManager
 import android.support.v4.content.ContextCompat
 import android.app.Activity
 import android.support.v4.app.ActivityCompat
+import java.io.File
+import java.math.RoundingMode
+import java.text.DecimalFormat
 
 class Utility {
     private val REQUEST_CAM_STORAGE_PERMISSIONS_CODE = 298
@@ -30,6 +33,23 @@ class Utility {
                 Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA), REQUEST_CAM_STORAGE_PERMISSIONS_CODE )
         }
 
+    }
+
+    fun floatSanitizer(float: Float): String{
+        var number = float
+        number = (number * 100)
+        val dec = DecimalFormat("##.##")
+        dec.roundingMode = RoundingMode.CEILING
+        number = dec.format(number).toFloat()
+        return number.toString()
+    }
+
+    private fun readFileAsTextUsingInputStream(fileName: String)
+            = File(fileName).inputStream().readBytes().toString(Charsets.UTF_8)
+
+    fun populateArrayFromFile(filePath: String):Array<String>{
+        var str = readFileAsTextUsingInputStream(filePath)
+        return str.split("\n").toTypedArray()
     }
 
 }
