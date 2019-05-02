@@ -90,7 +90,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     }
     //Nav
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        NavigationHandler().NavigationOnClickListener(this, this, item)
+        NavigationHandler().navigationOnClickListener(this, this, item)
         return true
     }
 
@@ -203,7 +203,6 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     }
 
     private fun dateSanitizer(): String{
-        //var currentDateTime = currentFileName
         val splitStringList = currentFileName.split("_".toRegex())
         var formattedDate = splitStringList[0] + '/' + splitStringList[1] + '/' + splitStringList[2]
         return formattedDate

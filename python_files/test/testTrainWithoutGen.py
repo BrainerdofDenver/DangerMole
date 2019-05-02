@@ -26,8 +26,8 @@ class TestModelUtilsMethods(unittest.TestCase):
 
     def test_create_subset_data(self):
         benign,malignant = trainWithoutGen.create_base_data(self.XDATA,self.YDATA)
-        actual_X, actual_y = trainWithoutGen.create_subset_of_data(malignant,benign,1)
-        self.assertEqual(len(actual_X),3)
+        actual_x, actual_y = trainWithoutGen.create_subset_of_data(malignant,benign,1)
+        self.assertEqual(len(actual_x),3)
 
     def test_plot_roc(self):
         predictions = np.random.rand(10)

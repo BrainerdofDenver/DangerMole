@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.drawer_layout_generalinfo.*
 import kotlinx.android.synthetic.main.drawer_layout_localclinics.*
 
 class NavigationHandler {
-    fun NavigationOnClickListener(mContext: Context, mActivity: Activity, item: MenuItem){
+    fun navigationOnClickListener(mContext: Context, mActivity: Activity, item: MenuItem){
 
         when (item.itemId) {
             R.id.nav_camera -> {

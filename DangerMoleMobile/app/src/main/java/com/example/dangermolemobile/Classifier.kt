@@ -1,7 +1,6 @@
 package com.example.dangermolemobile
 
 
-import android.annotation.SuppressLint
 import android.content.res.AssetManager
 import android.graphics.Bitmap
 import android.util.Log
@@ -10,12 +9,10 @@ import java.io.BufferedReader
 import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStreamReader
-import java.lang.Float
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
-import java.util.*
 import kotlin.collections.ArrayList
 
 class Classifier(
@@ -30,10 +27,6 @@ class Classifier(
         private val PIXEL_SIZE = 3
         private val THRESHOLD = 0.1f
 
-/*      Might need to get the model working not sure....
-        private const val IMAGE_MEAN = 128
-        private const val IMAGE_STD = 128.0f
-        */
         private const val CONSTANT = 255.0f
         @Throws(IOException::class)
         fun create(assetManager: AssetManager,
@@ -102,36 +95,12 @@ class Classifier(
         var pixel = 0
         for (i in 0 until inputSize) {
             for (j in 0 until inputSize) {
-                val `val` = intValues[pixel++]
-                byteBuffer.putFloat((`val` shr 16 and 0xFF).toFloat()/ CONSTANT) //IMAGE_MEAN/ IMAGE_STD)
-                byteBuffer.putFloat((`val` shr 8 and 0xFF).toFloat() / CONSTANT) //IMAGE_MEAN/ IMAGE_STD)
-                byteBuffer.putFloat((`val` and 0xFF).toFloat() / CONSTANT) //IMAGE_MEAN/ IMAGE_STD)
+                val value = intValues[pixel++]
+                byteBuffer.putFloat((value shr 16 and 0xFF).toFloat()/ CONSTANT)
+                byteBuffer.putFloat((value shr 8 and 0xFF).toFloat() / CONSTANT)
+                byteBuffer.putFloat((value and 0xFF).toFloat() / CONSTANT)
             }
         }
         return byteBuffer
-    }
-
-    private fun getSortedResult(labelProbArray: Array<FloatArray>): List<IClassifier.Recognition> {
-
-        val pq = PriorityQueue(
-            MAX_RESULTS,
-            Comparator<IClassifier.Recognition> { (_, _, confidence1), (_, _, confidence2) -> Float.compare(confidence1, confidence2) })
-
-        for (i in labelList.indices) {
-            val confidence = (labelProbArray[0][i].toInt() and 0xff) / 255.0f
-            if (confidence > THRESHOLD) {
-                pq.add(IClassifier.Recognition("" + i,
-                    if (labelList.size > i) labelList[i] else "Unknown",
-                    confidence))
-            }
-        }
-
-        val recognitions = ArrayList<IClassifier.Recognition>()
-        val recognitionsSize = Math.min(pq.size, MAX_RESULTS)
-        for (i in 0 until recognitionsSize) {
-            recognitions.add(pq.poll())
-        }
-
-        return recognitions
     }
 }

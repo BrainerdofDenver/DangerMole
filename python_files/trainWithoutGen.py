@@ -21,15 +21,15 @@ def main():
 
     benign, malignant = create_base_data('Xdata.npy','ydata.npy')
     X, y = create_subset_of_data(malignant, benign,2000)
-    X= X.astype('float32')/255.0
+    X = X.astype('float32')/255.0
     print(X.shape)
     print(y.shape)
-    X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=TEST_PERCENT,random_state=2)
+    x_train, x_test, y_train, y_test = train_test_split(X,y,test_size=TEST_PERCENT,random_state=2)
 
     custom_resnet_model = get_cnn_model()
-    custom_resnet_model.fit(X_train,y_train,batch_size = 32,epochs=12,shuffle=True,validation_split=0.1)            
+    custom_resnet_model.fit(x_train,y_train,batch_size = 32,epochs=12,shuffle=True,validation_split=0.1)            
 
-    scores = custom_resnet_model.evaluate(X_test,y_test)
+    scores = custom_resnet_model.evaluate(x_test,y_test)
     print("%s: %.2f%%" % (custom_resnet_model.metrics_names[1], scores[1] * 100))
 
     # Saves model along with weights
@@ -40,7 +40,7 @@ def main():
     tflite_model = converter.convert()
     open("converted_model1.tflite","wb").write(tflite_model)
     '''
-    predictions = custom_resnet_model.predict(X_test)
+    predictions = custom_resnet_model.predict(x_test)
     plot_roc(predictions, y_test)
 
 def plot_roc(predictions, y_test):
@@ -89,18 +89,18 @@ def create_subset_of_data(malignant, benign, amount_of_benign_examples=100):
     return X, y
 
 def create_base_data(x_data_name,y_data_name):
-    X_load = np.load(x_data_name)
+    x_load = np.load(x_data_name)
     y_load = np.load(y_data_name)
-    print(X_load.shape)
+    print(x_load.shape)
     print(y_load.shape)
     benign = []
     malignant = []
 
-    for i in range(len(X_load)):
+    for i in range(len(x_load)):
         if y_load[i] == 0:
-            benign.append([X_load[i],y_load[i]])
+            benign.append([x_load[i],y_load[i]])
         else:
-            malignant.append([X_load[i],y_load[i]])
+            malignant.append([x_load[i],y_load[i]])
     return benign, malignant
 
 if __name__ == "__main__":
