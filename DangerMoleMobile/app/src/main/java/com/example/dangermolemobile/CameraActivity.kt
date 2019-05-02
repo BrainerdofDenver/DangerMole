@@ -18,15 +18,12 @@ import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 
 import kotlinx.android.synthetic.main.drawer_layout_camera.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.activity_camera.*
 import java.io.File
 import java.io.IOException
-import java.math.RoundingMode
-import java.text.DecimalFormat
 import java.util.*
 import java.util.concurrent.Executors
 
@@ -52,7 +49,6 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
         nav_view_camera.setNavigationItemSelectedListener(this)
-
         Utility().requestCameraAndStoragePermissions(this, this)
 
         take_pic_button.setOnClickListener {
@@ -60,44 +56,14 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
 
         initTensorFlowAndLoadModel()
-        
-        var test = ""
+        galleryIntentHandler()
 
-        val filepath = this.filesDir.toString() + "/"
-        val savedDataFileName = "SavedData.txt"
-        var dataIndexFromGallery = 0
-
-
-        if (intent.getIntExtra("dataLineIndex", -1) != -1){
-            dataIndexFromGallery = intent.getIntExtra("dataLineIndex", 0)
-            val savedDataArray = Utility().populateArrayFromFile(filepath + savedDataFileName)
-            test = savedDataArray[dataIndexFromGallery]  // REMOVE
-            val imageDirectory = File(Environment.getExternalStorageDirectory().toString() + "/DangerMole")
-            val lastIndexOf_ = savedDataArray[dataIndexFromGallery].lastIndexOf("_")
-            val subString = savedDataArray[dataIndexFromGallery].substring(0,lastIndexOf_)
-            imageDirectory.walk().forEach{
-                if ( it.toString().contains(subString)) {
-                    currentPhotoPath = it.absolutePath
-                    currentFileName = savedDataArray[dataIndexFromGallery]
-                    val textview: TextView = findViewById(R.id.probabilityView)
-                    loadedDataToTextView(textview)
-                }
-            }
-            loadPicFromGallerytoPreview()
-
-        }
-        //Using this to test filepaths for images
-        camView.setOnClickListener{
-            var i = 1
-           // Toast.makeText(this, testList[i], Toast.LENGTH_LONG).show()
-            Toast.makeText(this, test, Toast.LENGTH_LONG).show()
-        }
     }
 
     //Code based on tutorial for initial functionality: https://www.youtube.com/watch?v=5wbeWN4hQt0
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        loadPicToPreview()
+        loadPreviewFromCamera()
     }
 
     //Part of Navigation Drawer
@@ -125,6 +91,28 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         NavigationHandler().NavigationOnClickListener(this, this, item)
         return true
+    }
+
+    private fun galleryIntentHandler(){
+        val filepath = this.filesDir.toString() + "/"
+        val savedDataFileName = "SavedData.txt"
+        var dataIndexFromGallery = 0
+        if (intent.getIntExtra("dataLineIndex", -1) != -1){
+            dataIndexFromGallery = intent.getIntExtra("dataLineIndex", 0)
+            val savedDataArray = Utility().populateArrayFromFile(filepath + savedDataFileName)
+            val imageDirectory = File(Environment.getExternalStorageDirectory().toString() + "/DangerMole")
+            val lastIndexOf_ = savedDataArray[dataIndexFromGallery].lastIndexOf("_")
+            val subString = savedDataArray[dataIndexFromGallery].substring(0,lastIndexOf_)
+            imageDirectory.walk().forEach{
+                if ( it.toString().contains(subString)) {
+                    currentPhotoPath = it.absolutePath
+                    currentFileName = savedDataArray[dataIndexFromGallery]
+                    val textview: TextView = findViewById(R.id.probabilityView)
+                    loadedDataToTextView(textview)
+                }
+            }
+            loadPicFromGallerytoPreview()
+        }
     }
 
     private fun dispatchTakePictureIntent() {
@@ -161,7 +149,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         imgView.setImageBitmap(returnedBitMap)
     }
 
-    private fun loadPicToPreview(){
+    private fun loadPreviewFromCamera(){
         //https://stackoverflow.com/questions/6908604/android-crop-center-of-bitmap
         val bm = BitmapFactory.decodeFile(currentPhotoPath)
         val imgView: ImageView = findViewById(R.id.camView)
@@ -177,62 +165,16 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         imgView.setImageBitmap(returnedBitMap)
     }
 
-    private fun displayProbability(modelData: Float, tv: TextView){
-        Log.d("output to prob view", modelData.toString())
-        val displayResults = Utility().floatSanitizer(modelData)
-        tv.setText("Malignant Probability: " + displayResults + "%" + "\n"
-                + "Date: " + dateSanitizer() +  "\n" + "Time: " + timeSanitizer())
-    }
-
     private fun getSquareCropDimensionForBitmap(bitmap: Bitmap): Int {
         //use the smallest dimension of the image to crop to
         return Math.min(bitmap.width, bitmap.height)
     }
 
-    private fun rootFileCreator(): File
-            = File(Environment.getExternalStorageDirectory().toString()
-            + File.separator + folderName + File.separator)
-
-    private fun directoryCreator(file: File): File{
-        if (!file.exists()) {
-            file.mkdirs()
-        }
-        return file
-    }
-
-    companion object {
-        private const val MODEL_PATH = "converted_model2.tflite"
-        private const val LABEL_PATH = "labels.txt"
-        private const val INPUT_SIZE = 224
-    }
-
-    private fun initTensorFlowAndLoadModel() {
-        executor.execute {
-            try {
-                classifier = Classifier.create(
-                    assets,
-                    MODEL_PATH,
-                    LABEL_PATH,
-                    INPUT_SIZE)
-
-            } catch (e: Exception) {
-                throw RuntimeException("Error initializing TensorFlow!", e)
-            }
-        }
-    }
-
-    private fun fileNameCreator(): String{
-        val calendar = Calendar.getInstance()
-        val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH).toString()
-        val month = (calendar.get(Calendar.MONTH) + 1).toString() //Java is dumb, so add 1 to months
-        val year = calendar.get(Calendar.YEAR).toString()
-        val hour = calendar.get(Calendar.HOUR).toString()
-        val min = calendar.get(Calendar.MINUTE).toString()
-        val sec = calendar.get(Calendar.SECOND).toString()
-
-        val str = month + "_" + dayOfMonth + "_" + year +  "_" + hour + "_" + min + "_" + sec +  "_"
-        currentFileName = str
-        return str
+    private fun displayProbability(modelData: Float, tv: TextView){
+        Log.d("output to prob view", modelData.toString())
+        val displayResults = Utility().floatSanitizer(modelData)
+        tv.setText("Malignant Probability: " + displayResults + "%" + "\n"
+                + "Date: " + dateSanitizer() +  "\n" + "Time: " + timeSanitizer())
     }
 
     private fun dateSanitizer(): String{
@@ -256,12 +198,25 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     }
 
     private fun loadedDataToTextView(tv: TextView){
-//        val formattedDate = dateSanitizer()
-//        val formattedTime = timeSanitizer()
         val formattedProbability = loadedProbabilitySanitizer()
         tv.setText("Malignant Probability: " + formattedProbability + "%" + "\n"
                 + "Date: " + dateSanitizer() +  "\n" + "Time: " + timeSanitizer())
     }
+
+    private fun fileNameCreator(): String{
+        val calendar = Calendar.getInstance()
+        val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH).toString()
+        val month = (calendar.get(Calendar.MONTH) + 1).toString() //Java is dumb, so add 1 to months
+        val year = calendar.get(Calendar.YEAR).toString()
+        val hour = calendar.get(Calendar.HOUR).toString()
+        val min = calendar.get(Calendar.MINUTE).toString()
+        val sec = calendar.get(Calendar.SECOND).toString()
+
+        val str = month + "_" + dayOfMonth + "_" + year +  "_" + hour + "_" + min + "_" + sec +  "_"
+        currentFileName = str
+        return str
+    }
+
     //This function creates a tempfile to append random integers to the end of the file, to prevent duplicates
     @Throws(IOException::class)
     private fun createImageFile(): File {
@@ -292,4 +247,37 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             }
         }
     }
+
+    private fun rootFileCreator(): File
+            = File(Environment.getExternalStorageDirectory().toString()
+            + File.separator + folderName + File.separator)
+
+    private fun directoryCreator(file: File): File{
+        if (!file.exists()) {
+            file.mkdirs()
+        }
+        return file
+    }
+
+    private fun initTensorFlowAndLoadModel() {
+        executor.execute {
+            try {
+                classifier = Classifier.create(
+                    assets,
+                    MODEL_PATH,
+                    LABEL_PATH,
+                    INPUT_SIZE)
+
+            } catch (e: Exception) {
+                throw RuntimeException("Error initializing TensorFlow!", e)
+            }
+        }
+    }
+
+    companion object {
+        private const val MODEL_PATH = "converted_model2.tflite"
+        private const val LABEL_PATH = "labels.txt"
+        private const val INPUT_SIZE = 224
+    }
 }
+
