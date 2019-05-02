@@ -67,6 +67,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         val savedDataFileName = "SavedData.txt"
         var dataIndexFromGallery = 0
 
+
         if (intent.getIntExtra("dataLineIndex", -1) != -1){
             dataIndexFromGallery = intent.getIntExtra("dataLineIndex", 0)
             val savedDataArray = Utility().populateArrayFromFile(filepath + savedDataFileName)
@@ -77,9 +78,13 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             imageDirectory.walk().forEach{
                 if ( it.toString().contains(subString)) {
                     currentPhotoPath = it.absolutePath
+                    currentFileName = savedDataArray[dataIndexFromGallery]
+                    val textview: TextView = findViewById(R.id.probabilityView)
+                    loadedDataToTextView(textview)
                 }
             }
             loadPicFromGallerytoPreview()
+
         }
         //Using this to test filepaths for images
         camView.setOnClickListener{
@@ -244,6 +249,19 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         return formattedTime
     }
 
+    private fun loadedProbabilitySanitizer(): String{
+        val splitStringList = currentFileName.split("_".toRegex())
+        val formattedProbability = Utility().floatSanitizer(splitStringList[6].toFloat())
+        return formattedProbability
+    }
+
+    private fun loadedDataToTextView(tv: TextView){
+//        val formattedDate = dateSanitizer()
+//        val formattedTime = timeSanitizer()
+        val formattedProbability = loadedProbabilitySanitizer()
+        tv.setText("Malignant Probability: " + formattedProbability + "%" + "\n"
+                + "Date: " + dateSanitizer() +  "\n" + "Time: " + timeSanitizer())
+    }
     //This function creates a tempfile to append random integers to the end of the file, to prevent duplicates
     @Throws(IOException::class)
     private fun createImageFile(): File {
