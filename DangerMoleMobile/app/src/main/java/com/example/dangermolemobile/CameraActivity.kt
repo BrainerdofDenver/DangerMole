@@ -60,16 +60,37 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
 
         initTensorFlowAndLoadModel()
+//TODO: From here, it erroneously loads an img to thumbnail on startup and crashes on most recent pic
+        var test = ""
 
+        val filepath = this.filesDir.toString() + "/"
+        val savedDataFileName = "SavedData.txt"
         var dataIndexFromGallery = 0
-        if (intent.getStringExtra("dataLineIndex") != null){
+        if (intent.getIntExtra("dataLineIndex", 0) != null){
             dataIndexFromGallery = intent.getIntExtra("dataLineIndex", 0)
+            val savedDataArray = Utility().populateArrayFromFile(filepath + savedDataFileName)
+            test = savedDataArray[dataIndexFromGallery]  // REMOVE
 
+            val imageDirectory = File(Environment.getExternalStorageDirectory().toString() + "/DangerMole")
+            imageDirectory.walk().forEach{
+
+                if (savedDataArray[dataIndexFromGallery].substring(0,17) in it.toString()) {
+                    currentPhotoPath = it.absolutePath
+                }
+
+
+            }
+
+            loadPicFromGallerytoPreview()
         }
-
+        //Using this to test filepaths for images
         camView.setOnClickListener{
-            Toast.makeText(this, dataIndexFromGallery.toString(), Toast.LENGTH_LONG).show()
+            var i = 1
+           // Toast.makeText(this, testList[i], Toast.LENGTH_LONG).show()
+            Toast.makeText(this, test, Toast.LENGTH_LONG).show()
         }
+
+        //TODO: TO here
 
 
     }
@@ -132,8 +153,13 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
     }
 
-    private fun loadPicFromGallerytoPreview(formattedDataString: String){
-
+    private fun loadPicFromGallerytoPreview(){
+        val bm = BitmapFactory.decodeFile(currentPhotoPath)
+        val imgView: ImageView = findViewById(R.id.camView)
+        val dimension = getSquareCropDimensionForBitmap(bm)
+       // var bitmap = Bitmap.createScaledBitmap(bm, INPUT_SIZE, INPUT_SIZE, false)
+        val returnedBitMap = ThumbnailUtils.extractThumbnail(bm, dimension, dimension)
+        imgView.setImageBitmap(returnedBitMap)
     }
 
     private fun loadPicToPreview(){
