@@ -1,8 +1,9 @@
 package com.example.dangermolemobile
 
+import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.media.ThumbnailUtils
 import android.net.Uri
 import android.os.Bundle
@@ -17,26 +18,23 @@ import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 
 import kotlinx.android.synthetic.main.drawer_layout_camera.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.activity_camera.*
 import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
-import java.io.OutputStreamWriter
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import java.util.*
 import java.util.concurrent.Executors
-
-
 
 class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private var currentPhotoPath = ""
     val REQUEST_TAKE_PHOTO = 1
     val folderName = "DangerMole"
-    val fileName = "Output.txt"
-    val filePath = "data/data/com.example.dangermolemobile/files/OutputData.txt"
+    var currentFileName = ""
+
 
     //Values for tensorflow
     lateinit var classifier: Classifier
@@ -59,8 +57,6 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         take_pic_button.setOnClickListener {
             dispatchTakePictureIntent()
         }
-
-
 
         initTensorFlowAndLoadModel()
     }
@@ -98,31 +94,6 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         return true
     }
 
-    //to be tested
-    private fun fileNameCreator(): String{
-        val calendar = Calendar.getInstance()
-        val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH).toString()
-        val month = (calendar.get(Calendar.MONTH) + 1).toString() //Java is dumb, so add 1 to months
-        val year = calendar.get(Calendar.YEAR).toString()
-        val hour = calendar.get(Calendar.HOUR).toString()
-        val min = calendar.get(Calendar.MINUTE).toString()
-        val sec = calendar.get(Calendar.SECOND).toString()
-
-        val str = hour + "_" + min + "_" + sec + "&"+ month + "_" + dayOfMonth + "_" + year
-        return str
-    }
-
-    @Throws(IOException::class)
-    private fun createImageFile(): File {
-        val fileRoot = rootFileCreator()
-        directoryCreator(fileRoot)
-        return File.createTempFile(
-            fileNameCreator(), ".png", fileRoot
-        ).apply {
-            currentPhotoPath = absolutePath
-        }
-    }
-
     private fun dispatchTakePictureIntent() {
         Utility().requestCameraAndStoragePermissions(this, this)
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
@@ -130,6 +101,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
                 val photoFile: File? = try {
                     createImageFile()
                 } catch (ex: IOException) {
+                    Thread.sleep(1000)
                     Utility().toastCreator(getString(R.string.file_creation_error_msg), this)
                     null
                 }
@@ -153,15 +125,35 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         val imgView: ImageView = findViewById(R.id.camView)
         //Get text for probablity view up
         val probTextView: TextView = findViewById(R.id.probabilityView)
-        val accTextView: TextView = findViewById(R.id.accuracyView)
-
-        val dimension = Utility().getSquareCropDimensionForBitmap(bm)
+        val dimension = getSquareCropDimensionForBitmap(bm)
         var bitmap = Bitmap.createScaledBitmap(bm, INPUT_SIZE, INPUT_SIZE, false)
         //Call on the classifier to get bitmap of the image
-        val results = classifier.recognizeImage(bitmap)
+        var results = classifier.recognizeImage(bitmap)
         val returnedBitMap = ThumbnailUtils.extractThumbnail(bm, dimension, dimension)
-
+        displayProbability(results, probTextView)
+        addNewDataToDataFile(results)
         imgView.setImageBitmap(returnedBitMap)
+    }
+
+    private fun displayProbability(modelData: Float, tv: TextView){
+        Log.d("output to prob view", modelData.toString())
+        val displayResults = floatSanitizer(modelData)
+        tv.setText("Malignant Probability: " + displayResults + "%" + "\n"
+                + "Date: " + dateSanitizer() +  "\n" + "Time: " + timeSanitizer())
+    }
+
+    private fun floatSanitizer(float: Float): String{
+        var number = float
+        number = (number * 100)
+        val dec = DecimalFormat("##.##")
+        dec.roundingMode = RoundingMode.CEILING
+        number = dec.format(number).toFloat()
+        return number.toString()
+    }
+
+    private fun getSquareCropDimensionForBitmap(bitmap: Bitmap): Int {
+        //use the smallest dimension of the image to crop to
+        return Math.min(bitmap.width, bitmap.height)
     }
 
     private fun rootFileCreator(): File
@@ -174,44 +166,6 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
         return file
     }
-
-    //https://stackoverflow.com/questions/48303280/write-a-file-to-a-folder-in-the-android-device-internal-storage
-   private fun fileSaveData(combineResults: String) {
-
-        val directory = File( File.separator + this.getFilesDir() + File.separator + "MyFolder")
-        if (!directory.exists())
-            directory.mkdir()
-        val newFile = File(directory, fileName)
-        if (!newFile.exists())
-        {
-            try
-            {
-                    newFile.createNewFile()
-
-            }
-            catch (e:IOException) {
-                e.printStackTrace()
-            }
-        }
-        try
-        {
-            val fOut = FileOutputStream(newFile)
-            val outputWriter = OutputStreamWriter(fOut)
-            outputWriter.write(combineResults)
-            outputWriter.close()
-            //display file saved message
-            Toast.makeText(getBaseContext(), "File saved successfully!",
-                Toast.LENGTH_SHORT).show()
-        }
-        catch (e:Exception) {
-            e.printStackTrace()
-        }
-
-
-    }
-
-
-
 
     companion object {
         private const val MODEL_PATH = "converted_model2.tflite"
@@ -230,6 +184,65 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
 
             } catch (e: Exception) {
                 throw RuntimeException("Error initializing TensorFlow!", e)
+            }
+        }
+    }
+
+    private fun fileNameCreator(): String{
+        val calendar = Calendar.getInstance()
+        val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH).toString()
+        val month = (calendar.get(Calendar.MONTH) + 1).toString() //Java is dumb, so add 1 to months
+        val year = calendar.get(Calendar.YEAR).toString()
+        val hour = calendar.get(Calendar.HOUR).toString()
+        val min = calendar.get(Calendar.MINUTE).toString()
+        val sec = calendar.get(Calendar.SECOND).toString()
+
+        val str = month + "_" + dayOfMonth + "_" + year +  "_" + hour + "_" + min + "_" + sec +  "_"
+        currentFileName = str
+        return str
+    }
+
+    private fun dateSanitizer(): String{
+        //var currentDateTime = currentFileName
+        val splitStringList = currentFileName.split("_".toRegex())
+        var formattedDate = splitStringList[0] + '/' + splitStringList[1] + '/' + splitStringList[2]
+        return formattedDate
+    }
+
+    private fun timeSanitizer(): String{
+        val splitStringList = currentFileName.split("_".toRegex())
+        var formattedTime = splitStringList[3].padStart(2, '0') +
+                ':' + splitStringList[4].padStart(2,'0') + ":" + splitStringList[5]
+        return formattedTime
+    }
+
+    //This function creates a tempfile to append random integers to the end of the file, to prevent duplicates
+    @Throws(IOException::class)
+    private fun createImageFile(): File {
+        val fileRoot = rootFileCreator()
+        directoryCreator(fileRoot)
+        return File.createTempFile(
+            fileNameCreator(), ".png", fileRoot
+        ).apply {
+            currentPhotoPath = absolutePath
+        }
+    }
+
+    private fun addNewDataToDataFile(modelData: Float){
+        val filepath = this.filesDir.toString() + "/"
+        val savedDataFileName = "SavedData.txt"
+        initialFileChecker(File(filepath + savedDataFileName), savedDataFileName)
+        openFileOutput(savedDataFileName, Context.MODE_APPEND).use {
+            it.write((currentFileName + modelData.toString() + "\n").toByteArray())
+            it.close()
+        }
+    }
+
+    private fun initialFileChecker(file: File, fileName: String){
+        if (!(file.exists())) {
+            openFileOutput(fileName, Context.MODE_APPEND).use {
+                it.write("".toByteArray())
+                it.close()
             }
         }
     }
