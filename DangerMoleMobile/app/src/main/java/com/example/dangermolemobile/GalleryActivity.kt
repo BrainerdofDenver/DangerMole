@@ -26,8 +26,11 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
 
         val filePath = this.filesDir.toString()
 
-        //var array = arrayOf("Melbourne", "Vienna", "Vancouver", "Toronto", "Calgary", "Adelaide", "Perth", "Auckland", "Helsinki", "Hamburg", "Munich", "New York", "Sydney", "Paris", "Cape Town", "Barcelona", "London", "Bangkok")
-        var listToDisplay = displayListCleaner(Utility().populateArrayFromFile(filePath + "/SavedData.txt"))
+        val savedDataFile = File(filePath + "/SavedData.txt")
+        var listToDisplay = ArrayList<String>()
+        if (savedDataFile.exists()) {
+            listToDisplay = displayListCleaner(Utility().populateArrayFromFile(filePath + "/SavedData.txt"))
+        }
 
         val toggle = ActionBarDrawerToggle(
             this, drawer_layout_gallery, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
