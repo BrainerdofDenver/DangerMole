@@ -60,27 +60,25 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
 
         initTensorFlowAndLoadModel()
-//TODO: From here, it erroneously loads an img to thumbnail on startup and crashes on most recent pic
+        
         var test = ""
 
         val filepath = this.filesDir.toString() + "/"
         val savedDataFileName = "SavedData.txt"
         var dataIndexFromGallery = 0
+
         if (intent.getIntExtra("dataLineIndex", 0) != null){
             dataIndexFromGallery = intent.getIntExtra("dataLineIndex", 0)
             val savedDataArray = Utility().populateArrayFromFile(filepath + savedDataFileName)
             test = savedDataArray[dataIndexFromGallery]  // REMOVE
-
             val imageDirectory = File(Environment.getExternalStorageDirectory().toString() + "/DangerMole")
+            val lastIndexOf_ = savedDataArray[dataIndexFromGallery].lastIndexOf("_")
+            val subString = savedDataArray[dataIndexFromGallery].substring(0,lastIndexOf_)
             imageDirectory.walk().forEach{
-
-                if (savedDataArray[dataIndexFromGallery].substring(0,17) in it.toString()) {
+                if ( it.toString().contains(subString)) {
                     currentPhotoPath = it.absolutePath
                 }
-
-
             }
-
             loadPicFromGallerytoPreview()
         }
         //Using this to test filepaths for images
@@ -89,10 +87,6 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
            // Toast.makeText(this, testList[i], Toast.LENGTH_LONG).show()
             Toast.makeText(this, test, Toast.LENGTH_LONG).show()
         }
-
-        //TODO: TO here
-
-
     }
 
     //Code based on tutorial for initial functionality: https://www.youtube.com/watch?v=5wbeWN4hQt0
