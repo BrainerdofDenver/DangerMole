@@ -67,7 +67,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         val savedDataFileName = "SavedData.txt"
         var dataIndexFromGallery = 0
 
-        if (intent.getIntExtra("dataLineIndex", 0) != null){
+        if (intent.getIntExtra("dataLineIndex", -1) != -1){
             dataIndexFromGallery = intent.getIntExtra("dataLineIndex", 0)
             val savedDataArray = Utility().populateArrayFromFile(filepath + savedDataFileName)
             test = savedDataArray[dataIndexFromGallery]  // REMOVE
