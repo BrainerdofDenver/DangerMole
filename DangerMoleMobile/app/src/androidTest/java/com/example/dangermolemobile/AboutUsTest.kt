@@ -39,11 +39,12 @@ class AboutUsTest {
 
     @Test
     fun aboutUsTest() {
+        val utils = TestUtils()
         val appCompatImageButton = onView(
                 allOf(withContentDescription("Open navigation drawer"),
-                        childAtPosition(
+                        utils.childAtPosition(
                                 allOf(withId(R.id.toolbar),
-                                        childAtPosition(
+                                        utils.childAtPosition(
                                                 withClassName(`is`("android.support.design.widget.AppBarLayout")),
                                                 0)),
                                 1),
@@ -51,9 +52,9 @@ class AboutUsTest {
         appCompatImageButton.perform(click())
 
         val navigationMenuItemView = onView(
-                allOf(childAtPosition(
+                allOf(utils.childAtPosition(
                         allOf(withId(R.id.design_navigation_view),
-                                childAtPosition(
+                                utils.childAtPosition(
                                         withId(R.id.nav_view_camera),
                                         0)),
                         7),
@@ -62,8 +63,8 @@ class AboutUsTest {
 
         val textView = onView(
                 allOf(withId(R.id.aboutUs), withText("Danger Mole is an app conceived and developed by MSU Denver students as a solution to early detection of melanoma in nevi (moles). Danger Mole is designed to run on android and makes use of TensorFlow’s powerful machine learning libraries. The model itself is trained on data acquired from the International Skin Imaging Collaboration (ISIC) database linked below. Our team is composed of four undergraduates in pursuit of a BS in computer science. The project is currently in development as of spring 2019 and is intended as a prototype and not a definitive medical resource."),
-                        childAtPosition(
-                                childAtPosition(
+                        utils.childAtPosition(
+                                utils.childAtPosition(
                                         IsInstanceOf.instanceOf(android.view.ViewGroup::class.java),
                                         1),
                                 0),
@@ -72,8 +73,8 @@ class AboutUsTest {
 
         val textView2 = onView(
                 allOf(withId(R.id.isicLink), withText(" Isic website"),
-                        childAtPosition(
-                                childAtPosition(
+                        utils.childAtPosition(
+                                utils.childAtPosition(
                                         IsInstanceOf.instanceOf(android.view.ViewGroup::class.java),
                                         1),
                                 1),
@@ -82,8 +83,8 @@ class AboutUsTest {
 
         val textView3 = onView(
                 allOf(withId(R.id.gitLink), withText(" Our Github"),
-                        childAtPosition(
-                                childAtPosition(
+                        utils.childAtPosition(
+                                utils.childAtPosition(
                                         IsInstanceOf.instanceOf(android.view.ViewGroup::class.java),
                                         1),
                                 2),
@@ -91,20 +92,4 @@ class AboutUsTest {
         textView3.check(matches(withText(" Our Github")))
     }
 
-    private fun childAtPosition(
-            parentMatcher: Matcher<View>, position: Int): Matcher<View> {
-
-        return object : TypeSafeMatcher<View>() {
-            override fun describeTo(description: Description) {
-                description.appendText("Child at position $position in parent ")
-                parentMatcher.describeTo(description)
-            }
-
-            public override fun matchesSafely(view: View): Boolean {
-                val parent = view.parent
-                return parent is ViewGroup && parentMatcher.matches(parent)
-                        && view == parent.getChildAt(position)
-            }
-        }
-    }
 }

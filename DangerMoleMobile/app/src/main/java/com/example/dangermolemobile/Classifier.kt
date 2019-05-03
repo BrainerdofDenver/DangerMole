@@ -1,7 +1,6 @@
 package com.example.dangermolemobile
 
 
-import android.annotation.SuppressLint
 import android.content.res.AssetManager
 import android.graphics.Bitmap
 import android.util.Log
@@ -10,12 +9,10 @@ import java.io.BufferedReader
 import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStreamReader
-import java.lang.Float
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
-import java.util.*
 import kotlin.collections.ArrayList
 
 class Classifier(
@@ -30,10 +27,6 @@ class Classifier(
         private val PIXEL_SIZE = 3
         private val THRESHOLD = 0.1f
 
-/*      Might need to get the model working not sure....
-        private const val IMAGE_MEAN = 128
-        private const val IMAGE_STD = 128.0f
-        */
         private const val CONSTANT = 255.0f
         @Throws(IOException::class)
         fun create(assetManager: AssetManager,
@@ -102,10 +95,10 @@ class Classifier(
         var pixel = 0
         for (i in 0 until inputSize) {
             for (j in 0 until inputSize) {
-                val `val` = intValues[pixel++]
-                byteBuffer.putFloat((`val` shr 16 and 0xFF).toFloat()/ CONSTANT) //IMAGE_MEAN/ IMAGE_STD)
-                byteBuffer.putFloat((`val` shr 8 and 0xFF).toFloat() / CONSTANT) //IMAGE_MEAN/ IMAGE_STD)
-                byteBuffer.putFloat((`val` and 0xFF).toFloat() / CONSTANT) //IMAGE_MEAN/ IMAGE_STD)
+                val value = intValues[pixel++]
+                byteBuffer.putFloat((value shr 16 and 0xFF).toFloat()/ CONSTANT)
+                byteBuffer.putFloat((value shr 8 and 0xFF).toFloat() / CONSTANT)
+                byteBuffer.putFloat((value and 0xFF).toFloat() / CONSTANT)
             }
         }
         return byteBuffer

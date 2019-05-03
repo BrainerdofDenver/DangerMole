@@ -2,18 +2,14 @@ package com.example.dangermolemobile
 
 import android.content.pm.PackageManager
 import android.location.Location
-import android.location.LocationManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.constraint.ConstraintLayout
 import android.support.design.widget.NavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.*
@@ -23,7 +19,6 @@ import kotlinx.android.synthetic.main.drawer_layout_localclinics.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import java.util.*
 
 class LocalClinicsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
                              OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
@@ -73,7 +68,7 @@ class LocalClinicsActivity : AppCompatActivity(), NavigationView.OnNavigationIte
     }
     //Nav
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        NavigationHandler().NavigationOnClickListener(this, this, item)
+        NavigationHandler().navigationOnClickListener(this, this, item)
         return true
     }
     //Maps

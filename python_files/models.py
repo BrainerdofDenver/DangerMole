@@ -42,13 +42,7 @@ def get_res_model():
         out = Dense(1,activation='sigmoid',name='output_layer')(out)
         custom_resnet_model = Model(inputs=image_input,outputs=out)
         custom_resnet_model.summary()
-        '''
-        for layer in custom_resnet_model.layers[:-1]:
-                layer.trainable = False
 
-        for layer in custom_resnet_model.layers[-3:]:
-                layer.trainable
-        '''
         custom_resnet_model.compile(loss='binary_crossentropy',
                 optimizer='adam',
                 metrics=['accuracy'])

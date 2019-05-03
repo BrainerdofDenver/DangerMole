@@ -39,11 +39,12 @@ class GalleryTest {
 
     @Test
     fun galleryTest() {
+        val utils = TestUtils()
         val appCompatImageButton = onView(
                 allOf(withContentDescription("Open navigation drawer"),
-                        childAtPosition(
+                        utils.childAtPosition(
                                 allOf(withId(R.id.toolbar),
-                                        childAtPosition(
+                                        utils.childAtPosition(
                                                 withClassName(`is`("android.support.design.widget.AppBarLayout")),
                                                 0)),
                                 1),
@@ -51,40 +52,15 @@ class GalleryTest {
         appCompatImageButton.perform(click())
 
         val navigationMenuItemView = onView(
-                allOf(childAtPosition(
+                allOf(utils.childAtPosition(
                         allOf(withId(R.id.design_navigation_view),
-                                childAtPosition(
+                                utils.childAtPosition(
                                         withId(R.id.nav_view_camera),
                                         0)),
                         2),
                         isDisplayed()))
         navigationMenuItemView.perform(click())
 
-        val textView = onView(
-                allOf(withId(R.id.textView3), withText("gallery"),
-                        childAtPosition(
-                                childAtPosition(
-                                        IsInstanceOf.instanceOf(android.view.ViewGroup::class.java),
-                                        1),
-                                0),
-                        isDisplayed()))
-        textView.check(matches(withText("gallery")))
     }
 
-    private fun childAtPosition(
-            parentMatcher: Matcher<View>, position: Int): Matcher<View> {
-
-        return object : TypeSafeMatcher<View>() {
-            override fun describeTo(description: Description) {
-                description.appendText("Child at position $position in parent ")
-                parentMatcher.describeTo(description)
-            }
-
-            public override fun matchesSafely(view: View): Boolean {
-                val parent = view.parent
-                return parent is ViewGroup && parentMatcher.matches(parent)
-                        && view == parent.getChildAt(position)
-            }
-        }
-    }
 }

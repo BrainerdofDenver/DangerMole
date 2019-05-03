@@ -11,16 +11,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import android.support.test.espresso.*
+
 @RunWith(RobolectricTestRunner::class)
 class UnitTests {
-
-    @Test
-    fun camButtonShouldReturnIntent(){
-        val uri = Uri.parse("data")
-        var resultData = Intent()
-        resultData.data = uri
-        val result = Instrumentation.ActivityResult(Activity.RESULT_OK, resultData)
-    }
 
     //Found from this site, which helped with espresso imports https://cate.blog/2016/04/28/testing-intents-on-android-like-stabbing-yourself-in-the-eye-with-a-blunt-implement/
     @Test

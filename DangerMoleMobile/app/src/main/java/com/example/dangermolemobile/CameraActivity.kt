@@ -89,7 +89,7 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     }
     //Nav
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        NavigationHandler().NavigationOnClickListener(this, this, item)
+        NavigationHandler().navigationOnClickListener(this, this, item)
         return true
     }
 

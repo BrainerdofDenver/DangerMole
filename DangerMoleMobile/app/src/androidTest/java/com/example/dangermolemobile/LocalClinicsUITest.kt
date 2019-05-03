@@ -39,11 +39,12 @@ class LocalClinicsUITest {
 
     @Test
     fun localClinicsUITest() {
+        val utils = TestUtils()
         val appCompatImageButton = onView(
                 allOf(withContentDescription("Open navigation drawer"),
-                        childAtPosition(
+                        utils.childAtPosition(
                                 allOf(withId(R.id.toolbar),
-                                        childAtPosition(
+                                        utils.childAtPosition(
                                                 withClassName(`is`("android.support.design.widget.AppBarLayout")),
                                                 0)),
                                 1),
@@ -51,9 +52,9 @@ class LocalClinicsUITest {
         appCompatImageButton.perform(click())
 
         val navigationMenuItemView = onView(
-                allOf(childAtPosition(
+                allOf(utils.childAtPosition(
                         allOf(withId(R.id.design_navigation_view),
-                                childAtPosition(
+                                utils.childAtPosition(
                                         withId(R.id.nav_view_camera),
                                         0)),
                         4),
@@ -62,9 +63,9 @@ class LocalClinicsUITest {
 
         val frameLayout = onView(
                 allOf(withId(R.id.map),
-                        childAtPosition(
+                        utils.childAtPosition(
                                 allOf(withId(R.id.main_layout),
-                                        childAtPosition(
+                                        utils.childAtPosition(
                                                 withId(R.id.app_bar_layout),
                                                 1)),
                                 0),
@@ -72,20 +73,4 @@ class LocalClinicsUITest {
         frameLayout.check(matches(isDisplayed()))
     }
 
-    private fun childAtPosition(
-            parentMatcher: Matcher<View>, position: Int): Matcher<View> {
-
-        return object : TypeSafeMatcher<View>() {
-            override fun describeTo(description: Description) {
-                description.appendText("Child at position $position in parent ")
-                parentMatcher.describeTo(description)
-            }
-
-            public override fun matchesSafely(view: View): Boolean {
-                val parent = view.parent
-                return parent is ViewGroup && parentMatcher.matches(parent)
-                        && view == parent.getChildAt(position)
-            }
-        }
-    }
 }
