@@ -61,15 +61,6 @@ class GalleryTest {
                         isDisplayed()))
         navigationMenuItemView.perform(click())
 
-        val textView = onView(
-                allOf(withId(R.id.textView3), withText("gallery"),
-                        utils.childAtPosition(
-                                utils.childAtPosition(
-                                        IsInstanceOf.instanceOf(android.view.ViewGroup::class.java),
-                                        1),
-                                0),
-                        isDisplayed()))
-        textView.check(matches(withText("gallery")))
     }
 
 }

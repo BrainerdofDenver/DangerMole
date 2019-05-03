@@ -3,7 +3,6 @@ package com.example.dangermolemobile
 
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.action.ViewActions.click
-import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.filters.LargeTest
 import android.support.test.rule.ActivityTestRule
@@ -16,7 +15,6 @@ import org.hamcrest.Matcher
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.TypeSafeMatcher
-import org.hamcrest.core.IsInstanceOf
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -38,7 +36,7 @@ class CameraActivityTest {
                     "android.permission.WRITE_EXTERNAL_STORAGE")
 
     @Test
-    fun cameraActivityTest2() {
+    fun cameraActivityTest() {
         val utils = TestUtils()
         val appCompatButton = onView(
                 allOf(withId(R.id.take_pic_button), withText("Snap"),
@@ -49,26 +47,6 @@ class CameraActivityTest {
                                 0),
                         isDisplayed()))
         appCompatButton.perform(click())
-
-        val view = onView(
-                allOf(withId(com.android.camera2.R.id.progress_overlay),
-                        utils.childAtPosition(
-                                utils.childAtPosition(
-                                        withId(com.android.camera2.R.id.module_layout),
-                                        0),
-                                0),
-                        isDisplayed()))
-        view.check(matches(isDisplayed()))
-
-        val imageView = onView(
-                allOf(withId(R.id.camView), withContentDescription("ImageView container that holds photos taken by Camera, and loaded from stored photos"),
-                        utils.childAtPosition(
-                                utils.childAtPosition(
-                                        IsInstanceOf.instanceOf(ViewGroup::class.java),
-                                        1),
-                                0),
-                        isDisplayed()))
-        imageView.check(matches(isDisplayed()))
     }
 
 }
