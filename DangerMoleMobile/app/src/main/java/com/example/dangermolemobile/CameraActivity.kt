@@ -24,8 +24,6 @@ import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.activity_camera.*
 import java.io.File
 import java.io.IOException
-import java.math.RoundingMode
-import java.text.DecimalFormat
 import java.util.*
 import java.util.concurrent.Executors
 
@@ -51,7 +49,6 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
         nav_view_camera.setNavigationItemSelectedListener(this)
-
         Utility().requestCameraAndStoragePermissions(this, this)
 
         take_pic_button.setOnClickListener {
@@ -59,12 +56,14 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
 
         initTensorFlowAndLoadModel()
+        galleryIntentHandler()
+
     }
 
     //Code based on tutorial for initial functionality: https://www.youtube.com/watch?v=5wbeWN4hQt0
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        loadPicToPreview()
+        loadPreviewFromCamera()
     }
 
     //Part of Navigation Drawer
@@ -94,6 +93,28 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         return true
     }
 
+    private fun galleryIntentHandler(){
+        val filepath = this.filesDir.toString() + "/"
+        val savedDataFileName = "SavedData.txt"
+        var dataIndexFromGallery = 0
+        if (intent.getIntExtra("dataLineIndex", -1) != -1){
+            dataIndexFromGallery = intent.getIntExtra("dataLineIndex", 0)
+            val savedDataArray = Utility().populateArrayFromFile(filepath + savedDataFileName)
+            val imageDirectory = File(Environment.getExternalStorageDirectory().toString() + "/DangerMole")
+            val lastIndexOf_ = savedDataArray[dataIndexFromGallery].lastIndexOf("_")
+            val subString = savedDataArray[dataIndexFromGallery].substring(0,lastIndexOf_)
+            imageDirectory.walk().forEach{
+                if ( it.toString().contains(subString)) {
+                    currentPhotoPath = it.absolutePath
+                    currentFileName = savedDataArray[dataIndexFromGallery]
+                    val textview: TextView = findViewById(R.id.probabilityView)
+                    loadedDataToTextView(textview)
+                }
+            }
+            loadPicFromGallerytoPreview()
+        }
+    }
+
     private fun dispatchTakePictureIntent() {
         Utility().requestCameraAndStoragePermissions(this, this)
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
@@ -119,7 +140,16 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
     }
 
-    private fun loadPicToPreview(){
+    private fun loadPicFromGallerytoPreview(){
+        val bm = BitmapFactory.decodeFile(currentPhotoPath)
+        val imgView: ImageView = findViewById(R.id.camView)
+        val dimension = getSquareCropDimensionForBitmap(bm)
+       // var bitmap = Bitmap.createScaledBitmap(bm, INPUT_SIZE, INPUT_SIZE, false)
+        val returnedBitMap = ThumbnailUtils.extractThumbnail(bm, dimension, dimension)
+        imgView.setImageBitmap(returnedBitMap)
+    }
+
+    private fun loadPreviewFromCamera(){
         //https://stackoverflow.com/questions/6908604/android-crop-center-of-bitmap
         val bm = BitmapFactory.decodeFile(currentPhotoPath)
         val imgView: ImageView = findViewById(R.id.camView)
@@ -135,57 +165,42 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         imgView.setImageBitmap(returnedBitMap)
     }
 
-    private fun displayProbability(modelData: Float, tv: TextView){
-        Log.d("output to prob view", modelData.toString())
-        val displayResults = floatSanitizer(modelData)
-        tv.setText("Malignant Probability: " + displayResults + "%" + "\n"
-                + "Date: " + dateSanitizer() +  "\n" + "Time: " + timeSanitizer())
-    }
-
-    private fun floatSanitizer(float: Float): String{
-        var number = float
-        number = (number * 100)
-        val dec = DecimalFormat("##.##")
-        dec.roundingMode = RoundingMode.CEILING
-        number = dec.format(number).toFloat()
-        return number.toString()
-    }
-
     private fun getSquareCropDimensionForBitmap(bitmap: Bitmap): Int {
         //use the smallest dimension of the image to crop to
         return Math.min(bitmap.width, bitmap.height)
     }
 
-    private fun rootFileCreator(): File
-            = File(Environment.getExternalStorageDirectory().toString()
-            + File.separator + folderName + File.separator)
-
-    private fun directoryCreator(file: File): File{
-        if (!file.exists()) {
-            file.mkdirs()
-        }
-        return file
+    private fun displayProbability(modelData: Float, tv: TextView){
+        Log.d("output to prob view", modelData.toString())
+        val displayResults = Utility().floatSanitizer(modelData)
+        tv.setText("Malignant Probability: " + displayResults + "%" + "\n"
+                + "Date: " + dateSanitizer() +  "\n" + "Time: " + timeSanitizer())
     }
 
-    companion object {
-        private const val MODEL_PATH = "converted_model2.tflite"
-        private const val LABEL_PATH = "labels.txt"
-        private const val INPUT_SIZE = 224
+    private fun dateSanitizer(): String{
+        //var currentDateTime = currentFileName
+        val splitStringList = currentFileName.split("_".toRegex())
+        var formattedDate = splitStringList[0] + '/' + splitStringList[1] + '/' + splitStringList[2]
+        return formattedDate
     }
 
-    private fun initTensorFlowAndLoadModel() {
-        executor.execute {
-            try {
-                classifier = Classifier.create(
-                    assets,
-                    MODEL_PATH,
-                    LABEL_PATH,
-                    INPUT_SIZE)
+    private fun timeSanitizer(): String{
+        val splitStringList = currentFileName.split("_".toRegex())
+        var formattedTime = splitStringList[3].padStart(2, '0') +
+                ':' + splitStringList[4].padStart(2,'0') + ":" + splitStringList[5]
+        return formattedTime
+    }
 
-            } catch (e: Exception) {
-                throw RuntimeException("Error initializing TensorFlow!", e)
-            }
-        }
+    private fun loadedProbabilitySanitizer(): String{
+        val splitStringList = currentFileName.split("_".toRegex())
+        val formattedProbability = Utility().floatSanitizer(splitStringList[6].toFloat())
+        return formattedProbability
+    }
+
+    private fun loadedDataToTextView(tv: TextView){
+        val formattedProbability = loadedProbabilitySanitizer()
+        tv.setText("Malignant Probability: " + formattedProbability + "%" + "\n"
+                + "Date: " + dateSanitizer() +  "\n" + "Time: " + timeSanitizer())
     }
 
     private fun fileNameCreator(): String{
@@ -200,19 +215,6 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         val str = month + "_" + dayOfMonth + "_" + year +  "_" + hour + "_" + min + "_" + sec +  "_"
         currentFileName = str
         return str
-    }
-
-    private fun dateSanitizer(): String{
-        val splitStringList = currentFileName.split("_".toRegex())
-        var formattedDate = splitStringList[0] + '/' + splitStringList[1] + '/' + splitStringList[2]
-        return formattedDate
-    }
-
-    private fun timeSanitizer(): String{
-        val splitStringList = currentFileName.split("_".toRegex())
-        var formattedTime = splitStringList[3].padStart(2, '0') +
-                ':' + splitStringList[4].padStart(2,'0') + ":" + splitStringList[5]
-        return formattedTime
     }
 
     //This function creates a tempfile to append random integers to the end of the file, to prevent duplicates
@@ -245,4 +247,37 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             }
         }
     }
+
+    private fun rootFileCreator(): File
+            = File(Environment.getExternalStorageDirectory().toString()
+            + File.separator + folderName + File.separator)
+
+    private fun directoryCreator(file: File): File{
+        if (!file.exists()) {
+            file.mkdirs()
+        }
+        return file
+    }
+
+    private fun initTensorFlowAndLoadModel() {
+        executor.execute {
+            try {
+                classifier = Classifier.create(
+                    assets,
+                    MODEL_PATH,
+                    LABEL_PATH,
+                    INPUT_SIZE)
+
+            } catch (e: Exception) {
+                throw RuntimeException("Error initializing TensorFlow!", e)
+            }
+        }
+    }
+
+    companion object {
+        private const val MODEL_PATH = "converted_model2.tflite"
+        private const val LABEL_PATH = "labels.txt"
+        private const val INPUT_SIZE = 224
+    }
 }
+
