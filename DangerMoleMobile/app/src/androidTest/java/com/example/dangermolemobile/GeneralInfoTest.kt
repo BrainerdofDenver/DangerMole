@@ -39,11 +39,12 @@ class GeneralInfoTest {
 
     @Test
     fun generalInfoTest() {
+        val utils = TestUtils()
         val appCompatImageButton = onView(
                 allOf(withContentDescription("Open navigation drawer"),
-                        childAtPosition(
+                        utils.childAtPosition(
                                 allOf(withId(R.id.toolbar),
-                                        childAtPosition(
+                                        utils.childAtPosition(
                                                 withClassName(`is`("android.support.design.widget.AppBarLayout")),
                                                 0)),
                                 1),
@@ -51,9 +52,9 @@ class GeneralInfoTest {
         appCompatImageButton.perform(click())
 
         val navigationMenuItemView = onView(
-                allOf(childAtPosition(
+                allOf(utils.childAtPosition(
                         allOf(withId(R.id.design_navigation_view),
-                                childAtPosition(
+                                utils.childAtPosition(
                                         withId(R.id.nav_view_camera),
                                         0)),
                         3),
@@ -62,8 +63,8 @@ class GeneralInfoTest {
 
         val textView = onView(
                 allOf(withId(R.id.genInfo), withText("Melanocytic Nevi are a subcategory of melanocytic tumors containing nevus cells. While the majority of moles are benign, it is important to regularly check your moles for changes in shape, texture, symmetry and color as these are signs of melanoma. Danger Mole uses these metrics to gauge the overall health of the mole by analyzing it against a trained neural network using TensorFlow’s framework. Further resources on melanoma can be found at the official dot gov site:"),
-                        childAtPosition(
-                                childAtPosition(
+                        utils.childAtPosition(
+                                utils.childAtPosition(
                                         IsInstanceOf.instanceOf(android.view.ViewGroup::class.java),
                                         1),
                                 0),
@@ -72,8 +73,8 @@ class GeneralInfoTest {
 
         val textView2 = onView(
                 allOf(withId(R.id.govLink), withText(" Official resource on skin cancer "),
-                        childAtPosition(
-                                childAtPosition(
+                        utils.childAtPosition(
+                                utils.childAtPosition(
                                         IsInstanceOf.instanceOf(android.view.ViewGroup::class.java),
                                         1),
                                 1),
@@ -81,20 +82,4 @@ class GeneralInfoTest {
         textView2.check(matches(withText(" Official resource on skin cancer ")))
     }
 
-    private fun childAtPosition(
-            parentMatcher: Matcher<View>, position: Int): Matcher<View> {
-
-        return object : TypeSafeMatcher<View>() {
-            override fun describeTo(description: Description) {
-                description.appendText("Child at position $position in parent ")
-                parentMatcher.describeTo(description)
-            }
-
-            public override fun matchesSafely(view: View): Boolean {
-                val parent = view.parent
-                return parent is ViewGroup && parentMatcher.matches(parent)
-                        && view == parent.getChildAt(position)
-            }
-        }
-    }
 }

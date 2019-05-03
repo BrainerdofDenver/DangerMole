@@ -39,10 +39,11 @@ class CameraActivityTest {
 
     @Test
     fun cameraActivityTest2() {
+        val utils = TestUtils()
         val appCompatButton = onView(
                 allOf(withId(R.id.take_pic_button), withText("Snap"),
-                        childAtPosition(
-                                childAtPosition(
+                        utils.childAtPosition(
+                                utils.childAtPosition(
                                         withClassName(`is`("android.support.design.widget.CoordinatorLayout")),
                                         1),
                                 0),
@@ -51,8 +52,8 @@ class CameraActivityTest {
 
         val view = onView(
                 allOf(withId(com.android.camera2.R.id.progress_overlay),
-                        childAtPosition(
-                                childAtPosition(
+                        utils.childAtPosition(
+                                utils.childAtPosition(
                                         withId(com.android.camera2.R.id.module_layout),
                                         0),
                                 0),
@@ -61,29 +62,13 @@ class CameraActivityTest {
 
         val imageView = onView(
                 allOf(withId(R.id.camView), withContentDescription("ImageView container that holds photos taken by Camera, and loaded from stored photos"),
-                        childAtPosition(
-                                childAtPosition(
-                                        IsInstanceOf.instanceOf(android.view.ViewGroup::class.java),
+                        utils.childAtPosition(
+                                utils.childAtPosition(
+                                        IsInstanceOf.instanceOf(ViewGroup::class.java),
                                         1),
                                 0),
                         isDisplayed()))
         imageView.check(matches(isDisplayed()))
     }
 
-    private fun childAtPosition(
-            parentMatcher: Matcher<View>, position: Int): Matcher<View> {
-
-        return object : TypeSafeMatcher<View>() {
-            override fun describeTo(description: Description) {
-                description.appendText("Child at position $position in parent ")
-                parentMatcher.describeTo(description)
-            }
-
-            public override fun matchesSafely(view: View): Boolean {
-                val parent = view.parent
-                return parent is ViewGroup && parentMatcher.matches(parent)
-                        && view == parent.getChildAt(position)
-            }
-        }
-    }
 }

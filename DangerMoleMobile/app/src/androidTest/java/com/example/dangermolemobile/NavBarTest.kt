@@ -38,11 +38,12 @@ class NavBarTest {
 
     @Test
     fun navBarTest() {
+        val utils = TestUtils()
         val appCompatImageButton = onView(
                 allOf(withContentDescription("Open navigation drawer"),
-                        childAtPosition(
+                        utils.childAtPosition(
                                 allOf(withId(R.id.toolbar),
-                                        childAtPosition(
+                                        utils.childAtPosition(
                                                 withClassName(`is`("android.support.design.widget.AppBarLayout")),
                                                 0)),
                                 1),
@@ -51,9 +52,9 @@ class NavBarTest {
 
         val recyclerView = onView(
                 allOf(withId(R.id.design_navigation_view),
-                        childAtPosition(
+                        utils.childAtPosition(
                                 allOf(withId(R.id.nav_view_camera),
-                                        childAtPosition(
+                                        utils.childAtPosition(
                                                 withId(R.id.drawer_layout),
                                                 0)),
                                 0),
@@ -62,8 +63,8 @@ class NavBarTest {
 
         val checkedTextView = onView(
                 allOf(withId(R.id.design_menu_item_text),
-                        childAtPosition(
-                                childAtPosition(
+                        utils.childAtPosition(
+                                utils.childAtPosition(
                                         withId(R.id.design_navigation_view),
                                         1),
                                 0),
@@ -72,8 +73,8 @@ class NavBarTest {
 
         val checkedTextView2 = onView(
                 allOf(withId(R.id.design_menu_item_text),
-                        childAtPosition(
-                                childAtPosition(
+                        utils.childAtPosition(
+                                utils.childAtPosition(
                                         withId(R.id.design_navigation_view),
                                         2),
                                 0),
@@ -82,8 +83,8 @@ class NavBarTest {
 
         val checkedTextView3 = onView(
                 allOf(withId(R.id.design_menu_item_text),
-                        childAtPosition(
-                                childAtPosition(
+                        utils.childAtPosition(
+                                utils.childAtPosition(
                                         withId(R.id.design_navigation_view),
                                         3),
                                 0),
@@ -92,8 +93,8 @@ class NavBarTest {
 
         val checkedTextView4 = onView(
                 allOf(withId(R.id.design_menu_item_text),
-                        childAtPosition(
-                                childAtPosition(
+                        utils.childAtPosition(
+                                utils.childAtPosition(
                                         withId(R.id.design_navigation_view),
                                         4),
                                 0),
@@ -102,8 +103,8 @@ class NavBarTest {
 
         val checkedTextView5 = onView(
                 allOf(withId(R.id.design_menu_item_text),
-                        childAtPosition(
-                                childAtPosition(
+                        utils.childAtPosition(
+                                utils.childAtPosition(
                                         withId(R.id.design_navigation_view),
                                         7),
                                 0),
@@ -112,8 +113,8 @@ class NavBarTest {
 
         val checkedTextView6 = onView(
                 allOf(withId(R.id.design_menu_item_text),
-                        childAtPosition(
-                                childAtPosition(
+                        utils.childAtPosition(
+                                utils.childAtPosition(
                                         withId(R.id.design_navigation_view),
                                         8),
                                 0),
@@ -121,20 +122,4 @@ class NavBarTest {
         checkedTextView6.check(matches(isDisplayed()))
     }
 
-    private fun childAtPosition(
-            parentMatcher: Matcher<View>, position: Int): Matcher<View> {
-
-        return object : TypeSafeMatcher<View>() {
-            override fun describeTo(description: Description) {
-                description.appendText("Child at position $position in parent ")
-                parentMatcher.describeTo(description)
-            }
-
-            public override fun matchesSafely(view: View): Boolean {
-                val parent = view.parent
-                return parent is ViewGroup && parentMatcher.matches(parent)
-                        && view == parent.getChildAt(position)
-            }
-        }
-    }
 }
