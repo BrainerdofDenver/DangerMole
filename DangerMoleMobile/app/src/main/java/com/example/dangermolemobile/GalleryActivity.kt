@@ -3,19 +3,20 @@ package com.example.dangermolemobile
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v7.app.AlertDialog
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.ListView
-import android.widget.Toast
+import android.widget.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.drawer_layout_gallery.*
-import java.io.File
+import java.io.*
+import java.util.*
 
 class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -53,15 +54,46 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
                 // value of item that is clicked
                 val itemValue = listView.getItemAtPosition(position) as String
 
-             //    Toast the values
-//                Toast.makeText(applicationContext,
-//                    "Position :$position\nItem Value : $itemValue", Toast.LENGTH_LONG)
-//                    .show()
-
                 val intent = Intent(this@GalleryActivity, CameraActivity::class.java)
+                Log.d("itemPushed: ", position.toString())
                 intent.putExtra("dataLineIndex", position)
                 startActivity(intent)
 
+            }
+        }
+
+        listView.onItemLongClickListener = object : AdapterView.OnItemLongClickListener {
+            override fun onItemLongClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long): Boolean {
+                /*
+                Log.d("itemAt: ", position.toString())
+                val adb = AlertDialog.Builder(this@GalleryActivity)
+                adb.setTitle("Delete?")
+                adb.setNegativeButton("Cancel", null)
+                adb.setPositiveButton("Ok", AlertDialog.OnClickListener(){
+                    public void onClick{
+
+                    }
+                })*/
+                val savedDataArray = Utility().populateArrayFromFile(filePath + "/SavedData.txt")
+                val imageDirectory = File(Environment.getExternalStorageDirectory().toString() + "/DangerMole")
+                val lastIndexOfUnderscore = savedDataArray[position].lastIndexOf("_")
+                val subString = savedDataArray[position].substring(0,lastIndexOfUnderscore)
+                var fileToDelete = ""
+                imageDirectory.walk().forEach{
+                    if ( it.toString().contains(subString)) {
+                        fileToDelete = it.absolutePath
+                    }
+                }
+                if (File(fileToDelete).exists()) {
+                    Log.d("removeFile: ", fileToDelete)
+                    File(fileToDelete).delete()
+                }
+
+                removeLine(savedDataFile,position)
+                listToDisplay.removeAt(position)
+                listView.invalidateViews()
+
+                return true
             }
         }
 
@@ -84,7 +116,24 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
             }
         }
         return newList
-        //var newList: ArrayList<String> = list.removeAt(0)
+    }
+
+    // From https://stackoverflow.com/questions/19760282/android-remove-known-line-from-txt-file
+    @Throws(IOException::class)
+    fun removeLine(file: File, lineIndex: Int) {
+        val lines = ArrayList<String>()
+        val reader = Scanner(FileInputStream(file), "UTF-8")
+        while (reader.hasNextLine())
+            lines.add(reader.nextLine())
+        reader.close()
+        assert(lineIndex >= 0 && lineIndex <= lines.size - 1)
+        Log.d("removeLine: ", lines[lineIndex])
+        lines.removeAt(lineIndex)
+        val writer = BufferedWriter(FileWriter(file, false))
+        for (line in lines)
+            writer.write(line + "\n")
+        writer.flush()
+        writer.close()
     }
 
     //Part of Navigation Drawer
