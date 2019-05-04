@@ -19,16 +19,23 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme.NoActionBar">
         <activity android:name=".GalleryActivity"
-                  android:screenOrientation="portrait">
+                  android:screenOrientation="portrait"
+                  android:label="Gallery">
+
         </activity>
         <activity android:name=".LocalClinicsActivity"
-                  android:screenOrientation="portrait">
+                  android:screenOrientation="portrait"
+                  android:label="Local Clinics">
+
         </activity>
         <activity android:name=".AboutUsActivity"
-                  android:screenOrientation="portrait">
+                  android:screenOrientation="portrait"
+                  android:label="About Us">
+
         </activity>
         <activity android:name=".GeneralInfoActivity"
-                  android:screenOrientation="portrait">
+                  android:screenOrientation="portrait"
+                  android:label="General Information">
         </activity>
         <activity
                 android:screenOrientation="portrait"
