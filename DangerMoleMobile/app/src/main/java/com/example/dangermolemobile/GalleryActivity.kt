@@ -17,6 +17,7 @@ import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.drawer_layout_gallery.*
 import java.io.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -28,20 +29,24 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         val filePath = this.filesDir.toString()
 
         val savedDataFile = File(filePath + "/SavedData.txt")
+
         var listToDisplay = ArrayList<String>()
         if (savedDataFile.exists()) {
             listToDisplay = displayListCleaner(Utility().populateArrayFromFile(filePath + "/SavedData.txt"))
         }
-
+        var arrGalleryItem: ArrayList<GalleryItem> = ArrayList()
+        for (dataItem in listToDisplay){
+            arrGalleryItem.add(GalleryItem(getImageFilePath(filePath,listToDisplay.indexOf(dataItem)), dataItem))
+        }
         val toggle = ActionBarDrawerToggle(
                 this, drawer_layout_gallery, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
         )
+
         drawer_layout_gallery.addDrawerListener(toggle)
         toggle.syncState()
         nav_view_gallery.setNavigationItemSelectedListener(this)
 
-        val adapter = ArrayAdapter(this,
-                R.layout.listview_item, listToDisplay)
+        val adapter = GalleryArrayAdapter(this, arrGalleryItem)
 
         val listView: ListView = findViewById(R.id.gallery_list_view)
         listView.setAdapter(adapter)
@@ -50,15 +55,10 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
 
             override fun onItemClick(parent: AdapterView<*>, view: View,
                                      position: Int, id: Long) {
-
-                // value of item that is clicked
-                val itemValue = listView.getItemAtPosition(position) as String
-
                 val intent = Intent(this@GalleryActivity, CameraActivity::class.java)
                 Log.d("itemPushed: ", position.toString())
                 intent.putExtra("dataLineIndex", position)
                 startActivity(intent)
-
             }
         }
 
@@ -69,22 +69,14 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
                 adb.setNegativeButton("Cancel", null)
                 adb.setPositiveButton("Ok")
                 { adb, which ->
-                    val savedDataArray = Utility().populateArrayFromFile(filePath + "/SavedData.txt")
-                    val imageDirectory = File(Environment.getExternalStorageDirectory().toString() + "/DangerMole")
-                    val lastIndexOfUnderscore = savedDataArray[position].lastIndexOf("_")
-                    val subString = savedDataArray[position].substring(0, lastIndexOfUnderscore)
-                    var fileToDelete = ""
-                    imageDirectory.walk().forEach {
-                        if (it.toString().contains(subString)) {
-                            fileToDelete = it.absolutePath
-                        }
-                    }
+                    var fileToDelete = getImageFilePath(filePath, position)
                     if (File(fileToDelete).exists()) {
                         Log.d("removeFile: ", fileToDelete)
                         File(fileToDelete).delete()
                     }
                     removeLine(savedDataFile, position)
-                    listToDisplay.removeAt(position)
+                    //listToDisplay.removeAt(position)
+                    arrGalleryItem.removeAt(position)
                     listView.invalidateViews()
                 }
                 adb.show()
@@ -93,10 +85,24 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         }
     }
 
+    private fun getImageFilePath(baseFilePath: String, position: Int): String {
+        val savedDataArray = Utility().populateArrayFromFile(baseFilePath + "/SavedData.txt")
+        val imageDirectory = File(Environment.getExternalStorageDirectory().toString() + "/DangerMole")
+        val lastIndexOfUnderscore = savedDataArray[position].lastIndexOf("_")
+        val subString = savedDataArray[position].substring(0, lastIndexOfUnderscore)
+        var fileToDelete = ""
+        imageDirectory.walk().forEach {
+            if (it.toString().contains(subString)) {
+                fileToDelete = it.absolutePath
+            }
+        }
+        return fileToDelete
+    }
+
     private fun listViewItemDisplaySanitizer(inputString: String): String{
         val splitStringList = inputString.split("_".toRegex())
         var formattedString = splitStringList[0] + '/' + splitStringList[1] + '/' + splitStringList[2] + " " +
-                splitStringList[3] + ":" + splitStringList[4] + ":" + splitStringList[5] + " Mole Score: " + splitStringList[6]
+                splitStringList[3] + ":" + splitStringList[4] + ":" + splitStringList[5] + "\nMole Score: " + splitStringList[6]
 
         return formattedString
     }
