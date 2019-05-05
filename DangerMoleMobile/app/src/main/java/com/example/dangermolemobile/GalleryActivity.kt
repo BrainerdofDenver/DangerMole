@@ -34,14 +34,14 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         }
 
         val toggle = ActionBarDrawerToggle(
-            this, drawer_layout_gallery, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
+                this, drawer_layout_gallery, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
         )
         drawer_layout_gallery.addDrawerListener(toggle)
         toggle.syncState()
         nav_view_gallery.setNavigationItemSelectedListener(this)
 
         val adapter = ArrayAdapter(this,
-            R.layout.listview_item, listToDisplay)
+                R.layout.listview_item, listToDisplay)
 
         val listView: ListView = findViewById(R.id.gallery_list_view)
         listView.setAdapter(adapter)
@@ -64,39 +64,33 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
 
         listView.onItemLongClickListener = object : AdapterView.OnItemLongClickListener {
             override fun onItemLongClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long): Boolean {
-                /*
-                Log.d("itemAt: ", position.toString())
                 val adb = AlertDialog.Builder(this@GalleryActivity)
                 adb.setTitle("Delete?")
                 adb.setNegativeButton("Cancel", null)
-                adb.setPositiveButton("Ok", AlertDialog.OnClickListener(){
-                    public void onClick{
-
+                adb.setPositiveButton("Ok")
+                { adb, which ->
+                    val savedDataArray = Utility().populateArrayFromFile(filePath + "/SavedData.txt")
+                    val imageDirectory = File(Environment.getExternalStorageDirectory().toString() + "/DangerMole")
+                    val lastIndexOfUnderscore = savedDataArray[position].lastIndexOf("_")
+                    val subString = savedDataArray[position].substring(0, lastIndexOfUnderscore)
+                    var fileToDelete = ""
+                    imageDirectory.walk().forEach {
+                        if (it.toString().contains(subString)) {
+                            fileToDelete = it.absolutePath
+                        }
                     }
-                })*/
-                val savedDataArray = Utility().populateArrayFromFile(filePath + "/SavedData.txt")
-                val imageDirectory = File(Environment.getExternalStorageDirectory().toString() + "/DangerMole")
-                val lastIndexOfUnderscore = savedDataArray[position].lastIndexOf("_")
-                val subString = savedDataArray[position].substring(0,lastIndexOfUnderscore)
-                var fileToDelete = ""
-                imageDirectory.walk().forEach{
-                    if ( it.toString().contains(subString)) {
-                        fileToDelete = it.absolutePath
+                    if (File(fileToDelete).exists()) {
+                        Log.d("removeFile: ", fileToDelete)
+                        File(fileToDelete).delete()
                     }
+                    removeLine(savedDataFile, position)
+                    listToDisplay.removeAt(position)
+                    listView.invalidateViews()
                 }
-                if (File(fileToDelete).exists()) {
-                    Log.d("removeFile: ", fileToDelete)
-                    File(fileToDelete).delete()
-                }
-
-                removeLine(savedDataFile,position)
-                listToDisplay.removeAt(position)
-                listView.invalidateViews()
-
+                adb.show()
                 return true
             }
         }
-
     }
 
     private fun listViewItemDisplaySanitizer(inputString: String): String{
