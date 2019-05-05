@@ -14,8 +14,8 @@ Green group is developing an application to detect whether a nevus is progressin
 technologies to the public. 
 
 **Requirements**
-Android Studio
-(Optional) Have an android phone for emulation.
+* Android Studio
+* (Optional) Have an android phone for emulation.
 
 **How to run the DangerMole**
 1. Download or clone the repository.
@@ -30,13 +30,13 @@ Android Studio
 Quick access to all the features the application provides
 ### <img src="https://user-images.githubusercontent.com/43079244/57186429-68941700-6e9c-11e9-882b-9aae2b0d737b.png" width="250" height="400">
 ## Camera
-When clicked to take picture it produces the probablity, and time stamps the picture
+When clicked to take picture it produces the probability, and time stamps the picture
 ### <img src="https://user-images.githubusercontent.com/43079244/57184306-fe1cb000-6e76-11e9-9fd2-de4eab18661d.png" width="250" height="400">
 ## Gallery
 Gallery is to view all previous taken picture with time stamp and proability attached to it.
 ### <img src="https://user-images.githubusercontent.com/43079244/57186437-9bd6a600-6e9c-11e9-9fd2-50c79a79abda.png" width="250" height="400">
 ## Local Clinics
-When allowed, it will show the nearest local clinics in your area.
+When location permission is granted, it will show the nearest local clinics in your area.
 ### <img src="https://user-images.githubusercontent.com/43079244/57186442-cc1e4480-6e9c-11e9-9ee6-9a378bbb912a.png" width="250" height="400">
 ## About Us
 Tells you what this project was about, also giving links to our Github and an ISIC website to learn more about the moles.
