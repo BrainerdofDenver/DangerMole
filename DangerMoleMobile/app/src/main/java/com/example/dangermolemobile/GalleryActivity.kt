@@ -102,7 +102,7 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
     private fun listViewItemDisplaySanitizer(inputString: String): String{
         val splitStringList = inputString.split("_".toRegex())
         var formattedString = splitStringList[0] + '/' + splitStringList[1] + '/' + splitStringList[2] + " " +
-                splitStringList[3] + ":" + splitStringList[4] + ":" + splitStringList[5] + " Mole Score: " + splitStringList[6]
+                splitStringList[3] + ":" + splitStringList[4] + ":" + splitStringList[5] + "\nMole Score: " + splitStringList[6]
 
         return formattedString
     }
