@@ -7,7 +7,7 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:showIn="@layout/drawer_layout_generalinfo"
-        tools:context=".GeneralInfoActivity">
+        tools:context=".GeneralInfoActivity" android:background="@drawable/background_layouts">
     <TextView
             android:text="@string/general_info_text"
             android:layout_height="367dp" android:id="@+id/genInfo" android:layout_marginBottom="16dp"

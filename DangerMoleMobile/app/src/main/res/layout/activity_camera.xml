@@ -7,7 +7,7 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:showIn="@layout/drawer_layout_camera"
-        tools:context=".CameraActivity">
+        tools:context=".CameraActivity" android:background="@drawable/background_layouts">
 
     <Button
             android:text="@string/take_pic"
