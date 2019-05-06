@@ -37,7 +37,9 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     //Values for tensorflow
     lateinit var classifier: Classifier
     private val executor = Executors.newSingleThreadExecutor()
-
+    /**
+     *
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.drawer_layout_camera)
