@@ -86,7 +86,7 @@ class LocalClinicsActivity : AppCompatActivity(), NavigationView.OnNavigationIte
                 android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                 arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
-            recreate()
+
             return
         }
 
@@ -101,8 +101,13 @@ class LocalClinicsActivity : AppCompatActivity(), NavigationView.OnNavigationIte
                 findLocalClinics()
             }
         }
-
     }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        recreate()
+    }
+
     override fun onMarkerClick(p0: Marker?) = false
 
     private fun findLocalClinics(){
