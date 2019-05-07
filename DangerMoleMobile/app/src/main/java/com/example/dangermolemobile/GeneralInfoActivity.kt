@@ -9,6 +9,7 @@ import android.text.method.LinkMovementMethod
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
+import kotlinx.android.synthetic.main.activity_general_info.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.drawer_layout_generalinfo.*
 
@@ -21,6 +22,7 @@ class GeneralInfoActivity : AppCompatActivity(), NavigationView.OnNavigationItem
 
         val textGov: TextView = findViewById(R.id.govLink)
         textGov.setMovementMethod(LinkMovementMethod.getInstance())
+        symptoms_link.setMovementMethod(LinkMovementMethod.getInstance())
 
         val toggle = ActionBarDrawerToggle(
             this, drawer_layout_generalinfo, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
