@@ -4,7 +4,7 @@ import java.io.File
 
 data class GalleryItem (var mImageFile: String, var mMoleData: String){
 
-    fun GalleryItem(file : String, data : String){
+    fun galleryItem(file : String, data : String){
         mImageFile = file
         mMoleData = data
     }

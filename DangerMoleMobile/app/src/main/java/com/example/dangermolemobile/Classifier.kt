@@ -76,7 +76,6 @@ class Classifier(
     private fun loadLabelList(assetManager: AssetManager, labelPath: String): List<String> {
         val labelList:ArrayList<String> = ArrayList()
 
-        //return labelList
         val reader = BufferedReader(InputStreamReader(assetManager.open(labelPath)))
         while (true) {
             val line = reader.readLine() ?: break

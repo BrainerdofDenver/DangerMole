@@ -101,8 +101,8 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             dataIndexFromGallery = intent.getIntExtra("dataLineIndex", 0)
             val savedDataArray = Utility().populateArrayFromFile(filepath + savedDataFileName)
             val imageDirectory = File(Environment.getExternalStorageDirectory().toString() + "/DangerMole")
-            val lastIndexOf_ = savedDataArray[dataIndexFromGallery].lastIndexOf("_")
-            val subString = savedDataArray[dataIndexFromGallery].substring(0,lastIndexOf_)
+            val lastIndexOfUnderscore = savedDataArray[dataIndexFromGallery].lastIndexOf("_")
+            val subString = savedDataArray[dataIndexFromGallery].substring(0,lastIndexOfUnderscore)
             imageDirectory.walk().forEach{
                 if ( it.toString().contains(subString)) {
                     currentPhotoPath = it.absolutePath
@@ -144,7 +144,6 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         val bm = BitmapFactory.decodeFile(currentPhotoPath)
         val imgView: ImageView = findViewById(R.id.camView)
         val dimension = getSquareCropDimensionForBitmap(bm)
-       // var bitmap = Bitmap.createScaledBitmap(bm, INPUT_SIZE, INPUT_SIZE, false)
         val returnedBitMap = ThumbnailUtils.extractThumbnail(bm, dimension, dimension)
         imgView.setImageBitmap(returnedBitMap)
     }
@@ -178,7 +177,6 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     }
 
     private fun dateSanitizer(): String{
-        //var currentDateTime = currentFileName
         val splitStringList = currentFileName.split("_".toRegex())
         var formattedDate = splitStringList[0] + '/' + splitStringList[1] + '/' + splitStringList[2]
         return formattedDate
