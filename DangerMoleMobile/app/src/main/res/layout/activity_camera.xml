@@ -8,7 +8,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:showIn="@layout/drawer_layout_camera"
         tools:context=".CameraActivity" android:background="@drawable/background_layouts">
-  
+
     <ImageButton
             android:layout_width="90dp"
             android:layout_height="90dp"
@@ -21,7 +21,7 @@
             app:layout_constraintTop_toBottomOf="@+id/camView"
             android:src="@drawable/camerbutton"
             android:scaleType="fitCenter"
-            android:contentDescription="Camera Icon" android:background="@drawable/camerbutton"/>
+            android:contentDescription="Camera Icon" android:background="@drawable/cambutton_selector"/>
     <ImageView
             android:layout_width="0dp"
             android:layout_height="427dp" app:srcCompat="@android:color/background_dark"
