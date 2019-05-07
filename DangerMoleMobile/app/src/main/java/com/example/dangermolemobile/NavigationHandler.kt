@@ -98,20 +98,4 @@ class NavigationHandler {
         toast.show()
     }
 
-    private fun toastMaker(msg: String, mActivity: Activity){
-        val toast = Toast.makeText(mActivity, msg, Toast.LENGTH_SHORT)
-        toast.setGravity(Gravity.CENTER, 0, 0)
-
-        val inflater = mActivity.getLayoutInflater()
-        val layout = inflater.inflate(R.layout.toast,
-            mActivity.findViewById<ViewGroup>(R.id.toast_layout_root)
-        )
-
-        val text = layout.findViewById(R.id.text) as TextView
-        text.setText("$msg")
-        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0)
-        toast.setDuration(Toast.LENGTH_LONG)
-        toast.setView(layout)
-        toast.show()
-    }
 }

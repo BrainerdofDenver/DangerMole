@@ -11,12 +11,10 @@ from imgaug import augmenters as iaa
 def get_label(file_name):
     data = open_json_file(file_name)
 
-    if 'meta' in data & 'clinical' in data['meta']:
-        if 'benign_malignant' in data['meta']['clinical']:
-            if data['meta']['clinical']['benign_malignant'] == 'benign':
-                return 0
-            else:
-                return 1
+    if data['meta']['clinical']['benign_malignant'] == 'benign':
+        return 0
+    else:
+        return 1
 
 def get_image_at_index(features,index):
     img = cv2.imread(str(features[index]),1)

@@ -69,7 +69,7 @@ test_labels = []
 
 for i in range(num_images):
     index = int(random.choice(len(X_file_names),1))
-    #test_images.append(cv2.resize(cv2.imread(os.path.join(DATADIR,X_file_names[index])),(224,224)))
+    
     file_name = os.path.join(DATADIR,X_file_names[index])
     print(file_name)
     image = get_image_at_index(np.array([file_name]),0)
@@ -79,13 +79,7 @@ for i in range(num_images):
 model = load_model('resmodel')
 
 predictions = model.predict(np.array(test_images))
-'''
-predictions = []
-for test_image in test_images:
-    prediction = model.predict(np.array([test_image]))
-    print(prediction)
-    predictions.append(prediction)
-'''
+
 plt.figure(figsize=(2*2*num_cols, 2*num_rows))
 for i in range(num_images):
     plt.subplot(num_rows, 2*num_cols, 2*i+1)
