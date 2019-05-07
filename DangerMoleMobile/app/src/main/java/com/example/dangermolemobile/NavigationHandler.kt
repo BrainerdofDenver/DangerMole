@@ -82,9 +82,6 @@ class NavigationHandler {
     }
 
     private fun disclaimerToastCreator(mContext: Context, mActivity: Activity){
-//        val toast: Toast = Toast.makeText(mContext, mContext.getString(R.string.full_disclaimer), Toast.LENGTH_LONG)
-//        toast.setGravity(Gravity.CENTER,0,0)
-//        toast.show()
         val toast = Toast.makeText(mContext, mContext.getString(R.string.full_disclaimer), Toast.LENGTH_LONG)
         toast.setGravity(Gravity.CENTER, 0, 0)
 
@@ -99,7 +96,6 @@ class NavigationHandler {
         toast.setDuration(Toast.LENGTH_LONG)
         toast.setView(layout)
         toast.show()
-
     }
 
     private fun toastMaker(msg: String, mActivity: Activity){
