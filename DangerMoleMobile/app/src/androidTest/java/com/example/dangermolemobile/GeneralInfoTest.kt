@@ -38,6 +38,10 @@ class GeneralInfoTest {
                     "android.permission.WRITE_EXTERNAL_STORAGE")
 
     @Test
+            /**
+             * The main function of this block is to test the General info activity.
+             * @see GeneralInfoActivity
+             */
     fun generalInfoTest() {
         val utils = TestUtils()
         val appCompatImageButton = onView(

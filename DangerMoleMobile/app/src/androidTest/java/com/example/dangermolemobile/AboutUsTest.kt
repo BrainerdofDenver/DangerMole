@@ -38,6 +38,10 @@ class AboutUsTest {
                     "android.permission.WRITE_EXTERNAL_STORAGE")
 
     @Test
+            /**
+             * Main function of this block is to test the About Us Activity.
+             * @see AboutUsActivity
+             */
     fun aboutUsTest() {
         val utils = TestUtils()
         val appCompatImageButton = onView(

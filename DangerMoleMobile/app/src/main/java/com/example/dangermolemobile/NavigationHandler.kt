@@ -15,7 +15,14 @@ import kotlinx.android.synthetic.main.drawer_layout_gallery.*
 import kotlinx.android.synthetic.main.drawer_layout_generalinfo.*
 import kotlinx.android.synthetic.main.drawer_layout_localclinics.*
 
+/**
+ * Main function of this block is handling the navigation drawer.
+ */
 class NavigationHandler {
+    /**
+     * Main function of this block is to start the activity of each drawer,
+     * with the each corresponding name for them.
+     */
     fun navigationOnClickListener(mContext: Context, mActivity: Activity, item: MenuItem){
 
         when (item.itemId) {
@@ -45,12 +52,18 @@ class NavigationHandler {
         }
     }
 
+    /**
+     * The main function of this block is to handle all activity that is in the drawer.
+     */
     private fun navItemHandler(mActivity: Activity, mContext: Context, intent: Intent){
         mActivity.finish()
         mContext.startActivity(intent)
         drawerLayoutCloser(mActivity)
     }
 
+    /**
+     * Main function of this block is to end all drawer activity when it closes.
+     */
     private fun drawerLayoutCloser(mActivity: Activity){
         val activityLabel = fromActivityStringBuilder(mActivity)
 
@@ -72,15 +85,19 @@ class NavigationHandler {
             }
         }
     }
-
-    //This function separates the activity name string from the total output of mActivity.toString()
-    //mActivity.toString() outputs: com.example.dangermolemobile.CameraActivity@<instance variables>
+    /**
+     * This function separates the activity name string from the total output of mActivity.toString()
+    mActivity.toString() outputs: com.example.dangermolemobile.CameraActivity@<instance variables>
+     */
     private fun fromActivityStringBuilder(mActivity: Activity): String{
         val fromActivityLabelArray = mActivity.toString().split('.')
         val activityString = fromActivityLabelArray[3].split('@')
         return activityString[0]
     }
 
+    /**
+     * Main function of this block is to do a pop up, when clicking on the disclaimer
+     */
     private fun disclaimerToastCreator(mContext: Context, mActivity: Activity){
         val toast = Toast.makeText(mContext, mContext.getString(R.string.full_disclaimer), Toast.LENGTH_LONG)
         toast.setGravity(Gravity.CENTER, 0, 0)

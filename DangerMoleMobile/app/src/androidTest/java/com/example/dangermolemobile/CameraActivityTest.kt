@@ -36,6 +36,10 @@ class CameraActivityTest {
                     "android.permission.WRITE_EXTERNAL_STORAGE")
 
     @Test
+            /**
+             * The main fucntion of this block is to test the Camera Activty
+             * @see CameraActivity
+             */
     fun cameraActivityTest() {
         val utils = TestUtils()
         val appCompatButton = onView(

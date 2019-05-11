@@ -11,14 +11,29 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 
+/**
+ * Main function is to display the closest clinics in your vicinity
+ */
 class GetNearbyPlaces : AsyncTask<Pair<GoogleMap,String>,String,String>(){
-
+    /**
+     * Values for getting nearby places, it uses GoogleMaps, the url,
+     * inputstream, buffered Reader, and stringbuilder
+     * @see mMap use of google maps
+     * @see url use of the url of google maps
+     * @see inputstream get the url connection to google maps
+     * @see bufferedReader to read the inputstream
+     * @see stringbuilder using string builder to build a string of readable data
+     */
     lateinit var mMap: GoogleMap
     lateinit var url: String
     lateinit var inputstream: InputStream
     lateinit var bufferedReader: BufferedReader
     lateinit var stringbuilder: StringBuilder
     @Override
+    /**
+     * The main function of this block is to connect to internet and use Google Map
+     * @return data
+     */
     override fun doInBackground(vararg params: Pair<GoogleMap,String>): String {
         mMap = params[0].first
         url = params[0].second
@@ -40,6 +55,10 @@ class GetNearbyPlaces : AsyncTask<Pair<GoogleMap,String>,String,String>(){
         return data
     }
 
+    /**
+     * The main function of this block is to get the location
+     * Using latitude, latitude to get your location
+     */
     @Override
     override fun onPostExecute(result: String?) {
         val parentObject = JSONObject(result)

@@ -19,8 +19,16 @@ import java.io.*
 import java.util.*
 import kotlin.collections.ArrayList
 
+/**
+ * Main function is to have the usability of a gallery,
+ * with functions as to display the pictures, probability, time and date.
+ */
 class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-
+    /**
+     * Main function of this block is to create a drawer layout for the gallery.
+     * Also brings up previous saved data, and is the main function of the whole
+     * gallery.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.drawer_layout_gallery)
@@ -52,7 +60,10 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         listView.setAdapter(adapter)
 
         listView.onItemClickListener = object : AdapterView.OnItemClickListener {
-
+            /**
+             * Main function of this block is to show options when the item is clicked,
+             * briefly.
+             */
             override fun onItemClick(parent: AdapterView<*>, view: View,
                                      position: Int, id: Long) {
                 val intent = Intent(this@GalleryActivity, CameraActivity::class.java)
@@ -61,7 +72,10 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
                 startActivity(intent)
             }
         }
-
+        /**
+         * Main function of this block is to give options when the click is hold longer,
+         * giving options to delete, or not.
+         */
         listView.onItemLongClickListener = object : AdapterView.OnItemLongClickListener {
             override fun onItemLongClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long): Boolean {
                 val adb = AlertDialog.Builder(this@GalleryActivity)
@@ -99,6 +113,10 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         return fileToDelete
     }
 
+    /**
+     * Main function is to display the results, with formatted probability, time, and date.
+     * @return formattedString
+     */
     private fun listViewItemDisplaySanitizer(inputString: String): String{
         val splitStringList = inputString.split("_".toRegex())
         var formattedString = splitStringList[0] + '/' + splitStringList[1] + '/' + splitStringList[2] + " " +
@@ -107,6 +125,11 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         return formattedString
     }
 
+    /**
+     * Main function is to to make a new list
+     * @return newList brand new list to be added
+     * @see listViewItemDisplaySanitizer to get the formattedString for display
+     */
     private fun displayListCleaner(list: Array<String>): ArrayList<String>{
         var newList = ArrayList<String>()
         for (item in list){
@@ -119,6 +142,11 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
     }
 
     // From https://stackoverflow.com/questions/19760282/android-remove-known-line-from-txt-file
+    /**
+     * @throws IOException
+     * The main function of this block is to the file and store them into strings of an array,
+     * then it would remove the indexes and write back all the line.
+     */
     @Throws(IOException::class)
     fun removeLine(file: File, lineIndex: Int) {
         val lines = ArrayList<String>()
@@ -137,6 +165,9 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
     }
 
     //Part of Navigation Drawer
+    /**
+     * Main function of this block is for the function of back pressing.
+     */
     override fun onBackPressed() {
         if (drawer_layout_gallery.isDrawerOpen(GravityCompat.START)) {
             drawer_layout_gallery.closeDrawer(GravityCompat.START)
@@ -145,12 +176,18 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         }
     }
     //Nav
+    /**
+     * Main function of this block is to add an action bar if its able.
+     */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
     //Nav
+    /**
+     * Main function of this block is to pop out an option if the item is selected.
+     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_settings -> true
@@ -158,6 +195,9 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         }
     }
     //Nav
+    /**
+     * Main function of this block is when the navigation item, if it is selected.
+     */
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         NavigationHandler().navigationOnClickListener(this, this, item)
         return true

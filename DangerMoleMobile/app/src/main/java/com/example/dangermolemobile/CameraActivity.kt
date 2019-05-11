@@ -27,7 +27,18 @@ import java.io.IOException
 import java.util.*
 import java.util.concurrent.Executors
 
+/**
+ * The start of the function of the Camera in the application
+ * Initializing variables for the photo path, request to take a photo, the folder name, and current file name
+ * Also get values for tensorflow to run the app
+ */
 class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+    /**
+     * Values for taking the photos, foldername and the current file name.
+     * @see REQUEST_TAKE_PHOTO
+     * @see folderName
+     * @see currentFileName
+     */
     private var currentPhotoPath = ""
     val REQUEST_TAKE_PHOTO = 1
     val folderName = "DangerMole"
@@ -37,7 +48,11 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     //Values for tensorflow
     lateinit var classifier: Classifier
     private val executor = Executors.newSingleThreadExecutor()
-
+    /**
+     * Main function of the onCreate is to run the camera, the gallery and the tensorflow.
+     * @see initTensorFlowAndLoadModel
+     * @see galleryIntentHandler
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.drawer_layout_camera)
@@ -60,13 +75,22 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
 
     }
 
+
     //Code based on tutorial for initial functionality: https://www.youtube.com/watch?v=5wbeWN4hQt0
+    /**
+     * Main function of this block is to get the result of the activity and call on
+     * load picture to preview in camera.
+     * @see loadPreviewFromCamera
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         loadPreviewFromCamera()
     }
 
     //Part of Navigation Drawer
+    /**
+     * Main function of this block is for the function of back pressing.
+     */
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
@@ -75,12 +99,18 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
     }
     //Nav
+    /**
+     * Main function of this block is to add an action bar if its able.
+     */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
     //Nav
+    /**
+     * Main function of this block is to pop out an option if the item is selected.
+     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_settings -> true
@@ -88,11 +118,20 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
     }
     //Nav
+    /**
+     * Main function of this block is when the navigation item, if it is selected.
+     */
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         NavigationHandler().navigationOnClickListener(this, this, item)
         return true
     }
 
+    /**
+     * Main function of galleryIntentHandler is to save the data to a text file
+     * It would then populate a list with that saved data, with the file path going to DangerMole
+     * @see loadPicFromGallerytoPreview
+     * @see loadedDataToTextView saving the data with probability, time and date
+     */
     private fun galleryIntentHandler(){
         val filepath = this.filesDir.toString() + "/"
         val savedDataFileName = "SavedData.txt"
@@ -115,6 +154,10 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
     }
 
+    /**
+     * Main function is to take a picture
+     * While also need to make request on taking picture and storage
+     */
     private fun dispatchTakePictureIntent() {
         Utility().requestCameraAndStoragePermissions(this, this)
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
@@ -140,6 +183,11 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
     }
 
+    /**
+     * Main function load a picture from gallery to preview it.
+     * @see getSquareCropDimensionForBitmap
+     * It crops the image first then returns with the dimension
+     */
     private fun loadPicFromGallerytoPreview(){
         val bm = BitmapFactory.decodeFile(currentPhotoPath)
         val imgView: ImageView = findViewById(R.id.camView)
@@ -148,6 +196,12 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         imgView.setImageBitmap(returnedBitMap)
     }
 
+    /**
+     *Main function is to load preview of the image from the camera
+     * @see getSquareCropDimensionForBitmap to crop the images
+     * @see displayProbability to display the probability
+     * @see addNewDataToDataFile to create a new file for the data
+     */
     private fun loadPreviewFromCamera(){
         //https://stackoverflow.com/questions/6908604/android-crop-center-of-bitmap
         val bm = BitmapFactory.decodeFile(currentPhotoPath)
@@ -164,11 +218,21 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         imgView.setImageBitmap(returnedBitMap)
     }
 
+    /**
+     * Main function is to crop the bitmap using a build-in function
+     */
     private fun getSquareCropDimensionForBitmap(bitmap: Bitmap): Int {
         //use the smallest dimension of the image to crop to
         return Math.min(bitmap.width, bitmap.height)
     }
 
+    /**
+     * Main function of display proability is to display the probability, using the id tv
+     * It uses also
+     * @see displayResults to get the formatted results
+     * @see dateSanitizer to get the formatted date
+     * @see timeSanitizer to get the formatted time
+     */
     private fun displayProbability(modelData: Float, tv: TextView){
         Log.d("output to prob view", modelData.toString())
         val displayResults = Utility().floatSanitizer(modelData)
@@ -176,12 +240,20 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
                 + "Date: " + dateSanitizer() +  "\n" + "Time: " + timeSanitizer())
     }
 
+    /**
+     * Main function is to get the formatted date
+     * @return formattedDate
+     */
     private fun dateSanitizer(): String{
         val splitStringList = currentFileName.split("_".toRegex())
         var formattedDate = splitStringList[0] + '/' + splitStringList[1] + '/' + splitStringList[2]
         return formattedDate
     }
 
+    /**
+     * Main function is to get the formatted time
+     * @return formattedTime
+     */
     private fun timeSanitizer(): String{
         val splitStringList = currentFileName.split("_".toRegex())
         var formattedTime = splitStringList[3].padStart(2, '0') +
@@ -189,18 +261,32 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         return formattedTime
     }
 
+    /**
+     * Main function is to get the formatted Probability
+     * @return formattedProbability
+     */
     private fun loadedProbabilitySanitizer(): String{
         val splitStringList = currentFileName.split("_".toRegex())
         val formattedProbability = Utility().floatSanitizer(splitStringList[6].toFloat())
         return formattedProbability
     }
 
+    /**
+     * Main function is to get save the probability, date and time
+     * @see displayResults to get the formatted results
+     * @see dateSanitizer to get the formatted date
+     * @see timeSanitizer to get the formatted time
+     */
     private fun loadedDataToTextView(tv: TextView){
         val formattedProbability = loadedProbabilitySanitizer()
         tv.setText("Malignant Probability: " + formattedProbability + "%" + "\n"
                 + "Date: " + dateSanitizer() +  "\n" + "Time: " + timeSanitizer())
     }
 
+    /**
+     * Main function is to display, month, day of the month, year, hour, minute, seconds
+     * @return str
+     */
     private fun fileNameCreator(): String{
         val calendar = Calendar.getInstance()
         val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH).toString()
@@ -214,8 +300,11 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         currentFileName = str
         return str
     }
-
     //This function creates a tempfile to append random integers to the end of the file, to prevent duplicates
+    /**
+     * Main function of this block is to prevent duplicate files.
+     * @throws IOException
+     */
     @Throws(IOException::class)
     private fun createImageFile(): File {
         val fileRoot = rootFileCreator()
@@ -227,6 +316,10 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
     }
 
+    /**
+     * Main function is create new data to a new file
+     * while saving it with the previous save path
+     */
     private fun addNewDataToDataFile(modelData: Float){
         val filepath = this.filesDir.toString() + "/"
         val savedDataFileName = "SavedData.txt"
@@ -237,6 +330,9 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
     }
 
+    /**
+     * Main function is to check if the files exists
+     */
     private fun initialFileChecker(file: File, fileName: String){
         if (!(file.exists())) {
             openFileOutput(fileName, Context.MODE_APPEND).use {
@@ -246,10 +342,19 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
     }
 
+    /**
+     * Main function of the file is to create a root file,
+     * that follows the direct path towards external storage
+     */
     private fun rootFileCreator(): File
             = File(Environment.getExternalStorageDirectory().toString()
             + File.separator + folderName + File.separator)
 
+    /**
+     * Main function is to create a directory for the file to go to.
+     * Checks to see if the file exist if not make a new directory
+     * @return file
+     */
     private fun directoryCreator(file: File): File{
         if (!file.exists()) {
             file.mkdirs()
@@ -257,6 +362,10 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         return file
     }
 
+    /**
+     * Main function is to start the tensorflow and load in the model
+     * @see Classifier
+     */
     private fun initTensorFlowAndLoadModel() {
         executor.execute {
             try {
