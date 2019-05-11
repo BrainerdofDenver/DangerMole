@@ -6,6 +6,8 @@ import android.content.Intent
 import android.support.v4.view.GravityCompat
 import android.view.Gravity
 import android.view.MenuItem
+import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.drawer_layout_aboutus.*
 import kotlinx.android.synthetic.main.drawer_layout_camera.*
@@ -45,7 +47,7 @@ class NavigationHandler {
                 navItemHandler(mActivity, mContext, intent)
             }
             R.id.nav_disclaimer -> {
-                disclaimerToastCreator(mContext)
+                disclaimerToastCreator(mContext, mActivity)
             }
         }
     }
@@ -96,10 +98,21 @@ class NavigationHandler {
     /**
      * Main function of this block is to do a pop up, when clicking on the disclaimer
      */
-    private fun disclaimerToastCreator(mContext: Context){
-        val toast: Toast = Toast.makeText(mContext, mContext.getString(R.string.full_disclaimer), Toast.LENGTH_LONG)
-        toast.setGravity(Gravity.CENTER,0,0)
-        toast.show()
+    private fun disclaimerToastCreator(mContext: Context, mActivity: Activity){
+        val toast = Toast.makeText(mContext, mContext.getString(R.string.full_disclaimer), Toast.LENGTH_LONG)
+        toast.setGravity(Gravity.CENTER, 0, 0)
 
+        val inflater = mActivity.getLayoutInflater()
+        val layout = inflater.inflate(R.layout.toast,
+            mActivity.findViewById<ViewGroup>(R.id.toast_layout_root)
+        )
+
+        val text = layout.findViewById(R.id.text) as TextView
+        text.setText(mContext.getString(R.string.full_disclaimer))
+        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0)
+        toast.setDuration(Toast.LENGTH_LONG)
+        toast.setView(layout)
+        toast.show()
     }
+
 }

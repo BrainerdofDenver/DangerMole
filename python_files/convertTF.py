@@ -12,7 +12,6 @@ from tensorflow.contrib import lite
 from keras.models import model_from_json
 from keras.models import load_model
 from keras.initializers import glorot_uniform
-#from keras.models import load_weights
 
 #Keras file to tflite file
 jsonOpen = open('testCnnModel1.json', 'r')

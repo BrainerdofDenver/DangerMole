@@ -32,7 +32,6 @@ def create_training_data(image_amount, x_data_name, y_data_name):
         if label == None:
             continue
         
-        # new_array = new_array/255
         training_data.append([new_array,label])
         if len(training_data) >= image_amount:
             break
