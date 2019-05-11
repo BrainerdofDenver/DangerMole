@@ -12,6 +12,10 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.drawer_layout_aboutus.*
 
+/**
+ * Gets the XML of the About Us Activity at the onCreate function
+ * At R.id.isiclink and R.id.gitLink provides links to the appropriate website
+ */
 class AboutUsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +35,7 @@ class AboutUsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         toggle.syncState()
         nav_view_aboutus.setNavigationItemSelectedListener(this)
     }
+
 
     //Part of Navigation Drawer
     override fun onBackPressed() {

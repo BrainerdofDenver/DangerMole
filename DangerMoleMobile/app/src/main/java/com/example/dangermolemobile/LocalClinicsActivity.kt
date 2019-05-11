@@ -20,13 +20,18 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 
+/**
+ * Main function of this class is to get your location, and search up nearby clinics in your area
+ */
 class LocalClinicsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
                              OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private lateinit var lastLocation: Location
     private lateinit var map: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-
+    /**
+     * Main function of this onCreate is to get the drawer for the local clinics
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.drawer_layout_localclinics)
@@ -80,7 +85,12 @@ class LocalClinicsActivity : AppCompatActivity(), NavigationView.OnNavigationIte
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
     }
-    //Maps
+
+    /**
+     * The main function of this block is to get the map set up.
+     * While getting permission to get location, for the current location.
+     * @see findLocalClinics
+     */
     private fun setUpMap() {
         if (ActivityCompat.checkSelfPermission(this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -103,7 +113,12 @@ class LocalClinicsActivity : AppCompatActivity(), NavigationView.OnNavigationIte
 
     }
     override fun onMarkerClick(p0: Marker?) = false
-
+    /**
+     * Main function of this block is to to find local clinics.
+     * It uses google maps api to search for nearby places with the keyword dermatologist.
+     * While calling nearby places to search for areas around it.
+     * @see GetNearbyPlaces
+     */
     private fun findLocalClinics(){
         val appinfo = this.packageManager.getApplicationInfo(this.packageName,PackageManager.GET_META_DATA)
         val key = appinfo.metaData.getString("com.google.android.geo.API_KEY")

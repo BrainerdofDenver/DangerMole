@@ -18,6 +18,10 @@ import kotlinx.android.synthetic.main.drawer_layout_gallery.*
 import java.io.*
 import java.util.*
 
+/**
+ * Main function is to have the usability of a gallery,
+ * with functions as to display the pictures, probability, time and date.
+ */
 class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,6 +97,10 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         }
     }
 
+    /**
+     * Main function is to display the results, with formatted probability, time, and date.
+     * @return formattedString
+     */
     private fun listViewItemDisplaySanitizer(inputString: String): String{
         val splitStringList = inputString.split("_".toRegex())
         var formattedString = splitStringList[0] + '/' + splitStringList[1] + '/' + splitStringList[2] + " " +
@@ -101,6 +109,11 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         return formattedString
     }
 
+    /**
+     * Main function is to to make a new list
+     * @return newList brand new list to be added
+     * @see listViewItemDisplaySanitizer to get the formattedString for display
+     */
     private fun displayListCleaner(list: Array<String>): ArrayList<String>{
         var newList = ArrayList<String>()
         for (item in list){
@@ -113,6 +126,11 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
     }
 
     // From https://stackoverflow.com/questions/19760282/android-remove-known-line-from-txt-file
+    /**
+     * @throws IOException
+     * The main function of this block is to the file and store them into strings of an array,
+     * then it would remove the indexes and write back all the line.
+     */
     @Throws(IOException::class)
     fun removeLine(file: File, lineIndex: Int) {
         val lines = ArrayList<String>()

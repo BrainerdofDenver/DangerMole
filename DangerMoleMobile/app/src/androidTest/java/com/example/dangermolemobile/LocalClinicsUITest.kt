@@ -38,6 +38,10 @@ class LocalClinicsUITest {
                     "android.permission.WRITE_EXTERNAL_STORAGE")
 
     @Test
+            /**
+             * The main function of this block is to test the Local Clinics Activity
+             * @see LocalClinicsActivity
+             */
     fun localClinicsUITest() {
         val utils = TestUtils()
         val appCompatImageButton = onView(

@@ -37,6 +37,10 @@ class NavBarTest {
                     "android.permission.WRITE_EXTERNAL_STORAGE")
 
     @Test
+            /**
+             * The main function of this block is to test the NavigationHandler.
+             * @see NavigationHandler
+             */
     fun navBarTest() {
         val utils = TestUtils()
         val appCompatImageButton = onView(

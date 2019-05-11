@@ -38,6 +38,10 @@ class GalleryTest {
                     "android.permission.WRITE_EXTERNAL_STORAGE")
 
     @Test
+            /**
+             * The main function of this block is to test the Gallery.
+             * @see GalleryActivity
+             */
     fun galleryTest() {
         val utils = TestUtils()
         val appCompatImageButton = onView(

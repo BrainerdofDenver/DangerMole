@@ -12,8 +12,14 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.drawer_layout_generalinfo.*
 
+/**
+ * Main function is to display general information
+ */
 class GeneralInfoActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-
+    /**
+     * Main function of on create is to display general information with the id drawer_layout_generalinfo.
+     * While displaying a government link
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.drawer_layout_generalinfo)
