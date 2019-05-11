@@ -83,9 +83,10 @@ class NavigationHandler {
             }
         }
     }
-
-    //This function separates the activity name string from the total output of mActivity.toString()
-    //mActivity.toString() outputs: com.example.dangermolemobile.CameraActivity@<instance variables>
+    /**
+     * This function separates the activity name string from the total output of mActivity.toString()
+    mActivity.toString() outputs: com.example.dangermolemobile.CameraActivity@<instance variables>
+     */
     private fun fromActivityStringBuilder(mActivity: Activity): String{
         val fromActivityLabelArray = mActivity.toString().split('.')
         val activityString = fromActivityLabelArray[3].split('@')

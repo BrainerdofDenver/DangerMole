@@ -8,7 +8,10 @@ import android.graphics.Bitmap
  * @see recognizeImage
  */
 interface IClassifier {
-
+    /**
+     * Main function of this block is to just return a floating point number,
+     * to the recognize image.
+     */
     fun recognizeImage(bitmap: Bitmap): Float
 
     fun close()

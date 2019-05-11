@@ -15,7 +15,15 @@ import java.net.URL
  * Main function is to display the closest clinics in your vicinity
  */
 class GetNearbyPlaces : AsyncTask<Pair<GoogleMap,String>,String,String>(){
-
+    /**
+     * Values for getting nearby places, it uses GoogleMaps, the url,
+     * inputstream, buffered Reader, and stringbuilder
+     * @see mMap use of google maps
+     * @see url use of the url of google maps
+     * @see inputstream get the url connection to google maps
+     * @see bufferedReader to read the inputstream
+     * @see stringbuilder using string builder to build a string of readable data
+     */
     lateinit var mMap: GoogleMap
     lateinit var url: String
     lateinit var inputstream: InputStream

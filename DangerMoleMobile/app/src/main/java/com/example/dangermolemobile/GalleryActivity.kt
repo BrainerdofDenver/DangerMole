@@ -23,7 +23,11 @@ import java.util.*
  * with functions as to display the pictures, probability, time and date.
  */
 class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-
+    /**
+     * Main function of this block is to create a drawer layout for the gallery.
+     * Also brings up previous saved data, and is the main function of the whole
+     * gallery.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.drawer_layout_gallery)
@@ -51,7 +55,10 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         listView.setAdapter(adapter)
 
         listView.onItemClickListener = object : AdapterView.OnItemClickListener {
-
+            /**
+             * Main function of this block is to show options when the item is clicked,
+             * briefly.
+             */
             override fun onItemClick(parent: AdapterView<*>, view: View,
                                      position: Int, id: Long) {
 
@@ -65,7 +72,10 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
 
             }
         }
-
+        /**
+         * Main function of this block is to give options when the click is hold longer,
+         * giving options to delete, or not.
+         */
         listView.onItemLongClickListener = object : AdapterView.OnItemLongClickListener {
             override fun onItemLongClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long): Boolean {
                 val adb = AlertDialog.Builder(this@GalleryActivity)
@@ -149,6 +159,9 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
     }
 
     //Part of Navigation Drawer
+    /**
+     * Main function of this block is for the function of back pressing.
+     */
     override fun onBackPressed() {
         if (drawer_layout_gallery.isDrawerOpen(GravityCompat.START)) {
             drawer_layout_gallery.closeDrawer(GravityCompat.START)
@@ -157,12 +170,18 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         }
     }
     //Nav
+    /**
+     * Main function of this block is to add an action bar if its able.
+     */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
     //Nav
+    /**
+     * Main function of this block is to pop out an option if the item is selected.
+     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_settings -> true
@@ -170,6 +189,9 @@ class GalleryActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         }
     }
     //Nav
+    /**
+     * Main function of this block is when the navigation item, if it is selected.
+     */
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         NavigationHandler().navigationOnClickListener(this, this, item)
         return true

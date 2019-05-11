@@ -33,6 +33,12 @@ import java.util.concurrent.Executors
  * Also get values for tensorflow to run the app
  */
 class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+    /**
+     * Values for taking the photos, foldername and the current file name.
+     * @see REQUEST_TAKE_PHOTO
+     * @see folderName
+     * @see currentFileName
+     */
     private var currentPhotoPath = ""
     val REQUEST_TAKE_PHOTO = 1
     val folderName = "DangerMole"
@@ -69,13 +75,22 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
 
     }
 
+
     //Code based on tutorial for initial functionality: https://www.youtube.com/watch?v=5wbeWN4hQt0
+    /**
+     * Main function of this block is to get the result of the activity and call on
+     * load picture to preview in camera.
+     * @see loadPreviewFromCamera
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         loadPreviewFromCamera()
     }
 
     //Part of Navigation Drawer
+    /**
+     * Main function of this block is for the function of back pressing.
+     */
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
@@ -84,12 +99,18 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
     }
     //Nav
+    /**
+     * Main function of this block is to add an action bar if its able.
+     */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
     //Nav
+    /**
+     * Main function of this block is to pop out an option if the item is selected.
+     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_settings -> true
@@ -97,6 +118,9 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
     }
     //Nav
+    /**
+     * Main function of this block is when the navigation item, if it is selected.
+     */
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         NavigationHandler().navigationOnClickListener(this, this, item)
         return true
@@ -278,8 +302,11 @@ class CameraActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         currentFileName = str
         return str
     }
-
     //This function creates a tempfile to append random integers to the end of the file, to prevent duplicates
+    /**
+     * Main function of this block is to prevent duplicate files.
+     * @throws IOException
+     */
     @Throws(IOException::class)
     private fun createImageFile(): File {
         val fileRoot = rootFileCreator()

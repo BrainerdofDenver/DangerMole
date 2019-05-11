@@ -17,7 +17,10 @@ import kotlinx.android.synthetic.main.drawer_layout_aboutus.*
  * At R.id.isiclink and R.id.gitLink provides links to the appropriate website
  */
 class AboutUsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-
+    /**
+     * Main function of this block is to make the layout for the about us.
+     * Also getting links to our github and isic mole to learn more about it.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.drawer_layout_aboutus)
@@ -38,6 +41,9 @@ class AboutUsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
 
 
     //Part of Navigation Drawer
+    /**
+     * Main function of this block is for the function of back pressing.
+     */
     override fun onBackPressed() {
         if (drawer_layout_aboutus.isDrawerOpen(GravityCompat.START)) {
             drawer_layout_aboutus.closeDrawer(GravityCompat.START)
@@ -46,12 +52,18 @@ class AboutUsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         }
     }
     //Nav
+    /**
+     * Main function of this block is to add an action bar if its able.
+     */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
     //Nav
+    /**
+     * Main function of this block is to pop out an option if the item is selected.
+     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_settings -> true
@@ -59,6 +71,9 @@ class AboutUsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
         }
     }
     //Nav
+    /**
+     * Main function of this block is when the navigation item, if it is selected.
+     */
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         NavigationHandler().navigationOnClickListener(this, this, item)
         return true

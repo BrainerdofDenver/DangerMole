@@ -37,6 +37,9 @@ class GeneralInfoActivity : AppCompatActivity(), NavigationView.OnNavigationItem
     }
 
     //Part of Navigation Drawer
+    /**
+     * Main function of this block is for the function of back pressing.
+     */
     override fun onBackPressed() {
         if (drawer_layout_generalinfo.isDrawerOpen(GravityCompat.START)) {
             drawer_layout_generalinfo.closeDrawer(GravityCompat.START)
@@ -45,12 +48,18 @@ class GeneralInfoActivity : AppCompatActivity(), NavigationView.OnNavigationItem
         }
     }
     //Nav
+    /**
+     * Main function of this block is to add an action bar if its able.
+     */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
     //Nav
+    /**
+     * Main function of this block is to pop out an option if the item is selected.
+     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_settings -> true
@@ -58,6 +67,9 @@ class GeneralInfoActivity : AppCompatActivity(), NavigationView.OnNavigationItem
         }
     }
     //Nav
+    /**
+     * Main function of this block is when the navigation item, if it is selected.
+     */
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         NavigationHandler().navigationOnClickListener(this, this, item)
         return true

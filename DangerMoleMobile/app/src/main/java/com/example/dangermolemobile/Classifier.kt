@@ -20,6 +20,13 @@ import kotlin.collections.ArrayList
  * Get the input size of 224x224
  */
 class Classifier(
+    /**
+     * Values for the classifier, to call on the interpreter, the pixel size and label
+     * list for the tensorflow model.
+     * @see interpreter
+     * @see inputSize
+     * @see labelList
+     */
     var interpreter: Interpreter? = null,
     var inputSize: Int = 224,
     var labelList: List<String> = emptyList()
